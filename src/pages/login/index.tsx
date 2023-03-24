@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Formik, Form, Field } from "formik";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Login() {
   const { push } = useRouter();
@@ -35,7 +35,7 @@ export default function Login() {
             onSubmit={async (values) => {
               axios
                 .post(
-                  "http://localhost:8000/api/login",
+                  `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
                   {
                     email: values.email,
                     password: values.password,
