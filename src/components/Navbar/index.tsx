@@ -73,7 +73,7 @@ export default function Navbar() {
             <span>Admin</span>
           </Link>
         )}
-        {billingUrl ? (
+        {/* {billingUrl ? (
           <a
             href={billingUrl}
             className="bg-white hover:bg-gray-300 px-4 py-2 rounded flex items-center gap-2"
@@ -86,7 +86,7 @@ export default function Navbar() {
             <FiLoader />
             <span>Billing</span>
           </div>
-        )}
+        )} */}
         <Link
           href="/logout"
           className="bg-white hover:bg-gray-300 px-4 py-2 rounded flex gap-2 items-center"
