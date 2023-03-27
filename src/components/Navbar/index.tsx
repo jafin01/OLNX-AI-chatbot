@@ -64,7 +64,7 @@ export default function Navbar() {
           <FiBox />
           <span>Templates</span>
         </Link>
-        {is_admin && (
+        {is_admin ? (
           <Link
             href="/admin"
             className="bg-white hover:bg-gray-300 px-4 py-2 rounded flex gap-2 items-center"
@@ -72,6 +72,8 @@ export default function Navbar() {
             <FiKey />
             <span>Admin</span>
           </Link>
+        ) : (
+          <></>
         )}
         {/* {billingUrl ? (
           <a
