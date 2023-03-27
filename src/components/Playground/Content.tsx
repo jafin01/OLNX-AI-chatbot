@@ -1,15 +1,29 @@
 import { Form, Formik } from "formik";
 import PlaygroundChatBubble from "./ChatBubble";
 import PlaygroundAddChatBubble from "./AddChatBubble";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useConversationStore } from "@/stores/conversation";
+import { FiSend, FiLoader } from "react-icons/fi";
 
-type Message = {
+export type Message = {
   role: "Assistant #1" | "Assistant #2";
   message: string;
 };
 
-export default function PlaygroundContent() {
+export default function PlaygroundContent({
+  name,
+  setIsBusy,
+  isBusy,
+  initialValues,
+  msgs,
+}: {
+  name: string;
+  setIsBusy: (b: boolean) => void;
+  isBusy: boolean;
+  initialValues?: any;
+  msgs?: Message[];
+}) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "Assistant #1",
@@ -20,6 +34,41 @@ export default function PlaygroundContent() {
       message: "Hello, I am an assistant.",
     },
   ]);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setIsBusy(loading);
+    if (msgs) {
+      setMessages(msgs);
+    }
+  }, [loading, setIsBusy]);
+
+  const setConversation = useConversationStore(
+    (state: any) => state.setConversation
+  );
+
+  const formikRef = useRef<any>();
+
+  useEffect(() => {
+    if (formikRef) {
+      saveConversation();
+    }
+  }, [formikRef]);
+
+  useEffect(() => {
+    saveConversation();
+  }, [messages]);
+
+  // a function to save the conversation
+  async function saveConversation() {
+    setConversation({
+      config1: formikRef.current.values.config1,
+      config2: formikRef.current.values.config2,
+      messages: messages,
+      name: name,
+    });
+  }
 
   // a function that deletes a particular message from the messages array based on index
   function deleteMessage(index: number) {
@@ -85,7 +134,16 @@ export default function PlaygroundContent() {
 
   // a function that calls an API over post
   async function generateResponses(values: any) {
-    // get last message
+    setLoading(true);
+    // call generateResponse based on the number of responses to generate
+    for (let i = 0; i < values.responses_to_generate; i++) {
+      await generateResponse(values);
+    }
+
+    setLoading(false);
+  }
+
+  async function generateResponse(values: any) {
     const lastMessage = messages[messages.length - 1];
     const generatedMessages = messages.map((message) => ({
       role: message.role === lastMessage.role ? "user" : "assistant",
@@ -107,11 +165,11 @@ export default function PlaygroundContent() {
         ],
         model: model,
       })
-      .then((res) => {
-        console.log({ res });
+      .then(async (res) => {
+        console.log("Updating Message", { res });
         const newMessage = res.data.choices[0].message.content;
-        setMessages([
-          ...messages,
+        await setMessages((prevMessages) => [
+          ...prevMessages,
           {
             role:
               lastMessage.role === "Assistant #1"
@@ -126,47 +184,57 @@ export default function PlaygroundContent() {
       });
   }
 
-  const initialValues = {
-    responses_to_generate: 5,
-    config1: {
-      system: "",
-      model: "gpt-4",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
-    },
-    config2: {
-      system: "",
-      model: "gpt-4",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
-    },
-  };
+  let intValues: any;
+  if (!initialValues) {
+    intValues = {
+      responses_to_generate: 5,
+      config1: {
+        system: "",
+        model: "gpt-4",
+        temperature: "0.7",
+        maxLength: "256",
+        top_p: "1",
+        frequency_penalty: "0",
+        presence_penalty: "0",
+      },
+      config2: {
+        system: "",
+        model: "gpt-4",
+        temperature: "0.7",
+        maxLength: "256",
+        top_p: "1",
+        frequency_penalty: "0",
+        presence_penalty: "0",
+      },
+    };
+  } else {
+    intValues = initialValues;
+  }
 
   // const validationSchema = {
   //   responses_to_generate: Yup.number().required("Required")
   // };
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={intValues}
       //   validationSchema={validationSchema}
+      innerRef={formikRef}
       onSubmit={generateResponses}
     >
       {({ values, errors, touched, handleChange, handleBlur }) => (
         <Form
-          className="p-6 flex gap-6"
+          className="px-6 flex gap-6"
           style={{ height: "calc(100vh - 8rem)" }}
         >
-          <aside className="w-96 h-full flex flex-col gap-4">
+          <aside className="w-96 h-full flex flex-col gap-4 py-6">
             <div className="p-4 h-full border border-gray-300 rounded-sm flex flex-col">
               <h4 className="font-semibold font-mono">System: Assistant #1</h4>
               <textarea
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  saveConversation();
+                }}
+                disabled={isBusy}
                 onBlur={handleBlur}
                 name="config1.system"
                 value={values.config1.system}
@@ -178,7 +246,11 @@ export default function PlaygroundContent() {
             <div className="p-4 h-full border border-gray-300 rounded-sm flex flex-col">
               <h4 className="font-semibold font-mono">System: Assistant #2</h4>
               <textarea
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  saveConversation();
+                }}
+                disabled={isBusy}
                 onBlur={handleBlur}
                 name="config2.system"
                 value={values.config2.system}
@@ -188,7 +260,7 @@ export default function PlaygroundContent() {
               />
             </div>
           </aside>
-          <section className="w-full flex flex-col gap-2">
+          <section className="w-full flex flex-col gap-2 py-6">
             <div className="w-full h-full flex-1 overflow-y-auto">
               {/* {#each messages as message} */}
               {messages.map((message, index) => {
@@ -221,6 +293,7 @@ export default function PlaygroundContent() {
                 <input
                   type="number"
                   name="responses_to_generate"
+                  disabled={isBusy}
                   className={`
                     rounded-sm p-2 w-24 ${
                       errors.responses_to_generate &&
@@ -231,30 +304,46 @@ export default function PlaygroundContent() {
                   placeholder="1-100"
                   min="1"
                   max="100"
-                  onChange={handleChange}
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
                   onBlur={handleBlur}
                   value={values.responses_to_generate}
                   // bind:value={responses_to_generate}
                 />
                 <button
                   type="submit"
-                  // disabled={is_generation}
-                  className="bg-teal-700 text-white rounded-sm hover:bg-teal-500 active:bg-teal-300 px-4 py-2"
+                  disabled={isBusy ? true : loading}
+                  className="disabled:bg-gray-300 disabled:text-gray-500 bg-teal-700 text-white rounded hover:bg-teal-500 active:bg-teal-300 px-4 py-2 flex items-center gap-2"
                 >
-                  {/* {is_generation ? "Generating..." : "Generate"} */}{" "}
-                  Generate
+                  {loading ? (
+                    <>
+                      <FiLoader />
+                      <span>Generating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiSend />
+                      <span>Generate</span>
+                    </>
+                  )}
                 </button>
               </div>
             </footer>
           </section>
-          <aside className="w-96 h-full flex flex-col gap-4 border-l border-gray-300 p-4">
+          <aside className="w-96 h-full flex flex-col gap-4 border-l border-gray-300 px-4 py-2 overflow-y-auto">
             <h4>System #1</h4>
             <div>
               <div>
                 <select
+                  disabled={isBusy}
                   name="config1.model"
                   value={values.config1.model}
-                  onChange={handleChange}
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
                   className="w-full p-2 mb-2"
                 >
                   <option value="gpt-4">GPT-4</option>
@@ -267,10 +356,14 @@ export default function PlaygroundContent() {
                   <p>{values.config1.temperature}</p>
                 </div>
                 <input
+                  disabled={isBusy}
                   name="config1.temperature"
                   value={values.config1.temperature}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -284,10 +377,14 @@ export default function PlaygroundContent() {
                   <p>{values.config1.maxLength}</p>
                 </div>
                 <input
-                  name="maxLength1"
+                  disabled={isBusy}
+                  name="config1.maxLength"
                   value={values.config1.maxLength}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="1"
                   min="1"
@@ -301,10 +398,14 @@ export default function PlaygroundContent() {
                   <p>{values.config1.top_p}</p>
                 </div>
                 <input
-                  name="top_p1"
+                  disabled={isBusy}
+                  name="config1.top_p"
                   value={values.config1.top_p}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -318,10 +419,14 @@ export default function PlaygroundContent() {
                   <p>{values.config1.frequency_penalty}</p>
                 </div>
                 <input
-                  name="frequency_penalty1"
+                  disabled={isBusy}
+                  name="config1.frequency_penalty"
                   value={values.config1.frequency_penalty}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -335,10 +440,14 @@ export default function PlaygroundContent() {
                   <p>{values.config1.presence_penalty}</p>
                 </div>
                 <input
-                  name="presence_penalty1"
+                  disabled={isBusy}
+                  name="config1.presence_penalty"
                   value={values.config1.presence_penalty}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -352,10 +461,14 @@ export default function PlaygroundContent() {
             <div>
               <div>
                 <select /*bind:value={model2}*/
+                  disabled={isBusy}
                   className="w-full p-2 mb-2"
-                  name="gpt_model2"
+                  name="config2.model"
                   value={values.config2.model}
-                  onChange={handleChange}
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
                 >
                   <option value="gpt-4">GPT-4</option>
                   <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
@@ -367,10 +480,14 @@ export default function PlaygroundContent() {
                   <p>{values.config2.temperature}</p>
                 </div>
                 <input
-                  name="temperature2"
+                  disabled={isBusy}
+                  name="config2.temperature"
                   value={values.config2.temperature}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -384,10 +501,14 @@ export default function PlaygroundContent() {
                   <p>{values.config2.maxLength}</p>
                 </div>
                 <input
-                  name="maxLength2"
+                  disabled={isBusy}
+                  name="config2.maxLength"
                   value={values.config2.maxLength}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="1"
                   min="1"
@@ -401,10 +522,14 @@ export default function PlaygroundContent() {
                   <p>{values.config2.top_p}</p>
                 </div>
                 <input
-                  name="top_p2"
+                  disabled={isBusy}
+                  name="config2.top_p"
                   value={values.config2.top_p}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -418,10 +543,14 @@ export default function PlaygroundContent() {
                   <p>{values.config2.frequency_penalty}</p>
                 </div>
                 <input
-                  name="frequency_penalty2"
+                  disabled={isBusy}
+                  name="config2.frequency_penalty"
                   value={values.config2.frequency_penalty}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"
@@ -435,10 +564,14 @@ export default function PlaygroundContent() {
                   <p>{values.config2.presence_penalty}</p>
                 </div>
                 <input
-                  name="presence_penalty2"
+                  disabled={isBusy}
+                  name="config2.presence_penalty"
                   value={values.config2.presence_penalty}
-                  onChange={handleChange}
-                  className="w-full"
+                  onChange={async (e) => {
+                    await handleChange(e);
+                    saveConversation();
+                  }}
+                  className="w-full accent-teal-700"
                   type="range"
                   step="0.01"
                   min="0"

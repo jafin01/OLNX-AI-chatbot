@@ -33,9 +33,12 @@ export default function Home() {
           </p>
           <div className="flex">
             <span className="flex-1" />
-            <button className="px-6 py-3 bg-cred-dark rounded-full border-4 border-cred">
+            <Link
+              href="/login"
+              className="px-6 py-3 bg-cred-dark rounded-full border-4 border-cred"
+            >
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -46,8 +49,8 @@ export default function Home() {
 
             {accessToken ? (
               <>
-                <Link href="/playground">Playground</Link>
-                <Link href="/billing">Billing</Link>
+                <Link href="/playgrounds">Playgrounds</Link>
+                {/* <Link href="/billing">Billing</Link> */}
                 <Link
                   href="/logout"
                   className="p-2 bg-cgreen-light rounded-full flex gap-2 items-center"
@@ -84,9 +87,12 @@ export default function Home() {
             dolorem officiis commodi, recusandae omnis?
           </p>
           <div className="flex">
-            <button className="px-6 py-3 bg-cgreen rounded-full border-4 border-cgreen-dark">
+            <Link
+              href="/login"
+              className="px-6 py-3 bg-cgreen rounded-full border-4 border-cgreen-dark"
+            >
               Get Started
-            </button>
+            </Link>
             <span className="flex-1" />
           </div>
         </div>
