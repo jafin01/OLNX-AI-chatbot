@@ -96,7 +96,7 @@ export default function PlaygroundNavbar({
           <FiBox />
           <span>Save as Template</span>
         </button>
-        {navigator.share && (
+        {/* {navigator.share && (
           <button
             onClick={() =>
               navigator.share({
@@ -110,7 +110,7 @@ export default function PlaygroundNavbar({
             <FiShare />
             <span>Share</span>
           </button>
-        )}
+        )} */}
       </div>
     </nav>
   );
