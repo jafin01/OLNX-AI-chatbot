@@ -8,7 +8,7 @@ export default function Logout() {
     if (window.localStorage.getItem("accessToken")) {
       axios
         .post(
-          "http://localhost:8000/api/logout",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/logout`,
           {},
           {
             headers: {
