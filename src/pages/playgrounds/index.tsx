@@ -79,7 +79,9 @@ export default function Playgrounds() {
               >
                 <div className="p-6 flex-1 w-full flex items-center gap-2">
                   <FiMessageSquare />
-                  <span className="flex-1 font-mono">{playground.name}</span>
+                  <span className="flex-1 font-mono truncate">
+                    {playground.name}
+                  </span>
                 </div>
                 <div
                   className={`h-14 w-full ${

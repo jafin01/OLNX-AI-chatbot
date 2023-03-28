@@ -9,8 +9,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
 export default function Billing() {
   const [clientSecret, setClientSecret] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [itemName, setItemName] = useState<string | null>(null);
 
   useEffect(() => {
     async function getClientSecret() {
@@ -25,8 +24,7 @@ export default function Billing() {
         })
         .then((res) => {
           setClientSecret(res.data.intent.client_secret);
-          setName(res.data.user.name);
-          setEmail(res.data.user.email);
+          setItemName(res.data.item);
         })
         .catch((err) => {
           console.log(err);
@@ -49,11 +47,11 @@ export default function Billing() {
             stripe={stripePromise}
             options={{ clientSecret: clientSecret }}
           >
-            <CheckoutForm
-              clientSecret={clientSecret}
-              name={name}
-              email={email}
-            />
+            {itemName ? (
+              <CheckoutForm plan={itemName} />
+            ) : (
+              <div>Loading...</div>
+            )}
           </Elements>
         ) : (
           <div>Loading...</div>
