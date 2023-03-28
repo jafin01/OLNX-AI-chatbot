@@ -4,6 +4,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "@/components/Billing/CheckoutForm";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Navbar from "@/components/Navbar";
+import { FiCreditCard, FiSkipBack } from "react-icons/fi";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
@@ -34,29 +36,42 @@ export default function Billing() {
   }, []);
 
   return (
-    <main className="flex h-screen w-screen bg-gray-100">
-      <aside className="w-72 m-6 p-6">
-        <h1>Billing</h1>
-        <Link href="/playground" className="hover:underline">
-          Back To Playground
-        </Link>
-      </aside>
-      <section className="bg-white flex-1 m-6 p-6 shadow-lg rounded-lg">
-        {clientSecret !== "" ? (
-          <Elements
-            stripe={stripePromise}
-            options={{ clientSecret: clientSecret }}
+    <>
+      <Navbar />
+      <main
+        className="flex w-screen bg-gray-100"
+        style={{ minHeight: "calc(100vh - 4rem)" }}
+      >
+        <aside className="w-72 m-6 p-6">
+          <h1 className="text-2xl font-bold flex gap-2 items-center">
+            <FiCreditCard />
+            <span>Billing</span>
+          </h1>
+          <Link
+            href="/playgrounds"
+            className="hover:underline flex gap-2 items-center mt-4"
           >
-            {itemName ? (
-              <CheckoutForm plan={itemName} />
-            ) : (
-              <div>Loading...</div>
-            )}
-          </Elements>
-        ) : (
-          <div>Loading...</div>
-        )}
-      </section>
-    </main>
+            <FiSkipBack />
+            <span>Back To Playgrounds</span>
+          </Link>
+        </aside>
+        <section className="bg-white flex-1 m-6 p-6 shadow-lg rounded-lg">
+          {clientSecret !== "" ? (
+            <Elements
+              stripe={stripePromise}
+              options={{ clientSecret: clientSecret }}
+            >
+              {itemName ? (
+                <CheckoutForm plan={itemName} />
+              ) : (
+                <div>Loading...</div>
+              )}
+            </Elements>
+          ) : (
+            <div>Loading...</div>
+          )}
+        </section>
+      </main>
+    </>
   );
 }
