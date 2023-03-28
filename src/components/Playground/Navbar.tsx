@@ -13,10 +13,14 @@ export default function PlaygroundNavbar({
   isBusy,
   setIsBusy,
   nme,
+  id,
+  isTemplate = false,
 }: {
   isBusy: boolean;
   setIsBusy: (b: boolean) => void;
   nme?: string;
+  id?: string;
+  isTemplate?: boolean;
 }) {
   const messages = useConversationStore((state: any) => state.messages);
   const config1 = useConversationStore((state: any) => state.config1);
@@ -30,13 +34,16 @@ export default function PlaygroundNavbar({
     setIsBusy(true);
     await axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/conversation`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
+          id ? "/update" : ""
+        }`,
         {
           messages: messages,
           config1: config1,
           config2: config2,
           name: name,
           template: template ? true : false,
+          id: id ? id : null,
         },
         {
           headers: {
@@ -71,31 +78,46 @@ export default function PlaygroundNavbar({
         onChange={(e) => setName(e.target.value)}
       />
       <div className="flex items-center gap-2">
-        <button
-          onClick={() => saveConversation({ template: false })}
-          disabled={isBusy ? true : saving}
-          className="rounded px-4 py-2 bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
-        >
-          {saving ? (
-            <>
-              <FiLoader />
-              <span>Saving...</span>
-            </>
-          ) : (
-            <>
-              <FiSave />
-              <span>Save</span>
-            </>
-          )}
-        </button>
-        <button
-          onClick={() => saveConversation({ template: true })}
-          disabled={isBusy}
-          className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
-        >
-          <FiBox />
-          <span>Save as Template</span>
-        </button>
+        {!isTemplate ? (
+          <button
+            onClick={() => saveConversation({ template: false })}
+            disabled={isBusy ? true : saving}
+            className="rounded px-4 py-2 bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
+          >
+            {saving ? (
+              <>
+                <FiLoader />
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <FiSave />
+                <span>Save</span>
+              </>
+            )}
+          </button>
+        ) : (
+          <></>
+        )}
+        {isTemplate ? (
+          <button
+            onClick={() => saveConversation({ template: true })}
+            disabled={isBusy}
+            className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
+          >
+            <FiBox />
+            <span>Save Template</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => saveConversation({ template: true })}
+            disabled={isBusy}
+            className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
+          >
+            <FiBox />
+            <span>Save as Template</span>
+          </button>
+        )}
         {/* {navigator.share && (
           <button
             onClick={() =>

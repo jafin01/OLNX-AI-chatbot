@@ -18,6 +18,8 @@ export default function Playground() {
 
   const { name } = useConversationStore((state: any) => state);
 
+  const [isTemplate, setIsTemplate] = useState(false);
+
   useEffect(() => {
     if (!window.localStorage.getItem("accessToken")) {
       push("/login");
@@ -66,6 +68,7 @@ export default function Playground() {
             });
             setMessages(msgs);
             setIntValues(initialValues);
+            setIsTemplate(res.data.conversation.template);
             setNme(res.data.conversation.name);
             setLoading(false);
           })
@@ -89,7 +92,13 @@ export default function Playground() {
   return (
     <>
       <Navbar />
-      <PlaygroundNavbar isBusy={isBusy} setIsBusy={setIsBusy} nme={nme} />
+      <PlaygroundNavbar
+        isBusy={isBusy}
+        setIsBusy={setIsBusy}
+        nme={nme}
+        id={query.id as string}
+        isTemplate={isTemplate}
+      />
       <PlaygroundContent
         msgs={messages}
         setIsBusy={setIsBusy}
