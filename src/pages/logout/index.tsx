@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { LoadingPage } from "@/components/Loading";
+import notify from "react-hot-toast";
 
 export default function Logout() {
   const { push } = useRouter();
   useEffect(() => {
     if (window.localStorage.getItem("accessToken")) {
+      const toastLoadingId = notify.loading("Logging you out...");
       axios
         .post(
           `${process.env.NEXT_PUBLIC_API_URL}/api/logout`,
@@ -24,11 +27,20 @@ export default function Logout() {
           push("/login");
         })
         .catch((err) => {
-          console.log(err);
+          window.localStorage.removeItem("accessToken");
+          push("/login");
+          // console.log(err);
         });
+      notify.dismiss(toastLoadingId);
+      notify.success("Logged out successfully!");
     } else {
       push("/login");
+      notify.error("You are not logged in!");
     }
   });
-  return <div>Securely Logging You Out.</div>;
+  return (
+    <>
+      <LoadingPage text="Securely Logging You Out..." fullHeight={true} />
+    </>
+  );
 }

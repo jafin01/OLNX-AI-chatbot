@@ -1,3 +1,4 @@
+import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent, { Message } from "@/components/Playground/Content";
 import PlaygroundNavbar from "@/components/Playground/Navbar";
@@ -11,6 +12,7 @@ export default function Playground() {
   const [intValues, setIntValues] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [nme, setNme] = useState<string>("");
+  const [contentLoading, setContentLoading] = useState<boolean>(true);
 
   const { push, query } = useRouter();
 
@@ -25,6 +27,7 @@ export default function Playground() {
       push("/login");
     }
     async function loadConversation() {
+      setLoading(true);
       if (query.id) {
         await axios
           .get(
@@ -76,6 +79,7 @@ export default function Playground() {
             console.log(err);
           });
       }
+      setContentLoading(false);
     }
     loadConversation();
   }, [query]);
@@ -92,20 +96,26 @@ export default function Playground() {
   return (
     <>
       <Navbar />
-      <PlaygroundNavbar
-        isBusy={isBusy}
-        setIsBusy={setIsBusy}
-        nme={nme}
-        id={query.id as string}
-        isTemplate={isTemplate}
-      />
-      <PlaygroundContent
-        msgs={messages}
-        setIsBusy={setIsBusy}
-        isBusy={isBusy}
-        name={name}
-        initialValues={intValues}
-      />
+      {contentLoading ? (
+        <LoadingPage />
+      ) : (
+        <>
+          <PlaygroundNavbar
+            isBusy={isBusy}
+            setIsBusy={setIsBusy}
+            nme={nme}
+            id={query.id as string}
+            isTemplate={isTemplate}
+          />
+          <PlaygroundContent
+            msgs={messages}
+            setIsBusy={setIsBusy}
+            isBusy={isBusy}
+            name={name}
+            initialValues={intValues}
+          />
+        </>
+      )}
     </>
   );
 }

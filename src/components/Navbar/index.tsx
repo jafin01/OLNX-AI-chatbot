@@ -17,9 +17,11 @@ export default function Navbar() {
   // const [billingUrl, setBillingUrl] = useState<string | null>(null);
   const [is_admin, setIsAdmin] = useState<boolean>(false);
   const [is_subscribed, setIsSubscribed] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function getUser() {
+      setLoading(true);
       const res = await axios
         .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
           headers: {
@@ -36,6 +38,7 @@ export default function Navbar() {
         .catch((err) => {
           console.log(err);
         });
+      setLoading(false);
     }
     getUser();
   }, []);
@@ -44,7 +47,7 @@ export default function Navbar() {
       <nav className="px-6 py-4 h-16 bg-white border-b border-gray-300 w-full flex justify-between items-center">
         <div className="font-mono text-lg">
           <Link
-            href="/"
+            href="/playgrounds"
             className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-300"
           >
             <FiActivity />
@@ -95,7 +98,9 @@ export default function Navbar() {
           </Link>
         </div>
       </nav>
-      {is_subscribed ? (
+      {loading ? (
+        <></>
+      ) : is_subscribed ? (
         <></>
       ) : (
         <aside className="bg-amber-500 h-16 flex items-center px-6 font-mono font-bold text-white gap-4">
