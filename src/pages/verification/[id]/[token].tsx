@@ -18,26 +18,21 @@ export default function Home() {
     }
   }, []);
 
- 
-
   useEffect(() => {
-    
+    seconds > 0 &&
+      buttonDisabled &&
+      setTimeout(() => {
+        setSeconds(seconds - 1);
+      }, 1000);
 
-    seconds > 0 && buttonDisabled && setTimeout(() => {
-      setSeconds(seconds - 1);
-    }, 1000);
-
-    if(seconds === 0 && buttonDisabled) {
-       setSeconds(30);
-       setButtonDisabled(false);
+    if (seconds === 0 && buttonDisabled) {
+      setSeconds(30);
+      setButtonDisabled(false);
     }
+  }, [seconds, buttonDisabled]);
 
-    
-
-  }, [seconds, buttonDisabled])
-
-  function handleClick () {
-    console.log('clicked');
+  function handleClick() {
+    console.log("clicked");
     setButtonDisabled(true);
   }
 
@@ -134,15 +129,21 @@ export default function Home() {
                 <button
                   type="button"
                   disabled={buttonDisabled}
-                  className={`inline-flex items-center justify-center w-full px-8 py-4 text-base font-bold leading-6 text-white border border-transparent rounded-full md:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 ${buttonDisabled ? "bg-gray-400 text-gray-800" : "focus:ring-indigo-600  hover:bg-indigo-500 bg-indigo-600"}`}
+                  className={`inline-flex items-center justify-center w-full px-8 py-4 text-base font-bold leading-6 text-white border border-transparent rounded-full md:w-auto focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                    buttonDisabled
+                      ? "bg-gray-400 text-gray-800"
+                      : "focus:ring-indigo-600  hover:bg-indigo-500 bg-indigo-600"
+                  }`}
                   onClick={handleClick}
                 >
                   Verify Email Now
                 </button>
               </span>
-                {buttonDisabled && <p className="mt-3 text-sm text-indigo-500">
-                {`Resent verification email in ${seconds} seconds`}
-              </p>}
+              {buttonDisabled && (
+                <p className="mt-3 text-sm text-indigo-500">
+                  {`Resent verification email in ${seconds} seconds`}
+                </p>
+              )}
             </div>
           </div>
         </div>
