@@ -23,12 +23,16 @@ const RegisterSchema = Yup.object().shape({
   lastName: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required").min(6),
-  confirmPassword: Yup.string().required("Required").min(6).equals([Yup.ref("password")], "Passwords must match"),
+  confirmPassword: Yup.string()
+    .required("Required")
+    .min(6)
+    .equals([Yup.ref("password")], "Passwords must match"),
 });
 
 function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   const { push } = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
@@ -198,7 +202,6 @@ function Register() {
                     />
                   </div>
 
-
                   <div className="group w-72 md:w-80 lg:w-96 mb-10">
                     <label
                       htmlFor="confirmPassword"
@@ -223,7 +226,9 @@ function Register() {
                       </span>
                       <span
                         className="material-symbols-outlined absolute right-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400 cursor-pointer"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                       >
                         {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
                       </span>

@@ -30,7 +30,7 @@ function Login() {
 
   useEffect(() => {
     if (window.localStorage.getItem("accessToken")) {
-      push("/playground");
+      push("/playgrounds");
     }
   }, [push]);
 
@@ -66,8 +66,6 @@ function Login() {
 
     setLoading(false);
   }
-            
-            
 
   const defaultOptions = {
     loop: true,

@@ -1,55 +1,82 @@
-import React, { useState } from "react";
-import { FiMenu } from "react-icons/fi";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import {
+  FiActivity,
+  FiLogIn,
+  FiLogOut,
+  FiMenu,
+  FiMessageSquare,
+  FiPlay,
+} from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
 
 function NewNavbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  let [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("accessToken")) {
+      setAccessToken(window.localStorage.getItem("accessToken"));
+    }
+  }, []);
 
   function handleOpen() {
     setIsOpen(!isOpen);
     console.log("handled successfully");
   }
 
-//   if (isOpen) {
-//     document.body.style.overflow = "hidden";
-//   } else {
-//     document.body.style.overflow = "auto";
-//   }
+  //   if (isOpen) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "auto";
+  //   }
 
   return (
-    <div className="flex justify-around py-10">
-      <div>
-        <h1 className="text-xl font-bold">OLNX</h1>
+    <nav className="flex justify-between items-center py-4 px-6 bg-white shadow-lg z-50">
+      <Link href="/" className="font-bold flex gap-2 items-center">
+        <FiActivity />
+        <span>OLNX</span>
+      </Link>
+
+      <div className="flex justify-center">
+        {!accessToken ? (
+          <>
+            <Link
+              href="/login"
+              className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-100 active:bg-gray-300"
+            >
+              <FiLogIn />
+              <span>Login</span>
+            </Link>
+            <Link
+              href="/register"
+              className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-100 active:bg-gray-300"
+            >
+              <FiPlay />
+              <span>SignUp</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/playgrounds"
+              className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-100 active:bg-gray-300"
+            >
+              <FiMessageSquare />
+              <span>Playgrounds</span>
+            </Link>
+            <Link
+              href="/logout"
+              className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-100 active:bg-gray-300"
+            >
+              <FiLogOut />
+              <span>Logout</span>
+            </Link>
+          </>
+        )}
       </div>
-      <div className="flex justify-center gap-20">
-        <h1 className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">
-          Login
-        </h1>
-        <h1 className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">
-          SignUp
-        </h1>
-        <h1 className="md:hidden lg:hidden xl:hidden 2xl:hidden text-2xl">
-          <FiMenu onClick={handleOpen} />
-        </h1>
-      </div>
-      {isOpen && (
-        <div className="absolute w-full h-[10000px]  mt-[-40px] lg:hidden md:hidden xl:hidden 2xl:hidden">
-          <div className="bg-black h-[1000px]">
-            <div className="">
-              <h1 className="text-white pt-5 px-5 flex items-end text-3xl">
-                <FiArrowLeftCircle onClick={handleOpen} />
-              </h1>
-            </div>
-            <div className="text-center py-10">
-              <h1 className="text-white py-3 text-2xl">Sign In</h1>
-            </div>
-            <div className="text-center">
-              <h2 className="text-white text-2xl">Sign Up</h2>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </nav>
   );
 }
 
