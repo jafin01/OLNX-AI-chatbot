@@ -19,7 +19,11 @@ import {
   FiUser,
 } from "react-icons/fi";
 
-export default function AdminPlaygrounds() {
+export default function AdminPlaygrounds({
+  playgrounds,
+}: {
+  playgrounds: any;
+}) {
   return (
     <Card>
       <Title className="flex items-center gap-2">
@@ -37,37 +41,45 @@ export default function AdminPlaygrounds() {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell>
-              <Text>Playground title</Text>
-            </TableCell>
-            <TableCell>
-              <Text>Harman Kamboj</Text>
-            </TableCell>
-            <TableCell>
-              <Text>2 Months Ago</Text>
-            </TableCell>
-            <TableCell>
-              <Text>5 minutes Ago</Text>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Icon icon={FiEye} variant="simple" tooltip="View" />
-                <Icon
-                  icon={FiUser}
-                  variant="simple"
-                  color="amber"
-                  tooltip="User"
-                />
-                <Icon
-                  icon={FiTrash}
-                  variant="simple"
-                  color="rose"
-                  tooltip="Delete"
-                />
-              </div>
-            </TableCell>
-          </TableRow>
+          {playgrounds.map((playground: any) => {
+            return (
+              <TableRow key={playground.id}>
+                <TableCell>
+                  <Text>{playground.name}</Text>
+                </TableCell>
+                <TableCell>
+                  <Text>{playground.user_id}</Text>
+                </TableCell>
+                <TableCell>
+                  <Text>
+                    {new Date(playground.created_at).toLocaleDateString()}
+                  </Text>
+                </TableCell>
+                <TableCell>
+                  <Text>
+                    {new Date(playground.updated_at).toLocaleDateString()}
+                  </Text>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Icon icon={FiEye} variant="simple" tooltip="View" />
+                    <Icon
+                      icon={FiUser}
+                      variant="simple"
+                      color="amber"
+                      tooltip="User"
+                    />
+                    <Icon
+                      icon={FiTrash}
+                      variant="simple"
+                      color="rose"
+                      tooltip="Delete"
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Card>

@@ -18,13 +18,15 @@ import {
   FiEye,
   FiKey,
   FiMessageSquare,
+  FiSend,
   FiTrash,
   FiTrendingUp,
   FiUser,
   FiUsers,
+  FiX,
 } from "react-icons/fi";
 
-export default function AdminUsers() {
+export default function AdminUsers({ users }: { users: any }) {
   return (
     <Card>
       <Title className="flex items-center gap-2">
@@ -36,7 +38,7 @@ export default function AdminUsers() {
           <TableRow>
             <TableHeaderCell>Name</TableHeaderCell>
             <TableHeaderCell>Email</TableHeaderCell>
-            <TableHeaderCell>Subscription</TableHeaderCell>
+            <TableHeaderCell>Email Verified</TableHeaderCell>
             <TableHeaderCell>Admin</TableHeaderCell>
             <TableHeaderCell>Created</TableHeaderCell>
             <TableHeaderCell>Updated</TableHeaderCell>
@@ -44,53 +46,71 @@ export default function AdminUsers() {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell>
-              <Text>Harman Kamboj</Text>
-            </TableCell>
-            <TableCell>
-              <Text>admin@olnx.com</Text>
-            </TableCell>
-            <TableCell>
-              <Badge color="emerald" icon={FiCheck}>
-                Active
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <Badge color="emerald" icon={FiKey}>
-                Admin
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <Text>2 weeks Ago</Text>
-            </TableCell>
-            <TableCell>
-              <Text>5 minutes Ago</Text>
-            </TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Icon icon={FiEye} variant="simple" tooltip="View" />
-                <Icon
-                  icon={FiMessageSquare}
-                  variant="simple"
-                  color="amber"
-                  tooltip="Playgrounds"
-                />
-                <Icon
-                  icon={FiBox}
-                  variant="simple"
-                  color="emerald"
-                  tooltip="Templates"
-                />
-                <Icon
-                  icon={FiTrash}
-                  variant="simple"
-                  color="rose"
-                  tooltip="Delete"
-                />
-              </div>
-            </TableCell>
-          </TableRow>
+          {users.map((user: any) => {
+            return (
+              <TableRow key={user.id}>
+                <TableCell>
+                  <Text>{user.name}</Text>
+                </TableCell>
+                <TableCell>
+                  <Text>{user.email}</Text>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    color={user.email_verified_at ? "emerald" : "rose"}
+                    icon={user.email_verified_at ? FiCheck : FiX}
+                  >
+                    {user.email_verified_at ? "Verified" : "Not Verified"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    color={user.is_admin ? "emerald" : "blue"}
+                    icon={user.is_admin ? FiKey : FiUser}
+                  >
+                    {user.is_admin ? "Admin" : "User"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Text>{new Date(user.created_at).toLocaleDateString()}</Text>
+                </TableCell>
+                <TableCell>
+                  <Text>{new Date(user.updated_at).toLocaleDateString()}</Text>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    {!user.email_verified_at && (
+                      <Icon
+                        icon={FiSend}
+                        variant="simple"
+                        tooltip="Resend Verification Email"
+                        color="violet"
+                      />
+                    )}
+                    <Icon icon={FiEye} variant="simple" tooltip="View" />
+                    <Icon
+                      icon={FiMessageSquare}
+                      variant="simple"
+                      color="amber"
+                      tooltip="Playgrounds"
+                    />
+                    <Icon
+                      icon={FiBox}
+                      variant="simple"
+                      color="emerald"
+                      tooltip="Templates"
+                    />
+                    <Icon
+                      icon={FiTrash}
+                      variant="simple"
+                      color="rose"
+                      tooltip="Delete"
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Card>
