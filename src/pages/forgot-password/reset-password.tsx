@@ -44,10 +44,10 @@ function ResetPassword() {
             <h1 className="text-4xl font-bold mb-10 text-center">
               Reset Password
             </h1>
-            {/* <p className="text-center">
+            <p className="text-center">
               Enter your email address below and we&apos;ll send you a link to
               reset your password.
-            </p> */}
+            </p>
             <Formik
               initialValues={{ password: "", password_confirmation: "" }}
               validationSchema={resetPasswordSchema}
@@ -166,7 +166,7 @@ function ResetPassword() {
                       {loading ? (
                         <FiLoader className="animate-spin my-1 mx-auto" />
                       ) : (
-                        "Send"
+                        "Reset Password"
                       )}
                     </button>
                   </div>
