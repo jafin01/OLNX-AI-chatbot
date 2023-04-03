@@ -14,9 +14,8 @@ import {
   FaGoogle,
 } from "react-icons/fa";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { FiLoader, FiLogIn } from "react-icons/fi";
+import { FiLoader } from "react-icons/fi";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -163,7 +162,7 @@ function Login() {
                     />
                     <div className="text-right">
                       <Link
-                        href="#"
+                        href="/forgot-password"
                         className="text-sm text-gray-500 hover:text-blue-800 "
                       >
                         Forgot Password?
