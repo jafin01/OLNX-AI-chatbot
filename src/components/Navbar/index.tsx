@@ -102,6 +102,8 @@ export default function Navbar() {
         <></>
       ) : is_subscribed ? (
         <></>
+      ) : is_admin ? (
+        <></>
       ) : (
         <aside className="bg-amber-500 h-16 flex items-center px-6 font-mono font-bold text-white gap-4">
           <FiAlertOctagon size={24} />

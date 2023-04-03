@@ -1,10 +1,22 @@
+import AdminHome from "@/components/Admin/Home";
+import AdminPlaygrounds from "@/components/Admin/Playgrounds";
+import AdminSettings from "@/components/Admin/Settings";
+import AdminTemplates from "@/components/Admin/Templates";
+import AdminUsers from "@/components/Admin/Users";
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
-import { Card, Flex, Grid, Icon, Text, Metric } from "@tremor/react";
+import { TabList, Tab } from "@tremor/react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FiActivity, FiKey, FiUser } from "react-icons/fi";
+import {
+  FiActivity,
+  FiBox,
+  FiHome,
+  FiKey,
+  FiSettings,
+  FiUsers,
+} from "react-icons/fi";
 
 export default function Admin() {
   //   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -13,6 +25,7 @@ export default function Admin() {
   const [templates, setTemplates] = useState<number>(0);
   const [users, setUsers] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [tab, setTab] = useState<string>("dashboard");
 
   async function loadAdmin() {
     setLoading(true);
@@ -51,49 +64,34 @@ export default function Admin() {
           className="p-6 bg-gray-100"
           style={{ minHeight: "calc(100vh - 4rem);" }}
         >
-          <h1 className="mb-6 text-2xl font-mono text-gray-500 uppercase flex items-center gap-2">
+          <h1 className="text-2xl font-mono text-gray-500 uppercase flex items-center gap-2">
             <FiKey />
             <span>Admin</span>
           </h1>
-          <Grid numColsSm={2} numColsLg={3} className="gap-6">
-            <Card decoration="top" decorationColor={"teal"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon
-                  icon={FiActivity}
-                  variant="light"
-                  size="xl"
-                  color={"teal"}
-                />
-                <div className="truncate">
-                  <Text>Playgrounds</Text>
-                  <Metric className="truncate">{playgrounds}</Metric>
-                </div>
-              </Flex>
-            </Card>
-            <Card decoration="top" decorationColor={"rose"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon
-                  icon={FiActivity}
-                  variant="light"
-                  size="xl"
-                  color={"rose"}
-                />
-                <div className="truncate">
-                  <Text>Templates</Text>
-                  <Metric className="truncate">{templates}</Metric>
-                </div>
-              </Flex>
-            </Card>
-            <Card decoration="top" decorationColor={"lime"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon icon={FiUser} variant="light" size="xl" color={"lime"} />
-                <div className="truncate">
-                  <Text>Users</Text>
-                  <Metric className="truncate">{users}</Metric>
-                </div>
-              </Flex>
-            </Card>
-          </Grid>
+          <TabList
+            defaultValue={tab}
+            onValueChange={(value) => {
+              setTab(value);
+            }}
+            className="my-6"
+          >
+            <Tab value="dashboard" text="Dashboard" icon={FiHome} />
+            <Tab value="playgrounds" text="Playgrounds" icon={FiActivity} />
+            <Tab value="templates" text="Templates" icon={FiBox} />
+            <Tab value="users" text="Users" icon={FiUsers} />
+            <Tab value="settings" text="Settings" icon={FiSettings} />
+          </TabList>
+          {tab === "dashboard" && (
+            <AdminHome
+              playgrounds={playgrounds}
+              templates={templates}
+              users={users}
+            />
+          )}
+          {tab === "playgrounds" && <AdminPlaygrounds />}
+          {tab === "templates" && <AdminTemplates />}
+          {tab === "users" && <AdminUsers />}
+          {tab === "settings" && <AdminSettings />}
         </section>
       )}
     </>
