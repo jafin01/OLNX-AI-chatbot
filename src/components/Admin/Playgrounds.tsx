@@ -43,7 +43,7 @@ export default function AdminPlaygrounds({
         <TableBody>
           {playgrounds.map((playground: any) => {
             return (
-              <TableRow key={playground.id}>
+              <TableRow className="hover:bg-gray-100" key={playground.id}>
                 <TableCell>
                   <Text>{playground.name}</Text>
                 </TableCell>

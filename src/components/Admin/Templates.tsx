@@ -40,7 +40,7 @@ export default function AdminTemplates({ templates }: { templates: any }) {
         <TableBody>
           {templates.map((template: any) => {
             return (
-              <TableRow key={template.id}>
+              <TableRow className="hover:bg-gray-100" key={template.id}>
                 <TableCell>
                   <Text>{template.name}</Text>
                 </TableCell>

@@ -48,7 +48,7 @@ export default function AdminUsers({ users }: { users: any }) {
         <TableBody>
           {users.map((user: any) => {
             return (
-              <TableRow key={user.id}>
+              <TableRow className="hover:bg-gray-100" key={user.id}>
                 <TableCell>
                   <Text>{user.name}</Text>
                 </TableCell>
