@@ -34,8 +34,8 @@ function ForgotPassword() {
       <div className="absolute w-full h-screen">
        <Lottie options={defaultOptions}  />
       </div>
-      <div className="flex justify-center items-center h-full relative">
-        <div className="bg-white rounded-lg shadow-lg p-10 w-[40%]">
+      <div className="flex justify-center items-center h-full w-full p-3 relative">
+        <div className="bg-white rounded-lg shadow-lg p-10 w-full md:w-[60%] lg:w-[40%] xl:w-[40%] 2xl:2-[40%]">
             <h1 className="text-4xl font-bold mb-10 text-center">
               Forgot Password
             </h1>

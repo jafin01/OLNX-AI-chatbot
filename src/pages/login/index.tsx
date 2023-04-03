@@ -66,8 +66,6 @@ function Login() {
 
     setLoading(false);
   }
-            
-            
 
   const defaultOptions = {
     loop: true,
@@ -80,7 +78,7 @@ function Login() {
 
   return (
     <main className="w-full h-screen bg-gray-100 flex">
-      <aside className="h-full w-full p-36">
+      <aside className="h-full w-full p-36 aspect-square hidden lg:block">
         <Lottie options={defaultOptions} />
       </aside>
       <section className="w-full flex justify-between flex-col h-full z-50">
@@ -96,7 +94,7 @@ function Login() {
             >
               {({ errors, touched }) => (
                 <Form className="px-8 pt-6 pb-8 mb-3">
-                  <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                  <div className="group w-full mb-6">
                     <label
                       htmlFor="email"
                       className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -126,7 +124,7 @@ function Login() {
                     />
                   </div>
 
-                  <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                  <div className="group w-full mb-6">
                     <label
                       htmlFor="password"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -205,15 +203,19 @@ function Login() {
               </span>
               <hr className="w-[20%] border-gray-400" />
             </div>
-            <div className="flex items-center justify-around">
-              <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex items-center">
-                <FaGoogle className="text-red-500 mr-2" />
-                <span>Sign in with Google</span>
-              </button>
-              <button className="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex items-center">
-                <FaGithub className="text-white mr-2" />
-                <span>Sign in with GitHub</span>
-              </button>
+            <div className="lg:items-center lg:justify-around xl:items-center xl:justify-around 2xl:items-center 2xl:justify-around lg:flex xl:flex 2xl:flex">
+              <div className="py-2">
+                <button className="w-3/4 m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
+                  <FaGoogle className="text-red-500 mr-2" />
+                  <span>Sign in with Google</span>
+                </button>
+              </div>
+              <div className="py-2">
+                <button className="w-3/4 m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
+                  <FaGithub className="text-white mr-2" />
+                  <span>Sign in with GitHub</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

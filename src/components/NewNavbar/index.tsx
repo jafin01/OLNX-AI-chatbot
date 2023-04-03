@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import { FiArrowLeftCircle } from "react-icons/fi";
@@ -17,17 +18,13 @@ function NewNavbar() {
 //   }
 
   return (
-    <div className="flex justify-around py-10">
+    <div className="flex justify-between 2xl:justify-around py-10 px-10">
       <div>
-        <h1 className="text-xl font-bold">OLNX</h1>
+        <Link href="/" className="text-xl font-bold">OLNX</Link>
       </div>
       <div className="flex justify-center gap-20">
-        <h1 className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">
-          Login
-        </h1>
-        <h1 className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">
-          SignUp
-        </h1>
+          <Link href="/login" className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">Login</Link>
+          <Link href="/register" className="font-semibold cursor-pointer text-lg hidden md:block lg:block xl:block 2xl:block">Sign up</Link>
         <h1 className="md:hidden lg:hidden xl:hidden 2xl:hidden text-2xl">
           <FiMenu onClick={handleOpen} />
         </h1>
@@ -41,10 +38,10 @@ function NewNavbar() {
               </h1>
             </div>
             <div className="text-center py-10">
-              <h1 className="text-white py-3 text-2xl">Sign In</h1>
+              <Link href='/login' className="text-white py-3 text-2xl">Sign In</Link>
             </div>
             <div className="text-center">
-              <h2 className="text-white text-2xl">Sign Up</h2>
+              <Link href='/register' className="text-white text-2xl">Sign Up</Link>
             </div>
           </div>
         </div>

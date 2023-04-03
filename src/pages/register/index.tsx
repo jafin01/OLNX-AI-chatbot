@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Lottie from "react-lottie";
 import axios from "axios";
 import notify from "react-hot-toast";
-import Lottie from "react-lottie";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import animationData from "../../../public/images/login_lottie.json";
@@ -14,27 +14,66 @@ import {
   FaGoogle,
 } from "react-icons/fa";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { FiLoader, FiLogIn } from "react-icons/fi";
+import { FiLoader } from "react-icons/fi";
 
 const RegisterSchema = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
+  name: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required").min(6),
-  confirmPassword: Yup.string().required("Required").min(6).equals([Yup.ref("password")], "Passwords must match"),
+  password_confirmation: Yup.string()
+    .required("Required")
+    .min(6)
+    .equals([Yup.ref("password")], "Passwords must match"),
 });
 
 function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+    const { push } = useRouter();
 
-  const { push } = useRouter();
+    useEffect(() => {
+      if (window.localStorage.getItem("accessToken")) {
+        push("/playground");
+      }
+    }, [push]);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   async function submitHandler(values: any) {
     console.log(values);
+    setLoading(true);
+    const toastLoadingId = notify.loading("Logging in...");
+    await axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/register`,
+        {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          password_confirmation: values.password_confirmation,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        // console.log(res);
+        window.localStorage.setItem("accessToken", res.data.token);
+        notify.dismiss(toastLoadingId);
+        notify.success("Logged in successfully");
+        push("/");
+      })
+      .catch((err) => {
+        // console.log(err);
+        notify.dismiss(toastLoadingId);
+        notify.error("Invalid Credentials");
+      });
+
+    setLoading(false);
   }
 
   const defaultOptions = {
@@ -48,20 +87,19 @@ function Register() {
 
   return (
     <main className="w-full h-screen bg-gray-100 flex">
-      <aside className="h-full w-full p-36">
+      <aside className="hidden h-full w-full p-36 lg:block xl:block 2xl:block">
         <Lottie options={defaultOptions} />
       </aside>
       <section className="w-full flex justify-between flex-col h-full z-50">
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <div className="pt-36 md:p-0 lg:p-0 xl:p-0 2xl:p-0 flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
             <h1 className="text-4xl font-bold mb-4 text-center">Register</h1>
             <Formik
               initialValues={{
-                firstName: "",
-                lastName: "",
+                name: "",
                 email: "",
                 password: "",
-                confirmPassword: "",
+                password_confirmation: "",
               }}
               validationSchema={RegisterSchema}
               onSubmit={(values) => {
@@ -71,21 +109,21 @@ function Register() {
               {({ errors, touched }) => (
                 <Form className="px-8 pt-6 pb-8 mb-3">
                   <div className="flex gap-4">
-                    <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                    <div className="group w-full mb-6">
                       <label
-                        htmlFor="firstName"
+                        htmlFor="name"
                         className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
                       >
-                        First Name
+                        Name
                       </label>
                       <div className="relative flex items-center ">
                         <Field
-                          id="firstName"
-                          type="firstName"
-                          name="firstName"
-                          placeholder="First Name"
+                          id="name"
+                          type="name"
+                          name="name"
+                          placeholder="Enter your Name"
                           className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
-                            touched.firstName && errors.firstName
+                            touched.name && errors.name
                               ? "border border-red-500"
                               : "border border-gray-200"
                           }`}
@@ -95,44 +133,15 @@ function Register() {
                         </span>
                       </div>
                       <ErrorMessage
-                        name="firstName"
+                        name="name"
                         component="div"
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
 
-                    <div className="group w-72 md:w-80 lg:w-96 mb-6">
-                      <label
-                        htmlFor="lastName"
-                        className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
-                      >
-                        Last Name
-                      </label>
-                      <div className="relative flex items-center ">
-                        <Field
-                          id="lastName"
-                          type="lastName"
-                          name="lastName"
-                          placeholder="Last Name"
-                          className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
-                            touched.lastName && errors.lastName
-                              ? "border border-red-500"
-                              : "border border-gray-200"
-                          }`}
-                        />
-                        <span className="material-symbols-outlined absolute left-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400">
-                          <FaUser />
-                        </span>
-                      </div>
-                      <ErrorMessage
-                        name="lastName"
-                        component="div"
-                        className="text-red-500 text-xs mt-1"
-                      />
-                    </div>
                   </div>
 
-                  <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                  <div className="group w-full mb-6">
                     <label
                       htmlFor="email"
                       className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -162,7 +171,7 @@ function Register() {
                     />
                   </div>
 
-                  <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                  <div className="group w-full mb-6">
                     <label
                       htmlFor="password"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -198,8 +207,7 @@ function Register() {
                     />
                   </div>
 
-
-                  <div className="group w-72 md:w-80 lg:w-96 mb-10">
+                  <div className="group w-full mb-10">
                     <label
                       htmlFor="confirmPassword"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -208,12 +216,12 @@ function Register() {
                     </label>
                     <div className="relative flex items-center">
                       <Field
-                        id="confirmPassword"
+                        id="password_confirmation"
                         type={showConfirmPassword ? "text" : "password"}
-                        name="confirmPassword"
-                        placeholder="Enter your confirmPassword"
+                        name="password_confirmation"
+                        placeholder="Confirm Password"
                         className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
-                          touched.confirmPassword && errors.confirmPassword
+                          touched.password_confirmation && errors.password_confirmation
                             ? "border border-red-500"
                             : "border border-gray-200"
                         }`}
@@ -223,13 +231,15 @@ function Register() {
                       </span>
                       <span
                         className="material-symbols-outlined absolute right-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400 cursor-pointer"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                       >
                         {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
                       </span>
                     </div>
                     <ErrorMessage
-                      name="confirmPassword"
+                      name="password_confirmation"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
@@ -270,15 +280,19 @@ function Register() {
               </span>
               <hr className="w-[20%] border-gray-400" />
             </div>
-            <div className="flex items-center justify-around">
-              <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex items-center">
-                <FaGoogle className="text-red-500 mr-2" />
-                <span>Sign up with Google</span>
-              </button>
-              <button className="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex items-center">
-                <FaGithub className="text-white mr-2" />
-                <span>Sign up with GitHub</span>
-              </button>
+            <div className="md:flex lg:flex xl:flex 2xl:flex items-center justify-around">
+              <div className="py-2">
+                <button className="w-3/4 m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
+                  <FaGoogle className="text-red-500 mr-2" />
+                  <span>Sign up with Google</span>
+                </button>
+              </div>
+              <div className="py-2 pb-4">
+                <button className="w-3/4 m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
+                  <FaGithub className="text-white mr-2" />
+                  <span>Sign up with GitHub</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
