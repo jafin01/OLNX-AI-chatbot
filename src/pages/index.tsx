@@ -29,12 +29,12 @@ function index() {
               </div>
               <div
                 className="top-0 left-0 items-start w-full h-full p-4 text-sm bg-gray-900 bg-opacity-50 md:items-center md:w-3/4 md:absolute lg:text-base md:bg-transparent md:p-0 md:relative md:flex hidden"
-                classX="{'flex fixed': showMenu, 'hidden': !showMenu }"
+                // classX="{&apos;flex fixed&apos;: showMenu, &apos;hidden&apos;: !showMenu }"
               >
                 <div className="flex-col w-full h-auto overflow-hidden bg-white rounded-lg md:bg-transparent md:overflow-visible md:rounded-none md:relative md:flex md:flex-row">
                   <Link
                     href="/"
-                    className="inline-flex items-center block w-auto h-16 px-6 text-xl font-black leading-none text-gray-900 md:hidden"
+                    className="items-center block w-auto h-16 px-6 text-xl font-black leading-none text-gray-900 md:hidden"
                   >
                     OLNX
                   </Link>
@@ -160,8 +160,9 @@ function index() {
           </div>
           <div className="my-16 border-b border-gray-300 lg:my-24"></div>
           <h2 className="text-left text-gray-500 xl:text-xl">
-            Building extremely efficient chat-bots. We've unlocked the secret to
-            converting your normal AI conversations into some more magical!
+            Building extremely efficient chat-bots. We&apos;ve unlocked the
+            secret to converting your normal AI conversations into some more
+            magical!
             <br />
           </h2>
         </div>
@@ -172,8 +173,9 @@ function index() {
             The New Standard for AI Conversations
           </h2>
           <p className="max-w-md mx-auto mt-3 text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Use our award-winning tools to help you maximize your profits. We've
-            uncovered the correct recipe for converting AI chats into magic.
+            Use our award-winning tools to help you maximize your profits.
+            We&apos;ve uncovered the correct recipe for converting AI chats into
+            magic.
           </p>
           <div className="flex justify-center mt-8 space-x-3">
             <a
@@ -202,7 +204,7 @@ function index() {
               Pricing Options
             </h2>
             <p className="box-border mt-4 text-2xl leading-normal text-gray-900 border-solid">
-              We've got a plan for companies of any size
+              We&apos;ve got a plan for companies of any size
             </p>
           </div>
           <div
