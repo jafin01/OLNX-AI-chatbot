@@ -7,6 +7,7 @@ import {
   FiTool,
   FiUser,
 } from "react-icons/fi";
+import AdminSettingsGeneral from "./Settings/General";
 
 export default function AdminSettings() {
   const [tab, setTab] = useState<string>("general");
@@ -22,7 +23,7 @@ export default function AdminSettings() {
         <Tab value="paid-user" text="Paid User" icon={FiDollarSign} />
         <Tab value="keys" text="Keys" icon={FiSliders} />
       </TabList>
-      <div className="grid gap-2 grid-cols-12"></div>
+      {tab === "general" && <AdminSettingsGeneral />}
     </Card>
   );
 }
