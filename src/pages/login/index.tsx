@@ -205,13 +205,13 @@ function Login() {
             </div>
             <div className="lg:items-center lg:justify-around xl:items-center xl:justify-around 2xl:items-center 2xl:justify-around lg:flex xl:flex 2xl:flex">
               <div className="py-2">
-                <button className="w-3/4 m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
+                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
                   <FaGoogle className="text-red-500 mr-2" />
                   <span>Sign in with Google</span>
                 </button>
               </div>
               <div className="py-2">
-                <button className="w-3/4 m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
+                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
                   <FaGithub className="text-white mr-2" />
                   <span>Sign in with GitHub</span>
                 </button>
@@ -225,131 +225,3 @@ function Login() {
 }
 
 export default Login;
-
-// import axios from "axios";
-// import { Formik, Form, Field } from "formik";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { useEffect, useState } from "react";
-// import { FiLoader, FiLogIn } from "react-icons/fi";
-// import { AiFillGoogleCircle } from "react-icons/ai";
-// import notify from "react-hot-toast";
-
-// export default function Login() {
-//   const { push } = useRouter();
-//   const [loading, setLoading] = useState<boolean>(false);
-
-//   useEffect(() => {
-//     if (window.localStorage.getItem("accessToken")) {
-//       push("/playground");
-//     }
-//   }, [push]);
-
-//   return (
-//     <main className="w-full h-screen bg-gray-100 flex">
-//       <aside className="h-full w-full z-10">
-//         {/* <img
-//           src="/images/login_lottie.json"
-//           alt="Login Lottie"
-//           className="w-full h-full object-cover"
-//         /> */}
-
-//       </aside>
-//       <section className="w-full flex justify-between flex-col h-full z-50">
-//         <div className="bg-white p-12 py-24 h-full shadow-lg">
-//           <h1 className="text-left text-6xl mb-6">Login</h1>
-//           <Formik
-//             initialValues={{
-//               email: "",
-//               password: "",
-//             }}
-//             onSubmit={async (values) => {
-//               setLoading(true);
-//               const toastLoadingId = notify.loading("Logging in...");
-//               await axios
-//                 .post(
-//                   `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-//                   {
-//                     email: values.email,
-//                     password: values.password,
-//                   },
-//                   {
-//                     headers: {
-//                       Accept: "application/json",
-//                     },
-//                   }
-//                 )
-//                 .then((res) => {
-//                   // console.log(res);
-//                   window.localStorage.setItem("accessToken", res.data.token);
-//                   notify.dismiss(toastLoadingId);
-//                   notify.success("Logged in successfully");
-//                   push("/");
-//                 })
-//                 .catch((err) => {
-//                   // console.log(err);
-//                   notify.dismiss(toastLoadingId);
-//                   notify.error("Invalid Credentials");
-//                 });
-
-//               setLoading(false);
-//             }}
-//           >
-//             <Form className="rounded-lg flex flex-col gap-4">
-//               <div className="flex flex-col gap-2">
-//                 <label htmlFor="email">Email</label>
-//                 <Field
-//                   className="px-6 py-3 rounded-lg bg-gray-100"
-//                   placeholder="Email Address"
-//                   type="email"
-//                   id="email"
-//                   name="email"
-//                   required
-//                 />
-//               </div>
-//               <div className="flex flex-col gap-2">
-//                 <label htmlFor="password">Password</label>
-//                 <Field
-//                   className="px-6 py-3 rounded-lg bg-gray-100"
-//                   placeholder="Password"
-//                   type="password"
-//                   id="password"
-//                   name="password"
-//                   required
-//                 />
-//               </div>
-//               <button
-//                 className="px-6 py-3 rounded-lg text-lg text-white bg-blue-500 flex items-center justify-around disabled:bg-gray-500"
-//                 type="submit"
-//                 disabled={loading}
-//               >
-//                 <div className="flex gap-2 items-center">
-//                   {loading ? (
-//                     <FiLoader className="animate-spin" />
-//                   ) : (
-//                     <FiLogIn />
-//                   )}
-//                   <span>Login</span>
-//                 </div>
-//               </button>
-//               <div className="text-right text-blue-500 hover:underline">
-//                 <Link href="/register">Don&lsquo;t have an account?</Link>
-//               </div>
-//             </Form>
-//           </Formik>
-//           <div className="flex items-center gap-2 my-6 text-gray-500">
-//             <div className="flex-1 border border-gray-300 h-0">&nbsp;</div>
-//             <div>OR</div>
-//             <div className="flex-1 border border-gray-300 h-0">&nbsp;</div>
-//           </div>
-//           <div>
-//             <button className="w-full flex items-center justify-around bg-white active:bg-gray-100 shadow-lg text-lg text-gray-500 rounded border border-gray-300">
-//               <AiFillGoogleCircle size="32" className="ml-6 text-blue-500" />
-//               <span className="px-6 py-3 flex-1">Login with Google</span>
-//             </button>
-//           </div>
-//         </div>
-//       </section>
-//     </main>
-//   );
-// }
