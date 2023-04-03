@@ -4,10 +4,17 @@ import LottieAnimation from "@/components/LottiAnimation";
 import NewNavbar from "@/components/NewNavbar";
 import { Button } from "@tremor/react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
 
-function index() {
+export default function Home() {
+  let [accessToken, setAccessToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("accessToken")) {
+      setAccessToken(window.localStorage.getItem("accessToken"));
+    }
+  }, []);
   return (
     <>
       <section
@@ -40,18 +47,37 @@ function index() {
                   </Link>
                   <div className="flex-1"></div>
                   <div className="flex flex-col items-start justify-end w-full pt-4 md:items-center md:w-1/3 md:flex-row md:py-0">
-                    <Link
-                      href="/login"
-                      className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="inline-flex items-center w-full px-6 py-3 text-sm font-medium leading-4 text-white bg-indigo-600 md:px-3 md:w-auto md:rounded-full lg:px-5 hover:bg-indigo-500 focus:outline-none md:focus:ring-2 focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600"
-                    >
-                      Sign Up
-                    </Link>
+                    {accessToken ? (
+                      <>
+                        <Link
+                          href="/playgrounds"
+                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                        >
+                          Playgrounds
+                        </Link>
+                        <Link
+                          href="/logout"
+                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                        >
+                          Logout
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/login"
+                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          href="/register"
+                          className="inline-flex items-center w-full px-6 py-3 text-sm font-medium leading-4 text-white bg-indigo-600 md:px-3 md:w-auto md:rounded-full lg:px-5 hover:bg-indigo-500 focus:outline-none md:focus:ring-2 focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600"
+                        >
+                          Sign Up
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -126,11 +152,11 @@ function index() {
         <div className="px-10 py-24 mx-auto max-w-full bg-gray-100">
           <div className="w-full mx-auto text-left md:text-center">
             <h1 className="mb-6 text-5xl font-extrabold leading-none max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight">
-              The
+              The&nbsp;
               <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">
                 Number One Source
               </span>
-              for
+              &nbsp;for&nbsp;
               <br className="lg:block hidden" />
               all your AI Chat-bot needs.
             </h1>
@@ -178,22 +204,22 @@ function index() {
             magic.
           </p>
           <div className="flex justify-center mt-8 space-x-3">
-            <a
-              href="#"
+            <Link
+              href="/register"
               className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow hover:bg-indigo-700"
               data-primary="indigo-600"
               data-rounded="rounded-md"
             >
               Sign Up Today
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/login"
               className="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-indigo-700 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200"
               data-primary="indigo-600"
               data-rounded="rounded-md"
             >
               Login
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -228,13 +254,12 @@ function index() {
                   <span className="block">per month</span>
                 </p>
               </div>
-              <button
+              <Link
+                href="/register"
                 className="inline-flex items-center justify-center w-full py-3 mt-6 font-sans text-sm leading-none text-center text-blue-600 no-underline bg-transparent border border-b-2 border-blue-600 rounded-md cursor-pointer hover:bg-blue-600 hover:border-blue-600 hover:text-white sm:text-base sm:mt-8 md:text-lg"
-                data-primary="blue-600"
-                data-rounded="rounded-md"
               >
                 Get Started
-              </button>
+              </Link>
             </div>
             <div className="box-border px-4 py-8 mb-6 text-center bg-gray-100 border border-gray-300 border-solid lg:mb-0 sm:px-4 sm:py-8 md:px-8 md:py-12 lg:px-10">
               <h3 className="m-0 text-2xl font-semibold leading-tight tracking-tight text-black border-0 border-solid sm:text-3xl md:text-4xl">
@@ -251,13 +276,12 @@ function index() {
                   <span className="block">per month</span>
                 </p>
               </div>
-              <button
+              <Link
+                href="/register"
                 className="inline-flex items-center justify-center w-full py-3 mt-6 font-sans text-sm leading-none text-center text-white no-underline bg-blue-600 border-b-4 border-blue-700 rounded cursor-pointer hover:text-white sm:text-base sm:mt-8 md:text-lg"
-                data-primary="blue-600"
-                data-rounded="rounded-md"
               >
                 Get Started
-              </button>
+              </Link>
             </div>
             <div className="box-border px-4 py-8 text-center bg-white border-solid sm:px-4 sm:py-8 md:px-8 md:py-12 lg:px-10">
               <h3 className="m-0 text-2xl font-semibold leading-tight tracking-tight text-black border-0 border-solid sm:text-3xl md:text-4xl">
@@ -272,25 +296,25 @@ function index() {
                   <br />
                 </p>
               </div>
-              <button
+              <a
+                href="mailto:admin@olnx.com"
+                target="_blank"
                 className="inline-flex items-center justify-center w-full py-3 mt-6 font-sans text-sm leading-none text-center text-blue-600 no-underline bg-transparent border border-b-2 border-blue-600 rounded cursor-pointer hover:bg-blue-600 hover:border-blue-600 hover:text-white sm:text-base sm:mt-8 md:text-lg"
-                data-primary="blue-600"
-                data-rounded="rounded-md"
               >
                 Enquire Now
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </section>
       <section className="text-gray-700 bg-white body-font">
         <div className="container flex flex-col items-center px-8 py-8 mx-auto max-w-full sm:flex-row bg-gray-100">
-          <a
-            href="#_"
+          <Link
+            href="/"
             className="text-xl font-black leading-none text-gray-900 select-none logo"
           >
             OLNX
-          </a>
+          </Link>
           <p className="mt-4 text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l sm:border-gray-200 sm:mt-0">
             © 2023 OLNX
           </p>
@@ -372,5 +396,3 @@ function index() {
     </>
   );
 }
-
-export default index;
