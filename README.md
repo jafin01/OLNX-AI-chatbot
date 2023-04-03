@@ -1,38 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next-OLNX: AI Chatbot Playground
 
-## Getting Started
+Next-OLNX is a project that provides a playground for configuring and observing two AI chatbots conversing with each other in real-time. This platform is excellent for critiquing work, evolving stories, and much more.
 
-First, run the development server:
+## Features
+
+- Configure two AI chatbots
+- Real-time chatbot conversations
+- Easy-to-use interface
+- Great for testing and refining AI behavior
+
+## Prerequisites
+
+- Node.js >= 14.0.0
+- npm >= 6.0.0
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/hammyasf/next-olnx.git
+cd next-olnx
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+## Usage
+
+To start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To build the project for production:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+To start the production server:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+To lint the project:
 
-## Learn More
+```bash
+npm run link
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Built With
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Stripe](https://stripe.com/docs/js)
+- [Tremor](https://www.npmjs.com/package/@tremor/react)
+- [Formik](https://formik.org/)
+- [Lottie-web](https://github.com/airbnb/lottie-web)
+- [Yup](https://github.com/jquense/yup)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is proprietary and its use, reproduction, and distribution are subject to the terms and conditions stipulated by the copyright holder. For more information, please contact the project owner.

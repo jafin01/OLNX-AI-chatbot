@@ -11,6 +11,7 @@ import {
   Text,
   Title,
 } from "@tremor/react";
+import Link from "next/link";
 import {
   FiBox,
   FiEye,
@@ -40,7 +41,7 @@ export default function AdminTemplates({ templates }: { templates: any }) {
         <TableBody>
           {templates.map((template: any) => {
             return (
-              <TableRow key={template.id}>
+              <TableRow className="hover:bg-gray-100" key={template.id}>
                 <TableCell>
                   <Text>{template.name}</Text>
                 </TableCell>
@@ -59,13 +60,10 @@ export default function AdminTemplates({ templates }: { templates: any }) {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Icon icon={FiEye} variant="simple" tooltip="View" />
-                    <Icon
-                      icon={FiUser}
-                      variant="simple"
-                      color="amber"
-                      tooltip="User"
-                    />
+                    <Link href={`/playgrounds/${template.id}`} target="_black">
+                      <Icon icon={FiEye} variant="simple" tooltip="View" />
+                    </Link>
+
                     <Icon
                       icon={FiTrash}
                       variant="simple"

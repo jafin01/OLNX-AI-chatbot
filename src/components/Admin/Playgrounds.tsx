@@ -11,6 +11,7 @@ import {
   Text,
   Title,
 } from "@tremor/react";
+import Link from "next/link";
 import {
   FiEye,
   FiMessageSquare,
@@ -43,7 +44,7 @@ export default function AdminPlaygrounds({
         <TableBody>
           {playgrounds.map((playground: any) => {
             return (
-              <TableRow key={playground.id}>
+              <TableRow className="hover:bg-gray-100" key={playground.id}>
                 <TableCell>
                   <Text>{playground.name}</Text>
                 </TableCell>
@@ -62,13 +63,13 @@ export default function AdminPlaygrounds({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Icon icon={FiEye} variant="simple" tooltip="View" />
-                    <Icon
-                      icon={FiUser}
-                      variant="simple"
-                      color="amber"
-                      tooltip="User"
-                    />
+                    <Link
+                      target="_blank"
+                      href={`/playgrounds/${playground.id}`}
+                    >
+                      <Icon icon={FiEye} variant="simple" tooltip="View" />
+                    </Link>
+
                     <Icon
                       icon={FiTrash}
                       variant="simple"

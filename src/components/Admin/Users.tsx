@@ -48,7 +48,7 @@ export default function AdminUsers({ users }: { users: any }) {
         <TableBody>
           {users.map((user: any) => {
             return (
-              <TableRow key={user.id}>
+              <TableRow className="hover:bg-gray-100" key={user.id}>
                 <TableCell>
                   <Text>{user.name}</Text>
                 </TableCell>
@@ -79,15 +79,37 @@ export default function AdminUsers({ users }: { users: any }) {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    {!user.email_verified_at && (
+                    {!user.email_verified_at ? (
                       <Icon
                         icon={FiSend}
                         variant="simple"
                         tooltip="Resend Verification Email"
                         color="violet"
                       />
+                    ) : (
+                      <Icon
+                        icon={FiSend}
+                        variant="simple"
+                        color="gray"
+                        className="text-gray-300"
+                      />
                     )}
-                    <Icon icon={FiEye} variant="simple" tooltip="View" />
+                    {!user.is_admin ? (
+                      <Icon
+                        icon={FiKey}
+                        variant="simple"
+                        tooltip="Promote To Admin"
+                        color="emerald"
+                      />
+                    ) : (
+                      <Icon
+                        icon={FiUser}
+                        variant="simple"
+                        tooltip="Demote to User"
+                        color="blue"
+                      />
+                    )}
+                    {/* <Icon icon={FiEye} variant="simple" tooltip="View" />
                     <Icon
                       icon={FiMessageSquare}
                       variant="simple"
@@ -99,7 +121,7 @@ export default function AdminUsers({ users }: { users: any }) {
                       variant="simple"
                       color="emerald"
                       tooltip="Templates"
-                    />
+                    /> */}
                     <Icon
                       icon={FiTrash}
                       variant="simple"

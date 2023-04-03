@@ -39,6 +39,7 @@ function Register() {
       }
     }, [push]);
 
+
   const [loading, setLoading] = useState<boolean>(false);
 
   async function submitHandler(values: any) {
@@ -208,6 +209,7 @@ function Register() {
                   </div>
 
                   <div className="group w-full mb-10">
+
                     <label
                       htmlFor="confirmPassword"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"

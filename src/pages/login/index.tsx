@@ -30,7 +30,7 @@ function Login() {
 
   useEffect(() => {
     if (window.localStorage.getItem("accessToken")) {
-      push("/playground");
+      push("/playgrounds");
     }
   }, [push]);
 
