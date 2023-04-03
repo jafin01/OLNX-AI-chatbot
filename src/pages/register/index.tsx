@@ -14,60 +14,28 @@ import {
   FaGoogle,
 } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { FiLoader } from "react-icons/fi";
+import { FiLoader, FiLogIn } from "react-icons/fi";
 
-const LoginSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required").min(6),
+  confirmPassword: Yup.string().required("Required").min(6).equals([Yup.ref("password")], "Passwords must match"),
 });
 
-function Login() {
-  const [showPassword, setShowPassword] = useState(false);
+function Register() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const { push } = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      push("/playground");
-    }
-  }, [push]);
-
   async function submitHandler(values: any) {
     console.log(values);
-    setLoading(true);
-    const toastLoadingId = notify.loading("Logging in...");
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // console.log(res);
-        window.localStorage.setItem("accessToken", res.data.token);
-        notify.dismiss(toastLoadingId);
-        notify.success("Logged in successfully");
-        push("/");
-      })
-      .catch((err) => {
-        // console.log(err);
-        notify.dismiss(toastLoadingId);
-        notify.error("Invalid Credentials");
-      });
-
-    setLoading(false);
   }
-            
-            
 
   const defaultOptions = {
     loop: true,
@@ -86,16 +54,84 @@ function Login() {
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-            <h1 className="text-4xl font-bold mb-4 text-center">Login</h1>
+            <h1 className="text-4xl font-bold mb-4 text-center">Register</h1>
             <Formik
-              initialValues={{ email: "", password: "" }}
-              validationSchema={LoginSchema}
+              initialValues={{
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              validationSchema={RegisterSchema}
               onSubmit={(values) => {
                 submitHandler(values);
               }}
             >
               {({ errors, touched }) => (
                 <Form className="px-8 pt-6 pb-8 mb-3">
+                  <div className="flex gap-4">
+                    <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                      <label
+                        htmlFor="firstName"
+                        className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
+                      >
+                        First Name
+                      </label>
+                      <div className="relative flex items-center ">
+                        <Field
+                          id="firstName"
+                          type="firstName"
+                          name="firstName"
+                          placeholder="First Name"
+                          className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
+                            touched.firstName && errors.firstName
+                              ? "border border-red-500"
+                              : "border border-gray-200"
+                          }`}
+                        />
+                        <span className="material-symbols-outlined absolute left-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400">
+                          <FaUser />
+                        </span>
+                      </div>
+                      <ErrorMessage
+                        name="firstName"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+
+                    <div className="group w-72 md:w-80 lg:w-96 mb-6">
+                      <label
+                        htmlFor="lastName"
+                        className="text-sm mb-2 font-bold inline-block w-full text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
+                      >
+                        Last Name
+                      </label>
+                      <div className="relative flex items-center ">
+                        <Field
+                          id="lastName"
+                          type="lastName"
+                          name="lastName"
+                          placeholder="Last Name"
+                          className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
+                            touched.lastName && errors.lastName
+                              ? "border border-red-500"
+                              : "border border-gray-200"
+                          }`}
+                        />
+                        <span className="material-symbols-outlined absolute left-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400">
+                          <FaUser />
+                        </span>
+                      </div>
+                      <ErrorMessage
+                        name="lastName"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+                  </div>
+
                   <div className="group w-72 md:w-80 lg:w-96 mb-6">
                     <label
                       htmlFor="email"
@@ -160,14 +196,43 @@ function Login() {
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
-                    <div className="text-right">
-                      <Link
-                        href="/forgot-password"
-                        className="text-sm text-gray-500 hover:text-blue-800 "
+                  </div>
+
+
+                  <div className="group w-72 md:w-80 lg:w-96 mb-10">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
+                    >
+                      Confirm Password
+                    </label>
+                    <div className="relative flex items-center">
+                      <Field
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        placeholder="Enter your confirmPassword"
+                        className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
+                          touched.confirmPassword && errors.confirmPassword
+                            ? "border border-red-500"
+                            : "border border-gray-200"
+                        }`}
+                      />
+                      <span className="material-symbols-outlined absolute left-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400">
+                        <FaLock />
+                      </span>
+                      <span
+                        className="material-symbols-outlined absolute right-2 transition-all duration-200 ease-in-out group-focus-within:text-blue-400 cursor-pointer"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
-                        Forgot Password?
-                      </Link>
+                        {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+                      </span>
                     </div>
+                    <ErrorMessage
+                      name="confirmPassword"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
 
                   <div className="flex text-center justify-between mb-4">
@@ -181,7 +246,7 @@ function Login() {
                       {loading ? (
                         <FiLoader className="animate-spin my-1 mx-auto" />
                       ) : (
-                        "Login"
+                        "Sign Up"
                       )}
                     </button>
                   </div>
@@ -189,9 +254,9 @@ function Login() {
                   <div className="text-center">
                     <Link
                       className="text-sm text-gray-500 hover:text-blue-800 "
-                      href="/register"
+                      href="/login"
                     >
-                      Don&apos;t have an account? Register
+                      Already have an account? Login
                     </Link>
                   </div>
                 </Form>
@@ -201,18 +266,18 @@ function Login() {
             <div className="flex items-center justify-center mb-8">
               <hr className="w-[20%] border-gray-400" />
               <span className="px-4 font-bold text-gray-500 text-center">
-                Or Login with
+                Or Sign up with
               </span>
               <hr className="w-[20%] border-gray-400" />
             </div>
             <div className="flex items-center justify-around">
               <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex items-center">
                 <FaGoogle className="text-red-500 mr-2" />
-                <span>Sign in with Google</span>
+                <span>Sign up with Google</span>
               </button>
               <button className="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex items-center">
                 <FaGithub className="text-white mr-2" />
-                <span>Sign in with GitHub</span>
+                <span>Sign up with GitHub</span>
               </button>
             </div>
           </div>
@@ -222,132 +287,4 @@ function Login() {
   );
 }
 
-export default Login;
-
-// import axios from "axios";
-// import { Formik, Form, Field } from "formik";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import { useEffect, useState } from "react";
-// import { FiLoader, FiLogIn } from "react-icons/fi";
-// import { AiFillGoogleCircle } from "react-icons/ai";
-// import notify from "react-hot-toast";
-
-// export default function Login() {
-//   const { push } = useRouter();
-//   const [loading, setLoading] = useState<boolean>(false);
-
-//   useEffect(() => {
-//     if (window.localStorage.getItem("accessToken")) {
-//       push("/playground");
-//     }
-//   }, [push]);
-
-//   return (
-//     <main className="w-full h-screen bg-gray-100 flex">
-//       <aside className="h-full w-full z-10">
-//         {/* <img
-//           src="/images/login_lottie.json"
-//           alt="Login Lottie"
-//           className="w-full h-full object-cover"
-//         /> */}
-
-//       </aside>
-//       <section className="w-full flex justify-between flex-col h-full z-50">
-//         <div className="bg-white p-12 py-24 h-full shadow-lg">
-//           <h1 className="text-left text-6xl mb-6">Login</h1>
-//           <Formik
-//             initialValues={{
-//               email: "",
-//               password: "",
-//             }}
-//             onSubmit={async (values) => {
-//               setLoading(true);
-//               const toastLoadingId = notify.loading("Logging in...");
-//               await axios
-//                 .post(
-//                   `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-//                   {
-//                     email: values.email,
-//                     password: values.password,
-//                   },
-//                   {
-//                     headers: {
-//                       Accept: "application/json",
-//                     },
-//                   }
-//                 )
-//                 .then((res) => {
-//                   // console.log(res);
-//                   window.localStorage.setItem("accessToken", res.data.token);
-//                   notify.dismiss(toastLoadingId);
-//                   notify.success("Logged in successfully");
-//                   push("/");
-//                 })
-//                 .catch((err) => {
-//                   // console.log(err);
-//                   notify.dismiss(toastLoadingId);
-//                   notify.error("Invalid Credentials");
-//                 });
-
-//               setLoading(false);
-//             }}
-//           >
-//             <Form className="rounded-lg flex flex-col gap-4">
-//               <div className="flex flex-col gap-2">
-//                 <label htmlFor="email">Email</label>
-//                 <Field
-//                   className="px-6 py-3 rounded-lg bg-gray-100"
-//                   placeholder="Email Address"
-//                   type="email"
-//                   id="email"
-//                   name="email"
-//                   required
-//                 />
-//               </div>
-//               <div className="flex flex-col gap-2">
-//                 <label htmlFor="password">Password</label>
-//                 <Field
-//                   className="px-6 py-3 rounded-lg bg-gray-100"
-//                   placeholder="Password"
-//                   type="password"
-//                   id="password"
-//                   name="password"
-//                   required
-//                 />
-//               </div>
-//               <button
-//                 className="px-6 py-3 rounded-lg text-lg text-white bg-blue-500 flex items-center justify-around disabled:bg-gray-500"
-//                 type="submit"
-//                 disabled={loading}
-//               >
-//                 <div className="flex gap-2 items-center">
-//                   {loading ? (
-//                     <FiLoader className="animate-spin" />
-//                   ) : (
-//                     <FiLogIn />
-//                   )}
-//                   <span>Login</span>
-//                 </div>
-//               </button>
-//               <div className="text-right text-blue-500 hover:underline">
-//                 <Link href="/register">Don&lsquo;t have an account?</Link>
-//               </div>
-//             </Form>
-//           </Formik>
-//           <div className="flex items-center gap-2 my-6 text-gray-500">
-//             <div className="flex-1 border border-gray-300 h-0">&nbsp;</div>
-//             <div>OR</div>
-//             <div className="flex-1 border border-gray-300 h-0">&nbsp;</div>
-//           </div>
-//           <div>
-//             <button className="w-full flex items-center justify-around bg-white active:bg-gray-100 shadow-lg text-lg text-gray-500 rounded border border-gray-300">
-//               <AiFillGoogleCircle size="32" className="ml-6 text-blue-500" />
-//               <span className="px-6 py-3 flex-1">Login with Google</span>
-//             </button>
-//           </div>
-//         </div>
-//       </section>
-//     </main>
-//   );
-// }
+export default Register;
