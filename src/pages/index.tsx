@@ -130,20 +130,20 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center mt-12 text-center">
               <span className="relative inline-flex w-full md:w-auto">
-                <a
-                  href="#_"
+                <Link
+                  href="/register"
                   type="button"
                   className="inline-flex items-center justify-center w-full px-8 py-4 text-base font-bold leading-6 text-white bg-indigo-600 border border-transparent rounded-full md:w-auto hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
                 >
                   Get Started Now
-                </a>
+                </Link>
                 <span className="absolute top-0 right-0 px-2 py-1 -mt-3 -mr-6 text-xs font-medium leading-tight text-white bg-green-400 rounded-full">
                   only $20/mo
                 </span>
               </span>
-              <a href="#_" className="mt-3 text-sm text-indigo-500">
+              <Link href="/login" className="mt-3 text-sm text-indigo-500">
                 Already have an account?
-              </a>
+              </Link>
             </div>
           </div>
         </div>

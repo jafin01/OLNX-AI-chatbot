@@ -8,6 +8,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import AdminSettingsGeneral from "./Settings/General";
+import AdminSettingsKeys from "./Settings/Keys";
 
 export default function AdminSettings() {
   const [tab, setTab] = useState<string>("general");
@@ -24,6 +25,7 @@ export default function AdminSettings() {
         <Tab value="keys" text="Keys" icon={FiSliders} />
       </TabList>
       {tab === "general" && <AdminSettingsGeneral />}
+      {tab === "keys" && <AdminSettingsKeys />}
     </Card>
   );
 }
