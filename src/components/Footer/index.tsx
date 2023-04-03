@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="bg-zinc-900 text-gray-400 py-20">
+    <div className="bg-zinc-900 text-gray-400 py-20 2xl:text-center">
       <div className="px-5">
         <p>
           Sample text. Click to select the text box. Click again or double click
