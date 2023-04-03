@@ -8,6 +8,7 @@ import {
   FiMessageSquare,
   FiPlay,
 } from "react-icons/fi";
+
 import { FiArrowLeftCircle } from "react-icons/fi";
 
 function NewNavbar() {
