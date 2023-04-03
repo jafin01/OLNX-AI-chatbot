@@ -21,9 +21,12 @@ import {
 export default function Admin() {
   //   const [accessToken, setAccessToken] = useState<string | null>(null);
   const { push } = useRouter();
-  const [playgrounds, setPlaygrounds] = useState<number>(0);
-  const [templates, setTemplates] = useState<number>(0);
-  const [users, setUsers] = useState<number>(0);
+  const [playgroundsCount, setPlaygroundsCount] = useState<number>(0);
+  const [templatesCount, setTemplatesCount] = useState<number>(0);
+  const [usersCount, setUsersCount] = useState<number>(0);
+  const [playgrounds, setPlaygrounds] = useState<any>([]);
+  const [templates, setTemplates] = useState<any>([]);
+  const [users, setUsers] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [tab, setTab] = useState<string>("dashboard");
 
@@ -37,9 +40,12 @@ export default function Admin() {
         },
       })
       .then((res) => {
-        setPlaygrounds(res.data.playgrounds);
-        setTemplates(res.data.templates);
-        setUsers(res.data.users);
+        setPlaygrounds(res.data.playgrounds.data);
+        setTemplates(res.data.templates.data);
+        setUsers(res.data.users.data);
+        setPlaygroundsCount(res.data.playgrounds_count);
+        setTemplatesCount(res.data.templates_count);
+        setUsersCount(res.data.users_count);
       })
       .catch((err) => {
         console.log(err);
@@ -83,14 +89,16 @@ export default function Admin() {
           </TabList>
           {tab === "dashboard" && (
             <AdminHome
-              playgrounds={playgrounds}
-              templates={templates}
-              users={users}
+              playgrounds={playgroundsCount}
+              templates={templatesCount}
+              users={usersCount}
             />
           )}
-          {tab === "playgrounds" && <AdminPlaygrounds />}
-          {tab === "templates" && <AdminTemplates />}
-          {tab === "users" && <AdminUsers />}
+          {tab === "playgrounds" && (
+            <AdminPlaygrounds playgrounds={playgrounds} />
+          )}
+          {tab === "templates" && <AdminTemplates templates={templates} />}
+          {tab === "users" && <AdminUsers users={users} />}
           {tab === "settings" && <AdminSettings />}
         </section>
       )}
