@@ -1,8 +1,5 @@
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
-import PlaygroundContent from "@/components/Playground/Content";
-import PlaygroundNavbar from "@/components/Playground/Navbar";
-import { useConversationStore } from "@/stores/conversation";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -70,7 +67,7 @@ export default function Playgrounds() {
             <FiBox />
             <span>Templates</span>
           </h1>
-          <main className="grid grid-cols-4 gap-6">
+          <main className="grid grid-cols-1 gap-6">
             <Link
               href="/playgrounds/new"
               className="rounded overflow-hidden border border-gray-300 h-32 text-gray-500"

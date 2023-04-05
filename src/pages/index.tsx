@@ -1,11 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import Footer from "@/components/Footer";
-import LottieAnimation from "@/components/LottiAnimation";
-import NewNavbar from "@/components/NewNavbar";
-import { Button } from "@tremor/react";
+import HomeNavbar from "@/components/HomeNavbar";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
 
 export default function Home() {
   let [accessToken, setAccessToken] = useState<string | null>(null);
@@ -22,104 +18,10 @@ export default function Home() {
         data-tails-scripts="//unpkg.com/alpinejs"
       >
         <div className="mx-auto max-w-7xl">
-          <nav
-            className="relative z-50 h-24 select-none"
-            x-data="{ showMenu: false }"
-          >
-            <div className="container relative flex flex-wrap items-center justify-between h-24 mx-auto overflow-hidden font-medium border-b border-gray-200 md:overflow-visible lg:justify-center sm:px-4 md:px-2 lg:px-0">
-              <div className="flex items-center justify-start w-1/4 h-full pr-4">
-                <Link href="/" className="inline-block py-4 md:py-0">
-                  <span className="p-1 text-xl font-black leading-none text-gray-900">
-                    OLNX
-                  </span>
-                </Link>
-              </div>
-              <div
-                className="top-0 left-0 items-start w-full h-full p-4 text-sm bg-gray-900 bg-opacity-50 md:items-center md:w-3/4 md:absolute lg:text-base md:bg-transparent md:p-0 md:relative md:flex hidden"
-                // classX="{&apos;flex fixed&apos;: showMenu, &apos;hidden&apos;: !showMenu }"
-              >
-                <div className="flex-col w-full h-auto overflow-hidden bg-white rounded-lg md:bg-transparent md:overflow-visible md:rounded-none md:relative md:flex md:flex-row">
-                  <Link
-                    href="/"
-                    className="items-center block w-auto h-16 px-6 text-xl font-black leading-none text-gray-900 md:hidden"
-                  >
-                    OLNX
-                  </Link>
-                  <div className="flex-1"></div>
-                  <div className="flex flex-col items-start justify-end w-full pt-4 md:items-center md:w-1/3 md:flex-row md:py-0">
-                    {accessToken ? (
-                      <>
-                        <Link
-                          href="/playgrounds"
-                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
-                        >
-                          Playgrounds
-                        </Link>
-                        <Link
-                          href="/logout"
-                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
-                        >
-                          Logout
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <Link
-                          href="/login"
-                          className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
-                        >
-                          Sign In
-                        </Link>
-                        <Link
-                          href="/register"
-                          className="inline-flex items-center w-full px-6 py-3 text-sm font-medium leading-4 text-white bg-indigo-600 md:px-3 md:w-auto md:rounded-full lg:px-5 hover:bg-indigo-500 focus:outline-none md:focus:ring-2 focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600"
-                        >
-                          Sign Up
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div
-                onClick={() => {
-                  //"showMenu = !showMenu"
-                }}
-                className="absolute right-0 flex flex-col items-center items-end justify-center w-10 h-10 bg-white rounded-full cursor-pointer md:hidden hover:bg-gray-100"
-              >
-                <svg
-                  className="w-6 h-6 text-gray-700"
-                  x-show="!showMenu"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M4 6h16M4 12h16M4 18h16" className=""></path>
-                </svg>
-                <svg
-                  className="w-6 h-6 text-gray-700"
-                  x-show="showMenu"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ display: "none" }}
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </nav>
-          <div className="container max-w-lg px-4 py-32 mx-auto mt-px text-left md:max-w-none md:text-center">
-            <h1 className="text-5xl font-extrabold leading-10 tracking-tight text-left text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+          <HomeNavbar accessToken={accessToken} />
+
+          <div className="container max-w-lg px-4 py-20 mx-auto mt-px text-left md:py-32 md:max-w-none md:text-center">
+            <h1 className="text-5xl font-extrabold tracking-tight text-left text-gray-900 pb-3 md:pb-0 md:text-center md:text-6xl lg:text-7xl">
               <span className="inline md:block">Start Crafting Your</span>
               <span className="relative mt-2 text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500 md:inline-block">
                 Next Great AI
@@ -141,9 +43,11 @@ export default function Home() {
                   only $20/mo
                 </span>
               </span>
-              <Link href="/login" className="mt-3 text-sm text-indigo-500">
-                Already have an account?
-              </Link>
+              {!accessToken && (
+                <Link href="/login" className="mt-3 text-sm text-indigo-500">
+                  Already have an account?
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -151,7 +55,7 @@ export default function Home() {
       <section className="h-auto bg-white">
         <div className="px-10 py-24 mx-auto max-w-full bg-gray-100">
           <div className="w-full mx-auto text-left md:text-center">
-            <h1 className="mb-6 text-5xl font-extrabold leading-none max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight">
+            <h1 className="mb-6 text-4xl font-extrabold leading-none max-w-5xl mx-auto tracking-normal text-gray-900 md:text-6xl lg:text-7xl md:tracking-tight">
               The&nbsp;
               <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">
                 Number One Source
@@ -171,7 +75,7 @@ export default function Home() {
         <div className="relative max-w-3xl px-10 text-center text-white auto lg:px-0">
           <div className="flex flex-col w-full md:flex-row">
             <div className="flex justify-between">
-              <h1 className="relative flex flex-col text-6xl font-extrabold text-left text-black">
+              <h1 className="relative flex flex-col text-4xl md:text-6xl lg:text-6xl xl:text-6xl 2xl:text-6xl font-extrabold text-left text-black">
                 Crafting
                 <span className="">Powerful</span>
                 <span className="">Experiences</span>
@@ -181,6 +85,7 @@ export default function Home() {
               <img
                 src="https://cdn.devdojo.com/images/december2020/designs3d.png"
                 className="object-cover mt-3 mr-5 h-80 lg:h-96 tails-relative"
+                alt="Designs 3D"
               />
             </div>
           </div>
@@ -194,9 +99,13 @@ export default function Home() {
         </div>
       </section>
       <section className="py-20 bg-gray-100">
-        <div className="px-4 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl md:text-5xl xl:text-6xl">
-            The New Standard for AI Conversations
+        <div className="px-6 mx-auto text-center max-w-7xl md:px-6 lg:px-8">
+          <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl xl:text-6xl">
+            The New Standard for{" "}
+            <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">
+              AI
+            </span>{" "}
+            Conversations
           </h2>
           <p className="max-w-md mx-auto mt-3 text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
             Use our award-winning tools to help you maximize your profits.
