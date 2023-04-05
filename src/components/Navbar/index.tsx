@@ -204,8 +204,7 @@ export default function Navbar() {
         <></>
       ) : (
         <aside 
-          className="bg-amber-500 flex items-center px-6 font-mono font-bold text-white gap-4"
-          
+          className="bg-amber-500 flex items-center px-6 md:h-14 font-mono font-bold text-white gap-4"
         >
           <FiAlertOctagon size={24} />
           <span className="text-sm md:text-base">
