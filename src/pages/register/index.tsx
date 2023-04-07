@@ -87,13 +87,21 @@ function Register() {
 
   return (
     <main className="w-full h-screen bg-gray-100 flex">
-      <aside className="hidden h-full w-full p-36 lg:block xl:block 2xl:block">
+      <aside className="hidden h-full w-full lg:block xl:block pt-36 2xl:block">
         <Lottie options={defaultOptions} />
       </aside>
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="pt-36 md:p-0 lg:p-0 xl:p-0 2xl:p-0 flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-            <h1 className="text-4xl font-bold mb-4 text-center">Register</h1>
+            <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+              <span className="inline md:block">
+                Re
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">
+                  gist
+                </span>
+                er
+              </span>
+            </h1>
             <Formik
               initialValues={{
                 name: "",

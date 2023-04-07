@@ -78,13 +78,15 @@ function Login() {
 
   return (
     <main className="w-full h-screen bg-gray-100 flex">
-      <aside className="h-full w-full p-36 aspect-square hidden lg:block">
+      <aside className="h-full w-full hidden pt-36 lg:block">
         <Lottie options={defaultOptions} />
       </aside>
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-            <h1 className="text-4xl font-bold mb-4 text-center">Login</h1>
+          <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+            <span className="inline md:block"><span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">Log</span>in</span>
+          </h1>
             <Formik
               initialValues={{ email: "", password: "" }}
               validationSchema={LoginSchema}
