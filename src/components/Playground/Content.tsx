@@ -36,6 +36,7 @@ export default function PlaygroundContent({
   ]);
 
   const [loading, setLoading] = useState(false);
+  const [itteration, setItteration] = useState(5);
 
   useEffect(() => {
     setIsBusy(loading);
@@ -58,11 +59,20 @@ export default function PlaygroundContent({
 
   useEffect(() => {
     saveConversation();
+    if (itteration < formikRef.current.values.responses_to_generate - 1) {
+      setItteration((prev) => prev + 1);
+    }
   }, [messages]);
+
+  useEffect(() => {
+    if (itteration < formikRef.current.values.responses_to_generate) {
+      generateResponse(formikRef.current.values);
+    }
+  }, [itteration]);
 
   // a function to save the conversation
   async function saveConversation() {
-    setConversation({
+    await setConversation({
       config1: formikRef.current.values.config1,
       config2: formikRef.current.values.config2,
       messages: messages,
@@ -134,16 +144,18 @@ export default function PlaygroundContent({
 
   // a function that calls an API over post
   async function generateResponses(values: any) {
-    setLoading(true);
-    // call generateResponse based on the number of responses to generate
-    for (let i = 0; i < values.responses_to_generate; i++) {
-      await generateResponse(values);
-    }
+    // setLoading(true);
+    // // call generateResponse based on the number of responses to generate
+    // for (let i = 0; i < values.responses_to_generate; i++) {
+    //   await generateResponse(values);
+    // }
 
-    setLoading(false);
+    // setLoading(false);
+    setItteration(0);
   }
 
   async function generateResponse(values: any) {
+    setLoading(true);
     const lastMessage = messages[messages.length - 1];
     const generatedMessages = messages.map((message) => ({
       role: message.role === lastMessage.role ? "user" : "assistant",
@@ -184,11 +196,12 @@ export default function PlaygroundContent({
             message: newMessage,
           },
         ]);
-        // console.log("Message Updated", messages);
+        console.log("Message Updated", messages);
       })
       .catch((err) => {
         console.log({ err });
       });
+    setLoading(false);
   }
 
   let intValues: any;

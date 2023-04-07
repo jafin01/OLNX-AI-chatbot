@@ -5,7 +5,6 @@ import NewNavbar from "@/components/NewNavbar";
 import { Button } from "@tremor/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
 
 export default function Home() {
   let [accessToken, setAccessToken] = useState<string | null>(null);
