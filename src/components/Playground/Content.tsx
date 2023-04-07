@@ -42,7 +42,7 @@ export default function PlaygroundContent({
     if (msgs) {
       setMessages(msgs);
     }
-  }, [loading, setIsBusy]);
+  }, []);
 
   const setConversation = useConversationStore(
     (state: any) => state.setConversation
@@ -160,14 +160,20 @@ export default function PlaygroundContent({
     await axios
       .post("https://dribs.dev/ai/chat", {
         messages: [
-          { role: "system", content: systemMessage },
+          {
+            role: "system",
+            content: systemMessage
+              ? systemMessage
+              : "You are a helpful assistant.",
+          },
           ...generatedMessages,
         ],
         model: model,
       })
       .then(async (res) => {
-        console.log("Updating Message", { res });
+        // console.log("Updating Message", { res });
         const newMessage = res.data.choices[0].message.content;
+        // console.log("Get New Message", newMessage);
         await setMessages((prevMessages) => [
           ...prevMessages,
           {
@@ -178,6 +184,7 @@ export default function PlaygroundContent({
             message: newMessage,
           },
         ]);
+        // console.log("Message Updated", messages);
       })
       .catch((err) => {
         console.log({ err });

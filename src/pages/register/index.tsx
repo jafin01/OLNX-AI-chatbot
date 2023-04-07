@@ -31,14 +31,13 @@ function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-    const { push } = useRouter();
+  const { push } = useRouter();
 
-    useEffect(() => {
-      if (window.localStorage.getItem("accessToken")) {
-        push("/playgrounds");
-      }
-    }, [push]);
-
+  useEffect(() => {
+    if (window.localStorage.getItem("accessToken")) {
+      push("/playgrounds");
+    }
+  }, [push]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -94,9 +93,15 @@ function Register() {
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="pt-36 md:p-0 lg:p-0 xl:p-0 2xl:p-0 flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-          <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
-            <span className="inline md:block">Re<span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">gist</span>er</span>
-          </h1>
+            <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+              <span className="inline md:block">
+                Re
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">
+                  gist
+                </span>
+                er
+              </span>
+            </h1>
             <Formik
               initialValues={{
                 name: "",
@@ -141,7 +146,6 @@ function Register() {
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-
                   </div>
 
                   <div className="group w-full mb-6">
@@ -211,7 +215,6 @@ function Register() {
                   </div>
 
                   <div className="group w-full mb-10">
-
                     <label
                       htmlFor="confirmPassword"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -225,7 +228,8 @@ function Register() {
                         name="password_confirmation"
                         placeholder="Confirm Password"
                         className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
-                          touched.password_confirmation && errors.password_confirmation
+                          touched.password_confirmation &&
+                          errors.password_confirmation
                             ? "border border-red-500"
                             : "border border-gray-200"
                         }`}
