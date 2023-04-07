@@ -31,14 +31,13 @@ function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-    const { push } = useRouter();
+  const { push } = useRouter();
 
-    useEffect(() => {
-      if (window.localStorage.getItem("accessToken")) {
-        push("/playground");
-      }
-    }, [push]);
-
+  useEffect(() => {
+    if (window.localStorage.getItem("accessToken")) {
+      push("/playgrounds");
+    }
+  }, [push]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -139,7 +138,6 @@ function Register() {
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-
                   </div>
 
                   <div className="group w-full mb-6">
@@ -209,7 +207,6 @@ function Register() {
                   </div>
 
                   <div className="group w-full mb-10">
-
                     <label
                       htmlFor="confirmPassword"
                       className="inline-block mb-2 font-bold w-full text-sm text-gray-500 transition-all duration-200 ease-in-out group-focus-within:text-blue-400"
@@ -223,7 +220,8 @@ function Register() {
                         name="password_confirmation"
                         placeholder="Confirm Password"
                         className={`peer relative h-10 w-full outline-none rounded-md bg-gray-50 pl-10 pr-4 font-thin drop-shadow-sm transition-all duration-200 ease-in-out focus:ring-1 focus:bg-white focus:ring-blue-400  ${
-                          touched.password_confirmation && errors.password_confirmation
+                          touched.password_confirmation &&
+                          errors.password_confirmation
                             ? "border border-red-500"
                             : "border border-gray-200"
                         }`}
