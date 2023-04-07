@@ -39,11 +39,14 @@ export default function PlaygroundContent({
   const [itteration, setItteration] = useState(5);
 
   useEffect(() => {
-    setIsBusy(loading);
     if (msgs) {
       setMessages(msgs);
     }
   }, []);
+
+  useEffect(() => {
+    setIsBusy(loading);
+  }, [loading]);
 
   const setConversation = useConversationStore(
     (state: any) => state.setConversation
