@@ -1,53 +1,104 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { FiLogOut, FiMessageSquare } from "react-icons/fi";
+import { AiOutlineLogin } from "react-icons/ai";
+import { GiArchiveRegister } from "react-icons/gi";
 
 function HomeNavbar({ accessToken }: any) {
   const [isOpen, setIsOpen] = useState(false);
 
-  function handleOpen() {
-    setIsOpen(!isOpen);
-    console.log("handled successfully");
+  function closeNavbar() {
+    setIsOpen(false);
   }
 
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 768 && isOpen) {
+        closeNavbar();
+      }
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isOpen])
+
   return (
-    
     <nav
       className="relative z-50 h-24 select-none"
       x-data="{ showMenu: false }"
     >
       <div className="container relative flex flex-wrap items-center justify-between h-24 mx-auto overflow-hidden font-medium border-b border-gray-200 md:overflow-visible lg:justify-center sm:px-4 md:px-2 lg:px-0">
-        <div className="flex items-center justify-start w-1/4 h-full pr-4">
-          <Link href="/" className="inline-block py-4 md:py-0">
-            <span className="p-1 text-xl font-black leading-none text-gray-900">
-              OLNX
-            </span>
-          </Link>
-        </div>
-        <div
-          className="top-0 left-0 items-start w-full h-full p-4 text-sm bg-gray-900 bg-opacity-50 md:items-center md:w-3/4 md:absolute lg:text-base md:bg-transparent md:p-0 md:relative md:flex hidden"
-          // classX="{&apos;flex fixed&apos;: showMenu, &apos;hidden&apos;: !showMenu }"
-        >
-          <div className="flex-col w-full h-auto overflow-hidden bg-white rounded-lg md:bg-transparent md:overflow-visible md:rounded-none md:relative md:flex md:flex-row">
-            <Link
-              href="/"
-              className="items-center block w-auto h-16 px-6 text-xl font-black leading-none text-gray-900 md:hidden"
-            >
-              OLNX
+        <div className="flex items-center w-full h-full pr-4 justify-between">
+          <div>
+            <Link href="/" className="inline-block py-4 md:py-0">
+              <span className="p-1 text-xl font-black leading-none text-gray-900">
+                OLNX
+              </span>
             </Link>
-            <div className="flex-1"></div>
-            <div className="flex flex-col items-start justify-end w-full pt-4 md:items-center md:w-1/3 md:flex-row md:py-0">
+          </div>
+          <div>
+            <button
+              type="button"
+              className="flex md:hidden px-5 text-gray-800 hover:text-gray-500 focus:outline-none focus:text-gray-500"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {!isOpen && (
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="menu w-6 h-6"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M2 4.75C2 4.33579 2.33579 4 2.75 4H17.25C17.6642 4 18 4.33579 18 4.75C18 5.16421 17.6642 5.5 17.25 5.5H2.75C2.33579 5.5 2 5.16421 2 4.75ZM2 9.75C2 9.33579 2.33579 9 2.75 9H17.25C17.6642 9 18 9.33579 18 9.75C18 10.1642 17.6642 10.5 17.25 10.5H2.75C2.33579 10.5 2 10.1642 2 9.75ZM2.75 14C2.33579 14 2 14.3358 2 14.75C2 15.1642 2.33579 15.5 2.75 15.5H17.25C17.6642 15.5 18 15.1642 18 14.75C18 14.3358 17.6642 14 17.25 14H2.75Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+              {isOpen && (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className=""
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              )}
+            </button>
+
+            <div className="hidden md:flex ">
               {accessToken ? (
                 <>
                   <Link
                     href="/playgrounds"
-                    className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                    className="justify-center p-5 flex gap-2 items-center w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto hover:text-cyan-500"
                   >
+                  <FiMessageSquare />
                     Playgrounds
                   </Link>
                   <Link
                     href="/logout"
-                    className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                    className="justify-center p-5 flex gap-2 items-center w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto hover:text-cyan-500"
                   >
+                <FiLogOut />
                     Logout
                   </Link>
                 </>
@@ -55,7 +106,7 @@ function HomeNavbar({ accessToken }: any) {
                 <>
                   <Link
                     href="/login"
-                    className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto"
+                    className="w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto hover:text-cyan-500"
                   >
                     Sign In
                   </Link>
@@ -70,42 +121,46 @@ function HomeNavbar({ accessToken }: any) {
             </div>
           </div>
         </div>
-        <div
-          onClick={() => {
-            //"showMenu = !showMenu"
-          }}
-          className="absolute right-0 flex flex-col items-center items-end justify-center w-10 h-10 bg-white rounded-full cursor-pointer md:hidden hover:bg-gray-100"
-        >
-          <svg
-            className="w-6 h-6 text-gray-700"
-            x-show="!showMenu"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M4 6h16M4 12h16M4 18h16" className=""></path>
-          </svg>
-          <svg
-            className="w-6 h-6 text-gray-700"
-            x-show="showMenu"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ display: "none" }}
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-        </div>
       </div>
+      {isOpen && (
+        <div className="absolute bg-white h-screen w-full mt-12 items-center gap-2">
+          {accessToken ? (
+            <>
+              <Link
+                href="/playgrounds"
+                className="justify-center p-5 flex gap-2 items-center"
+              >
+                <FiMessageSquare />
+                Playgrounds
+              </Link>
+              <Link
+                href="/logout"
+                className="justify-center p-5 flex gap-2 items-center"
+              >
+                <FiLogOut />
+                Logout
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="mx-auto flex p-5 gap-2 items-center max-w-max hover:text-cyan-500"
+              >
+                <AiOutlineLogin />
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="mx-auto p-5 flex gap-2 items-center max-w-max hover:text-cyan-500"
+              >
+                <GiArchiveRegister />
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

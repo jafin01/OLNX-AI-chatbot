@@ -43,11 +43,24 @@ export default function Navbar() {
     getUser();
   }, []);
 
-  window.addEventListener('resize', function() {
-    if (window.innerWidth >= 768) {
-      setIsOpen(false);
+  function closeNavbar () {
+    setIsOpen(false);
+  }
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 768 && isOpen) {
+        closeNavbar();
+      }
     }
-  });
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
+
   return (
     <>
       <nav className="py-4 h-16 bg-white border-b border-gray-300 w-full flex justify-between items-center">
