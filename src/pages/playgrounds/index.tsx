@@ -70,7 +70,7 @@ export default function Playgrounds() {
             <FiMessageSquare />
             <span>Playgrounds</span>
           </h1>
-          <main className="grid grid-cols-1 gap-6">
+          <main className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Link
               href="/playgrounds/new"
               className="rounded overflow-hidden border border-gray-300 h-32 text-gray-500"
