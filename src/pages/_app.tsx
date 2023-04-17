@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import Tracker from "@openreplay/tracker";
-import trackerAssist from "@openreplay/tracker-assist";
+// import trackerAssist from "@openreplay/tracker-assist";
 import { useEffect } from "react";
 
 const tracker = new Tracker({
@@ -11,7 +11,7 @@ const tracker = new Tracker({
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    tracker.use(trackerAssist({}));
+    // tracker.use(trackerAssist({}));
     tracker.start();
   }, []);
   return (
