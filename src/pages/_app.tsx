@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
-import Tracker from "@openreplay/tracker/cjs";
+import Tracker from "@openreplay/tracker";
 import { useEffect } from "react";
 
 const tracker = new Tracker({
