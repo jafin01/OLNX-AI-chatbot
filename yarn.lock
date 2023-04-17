@@ -186,6 +186,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@medv/finder@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@medv/finder/-/finder-3.0.0.tgz#141b81504f71c25ca860716451b8bcb2d8ef4783"
+  integrity sha512-GhTmdnzIm+EMCSAF6QL1JunVN/9r4GUbYBWbhX7zOCtNqhsA/Bo9ltr+Cl5p5U4F9PTEwnF7pWmSPWC3H3MUQQ==
+
 "@next/env@13.2.4":
   version "13.2.4"
   resolved "https://registry.npmjs.org/@next/env/-/env-13.2.4.tgz"
@@ -283,6 +288,14 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@openreplay/tracker@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@openreplay/tracker/-/tracker-6.0.0.tgz#0b6475a6b5684b894963d9d04b42960e073fa7bf"
+  integrity sha512-YM6b5yjCQveE+cDV9DfrNpjCEZ8bGu875nNOUs+/cm5UxT2xpeJLq6QV0obhVsOtuD7PWf+wt3d9QkVTff+W3A==
+  dependencies:
+    "@medv/finder" "^3.0.0"
+    error-stack-parser "^2.0.6"
 
 "@pkgr/utils@^2.3.1":
   version "2.3.1"
@@ -1272,6 +1285,13 @@ error-ex@^1.3.1:
   integrity sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==
   dependencies:
     is-arrayish "^0.2.1"
+
+error-stack-parser@^2.0.6:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/error-stack-parser/-/error-stack-parser-2.1.4.tgz#229cb01cdbfa84440bfa91876285b94680188286"
+  integrity sha512-Sk5V6wVazPhq5MhpO+AUxJn5x7XSXGl1R93Vn7i+zS15KDVxQijejNCrz8340/2bgLBjR9GtEG8ZVKONDjcqGQ==
+  dependencies:
+    stackframe "^1.3.4"
 
 es-abstract@^1.19.0, es-abstract@^1.20.4:
   version "1.21.2"
@@ -3208,6 +3228,11 @@ source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.0.2.tgz"
   integrity sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==
+
+stackframe@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.3.4.tgz#b881a004c8c149a5e8efef37d51b16e412943310"
+  integrity sha512-oeVtt7eWQS+Na6F//S4kJ2K2VbRlS9D43mAlMyVpVWovy9o+jfgH8O9agzANzaiLjclA0oYzUXEM4PurhSUChw==
 
 stop-iteration-iterator@^1.0.0:
   version "1.0.0"
