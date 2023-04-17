@@ -9,10 +9,9 @@ const tracker = new Tracker({
   projectKey: "OOfFclJkE8QmRYP6LCY7",
 });
 
-tracker.use(trackerAssist({}));
-
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
+    tracker.use(trackerAssist({}));
     tracker.start();
   }, []);
   return (
