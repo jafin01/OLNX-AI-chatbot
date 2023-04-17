@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@openreplay/tracker": "^6.0.0",
+    "@openreplay/tracker-assist": "^5.0.2",
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.52.0",
     "@tremor/react": "^2.0.2",
