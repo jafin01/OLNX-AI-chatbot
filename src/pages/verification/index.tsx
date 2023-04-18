@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import Footer from "@/components/Footer";
-import LottieAnimation from "@/components/LottiAnimation";
 import NewNavbar from "@/components/HomeNavbar";
 import { Button } from "@tremor/react";
 import Link from "next/link";
