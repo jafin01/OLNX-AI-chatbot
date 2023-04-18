@@ -29,6 +29,27 @@ export default function Admin() {
   const [users, setUsers] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [tab, setTab] = useState<string>("dashboard");
+  // const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
+  const [modelUser, setModelUser] = useState<any>({
+    user: null,
+    isModelOpen: false,
+  });
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query?.user) {
+      users.filter((user: any) => {
+        if (user.id == router.query?.user) {
+          setModelUser({
+            user,
+            isModelOpen: true,
+          });
+        }
+      });
+
+      setTab("users");
+    }
+  }, [users, router.query?.user]);
 
   async function loadAdmin() {
     setLoading(true);
@@ -78,6 +99,13 @@ export default function Admin() {
             defaultValue={tab}
             onValueChange={(value) => {
               setTab(value);
+              if (modelUser.isModelOpen) {
+                setModelUser({
+                  user: null,
+                  isModelOpen: false,
+                });
+                push('/admin')
+              }
             }}
             className="my-6"
           >
@@ -98,7 +126,7 @@ export default function Admin() {
             <AdminPlaygrounds playgrounds={playgrounds} />
           )}
           {tab === "templates" && <AdminTemplates templates={templates} />}
-          {tab === "users" && <AdminUsers users={users} />}
+          {tab === "users" && <AdminUsers users={users} modelUser={modelUser} setModelUser={setModelUser} />}
           {tab === "settings" && <AdminSettings />}
         </section>
       )}
