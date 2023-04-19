@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   Icon,
   Table,
@@ -12,12 +11,11 @@ import {
   Title,
 } from "@tremor/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   FiEye,
   FiMessageSquare,
   FiTrash,
-  FiTrendingUp,
-  FiUser,
 } from "react-icons/fi";
 
 export default function AdminPlaygrounds({
@@ -25,6 +23,8 @@ export default function AdminPlaygrounds({
 }: {
   playgrounds: any;
 }) {
+
+  const { push } = useRouter();
   return (
     <Card>
       <Title className="flex items-center gap-2">
@@ -48,7 +48,10 @@ export default function AdminPlaygrounds({
                 <TableCell>
                   <Text>{playground.name}</Text>
                 </TableCell>
-                <TableCell>
+                <TableCell 
+                  onClick={() => push(`/admin/users?userId=${playground.user_id}`)}
+                  className="cursor-pointer"
+                >
                   <Text>{playground.user_id}</Text>
                 </TableCell>
                 <TableCell>

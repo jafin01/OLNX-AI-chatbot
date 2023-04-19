@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AdminHome from "@/components/Admin/Home";
 import AdminPlaygrounds from "@/components/Admin/Playgrounds";
 import AdminSettings from "@/components/Admin/Settings";
 import AdminTemplates from "@/components/Admin/Templates";
-import AdminUsers from "@/components/Admin/Users";
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import { TabList, Tab } from "@tremor/react";
@@ -37,16 +37,17 @@ export default function AdminLayout({ route }: any) {
 
   // const router = useRouter();
 
-  useEffect(() => {
-    setTab(route?.split("/")[2] || "dashboard");
-  }, [route]);
-
+  
   useEffect(() => {
     if (!window.localStorage.getItem("accessToken")) {
       push("/login");
     }
-   setLoading(false);
+    setLoading(false);
   }, [])
+  
+  useEffect(() => {
+    setTab(route?.split("/")[2] || "dashboard");
+  }, [route]);
 
   // useEffect(() => {
   //   if (router.query?.user) {
@@ -108,7 +109,8 @@ export default function AdminLayout({ route }: any) {
             <span>Admin</span>
           </h1>
           <TabList
-            defaultValue={tab}
+            value={tab}
+            defaultValue="dashboard"
             onValueChange={(value) => {
               setTab(value);
               push(`/admin/${value}`)

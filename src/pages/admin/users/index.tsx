@@ -8,13 +8,14 @@ import { useEffect, useState } from "react";
 
 export default function Templates() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isRedirect, setIsRedirect] = useState<boolean>(false);
   const [modelUser, setModelUser] = useState({
     user: {},
     isModelOpen: false,
   })
-  
-  const { push } = useRouter();
+  const router = useRouter();
+  const { push } = router;
 
   async function loadAdmin() {
     setLoading(true);
@@ -38,17 +39,30 @@ export default function Templates() {
     if (!window.localStorage.getItem("accessToken")) {
       push("/login");
     }
-    // push(route)
     loadAdmin();
   }, []);
 
-  function showUserInfo(id: number) {
+  function handleRedirectedPreview () {
+    if (isRedirect) {
+      setIsRedirect(false);
+      push("/admin/playgrounds")
+    }
+  }
+
+  async function showUserInfo(id: number) {
     const user = users.filter((user: any) => user.id === id);
     setModelUser({
       user: user[0],
-      isModelOpen: true
+      isModelOpen: true,
     })
   }
+
+  useEffect(() => {
+    if (router?.query?.userId) {
+      setIsRedirect(true);
+      showUserInfo(parseInt(router?.query?.userId as string))
+    }
+  }, [users])
 
   return (
     <div className="px-5 bg-gray-100 h-screen">
@@ -57,7 +71,7 @@ export default function Templates() {
       ) : (
         <>
           { modelUser.isModelOpen && (
-            <UserProfileCard modelUser={modelUser} setModelUser={setModelUser} />
+            <UserProfileCard modelUser={modelUser} setModelUser={setModelUser} handleRedirect={handleRedirectedPreview} />
           )}
           <AdminUsers users={users} showUserInfo={showUserInfo} />
         </>

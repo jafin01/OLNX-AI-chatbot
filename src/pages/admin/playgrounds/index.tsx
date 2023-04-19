@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AdminPlaygrounds from '@/components/Admin/Playgrounds';
 import { LoadingPage } from '@/components/Loading';
 import axios from 'axios';
