@@ -37,13 +37,13 @@ function Playgrounds() {
   }, []);
   
   return (
-    <>
+    <div className='bg-gray-100 h-screen px-5'>
       {loading ? (
         <LoadingPage />
       ) : 
       <AdminPlaygrounds playgrounds={playgrounds} />
       }  
-    </>
+    </div>
   )
 }
 

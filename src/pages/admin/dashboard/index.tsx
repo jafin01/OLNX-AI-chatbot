@@ -1,3 +1,4 @@
+import AdminHome from "@/components/Admin/Home";
 import { LoadingPage } from "@/components/Loading";
 import playgrounds from "@/pages/playgrounds";
 import templates from "@/pages/templates";
@@ -56,52 +57,12 @@ export default function Dashboard({
 
 
   return (
-    <>
+    <div className="bg-gray-100 h-screen px-5">
       {loading ? (
         <LoadingPage />
       ) : (
-        <div className="bg-gray-100 h-screen">
-          <Grid numColsSm={2} numColsLg={3} className="gap-6 px-8 justify-around">
-            <Card decoration="top" decorationColor={"teal"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon
-                  icon={FiMessageSquare}
-                  variant="light"
-                  size="xl"
-                  color={"teal"}
-                />
-                <div className="truncate">
-                  <Text>Playgrounds</Text>
-                  <Metric className="truncate">{playgroundsCount}</Metric>
-                </div>
-              </Flex>
-              {/* <div className="text-right">
-                <Button onClick={} size="xs" variant="light" className="mt-4">
-                  View all Playgrounds
-                </Button>
-              </div> */}
-            </Card>
-            <Card decoration="top" decorationColor={"rose"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon icon={FiBox} variant="light" size="xl" color={"rose"} />
-                <div className="truncate">
-                  <Text>Templates</Text>
-                  <Metric className="truncate">{templatesCount}</Metric>
-                </div>
-              </Flex>
-            </Card>
-            <Card decoration="top" decorationColor={"lime"}>
-              <Flex justifyContent="start" className="space-x-4">
-                <Icon icon={FiUser} variant="light" size="xl" color={"lime"} />
-                <div className="truncate">
-                  <Text>Users</Text>
-                  <Metric className="truncate">{usersCount}</Metric>
-                </div>
-              </Flex>
-            </Card>
-          </Grid>
-        </div>
+        <AdminHome playgrounds={playgroundsCount} templates={templatesCount} users={usersCount}  />
       )}
-    </>
+    </div>
   );
 }

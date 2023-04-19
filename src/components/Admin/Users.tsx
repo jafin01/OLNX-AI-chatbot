@@ -30,20 +30,20 @@ import {
 
 export default function AdminUsers({
   users,
-  modelUser,
-  setModelUser,
+  // modelUser,
+  // setModelUser,
 }: {
   users: any,
-  modelUser:{
-    user:any,
-    isModelOpen:boolean
-  },
-  setModelUser:any
+  // modelUser:{
+  //   user:any,
+  //   isModelOpen:boolean
+  // },
+  // setModelUser:any
 }) {
   const router = useRouter();
   return (
     <Card>
-      {modelUser.user && modelUser.isModelOpen && (
+      {/* {modelUser.user && modelUser.isModelOpen && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
           <div className="absolute shadow-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/4 h-3/4 bg-white rounded-2xl">
             <div className="bg-violet-400 h-1/2 w-full rounded-br-[30%] rounded-t-2xl">
@@ -72,7 +72,6 @@ export default function AdminUsers({
                 />
               </div>
             </div>
-                {/* <div className="">{modelUser.user.name}</div> */}
               <div className="flex flex-col gap-3 py-2 items-center h-full">
                 <div className="flex items-center gap-2 text-2xl font-semibold text-violet-500">
                   {modelUser.user.name}
@@ -147,10 +146,9 @@ export default function AdminUsers({
                     />
                 </div>
               </div>
-            {/* </div> */}
           </div>
         </div>
-      )}
+      )} */}
 
       <Title className="flex items-center gap-2">
         <FiUsers />

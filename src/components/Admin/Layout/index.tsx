@@ -27,7 +27,7 @@ export default function AdminLayout({ route }: any) {
   // const [playgrounds, setPlaygrounds] = useState<any>([]);
   // const [templates, setTemplates] = useState<any>([]);
   // const [users, setUsers] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [tab, setTab] = useState<string>("dashboard");
   // const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
   // const [modelUser, setModelUser] = useState<any>({
@@ -35,18 +35,18 @@ export default function AdminLayout({ route }: any) {
   //   isModelOpen: false,
   // });
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  // useEffect(() => {
-  //   setTab(route?.split("/")[2] || "dashboard");
-  // }, [route, tab]);
+  useEffect(() => {
+    setTab(route?.split("/")[2] || "dashboard");
+  }, [route]);
 
-  // useEffect(() => {
-  //   if (!window.localStorage.getItem("accessToken")) {
-  //     push("/login");
-  //   }
-  //   push(`/admin/${route?.split("/")[2] || "dashboard"}`);
-  // }, [tab])
+  useEffect(() => {
+    if (!window.localStorage.getItem("accessToken")) {
+      push("/login");
+    }
+   setLoading(false);
+  }, [])
 
   // useEffect(() => {
   //   if (router.query?.user) {

@@ -10,10 +10,10 @@ import {
 import AdminSettingsGeneral from "./Settings/General";
 import AdminSettingsKeys from "./Settings/Keys";
 
-export default function AdminSettings() {
+export default function AdminSettings({ className }: { className?: string }) {
   const [tab, setTab] = useState<string>("general");
   return (
-    <Card>
+    <Card className={className}>
       <Title className="mb-6 flex items-center gap-2">
         <FiSettings />
         <span>Settings</span>
