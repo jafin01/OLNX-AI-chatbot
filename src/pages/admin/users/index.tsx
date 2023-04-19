@@ -1,35 +1,18 @@
-import AdminTemplates from "@/components/Admin/Templates";
+/* eslint-disable react-hooks/exhaustive-deps */
 import AdminUsers from "@/components/Admin/Users";
+import UserProfileCard from "@/components/Admin/Users/UserProfileCard";
 import { LoadingPage } from "@/components/Loading";
-import {
-  Button,
-  Card,
-  Icon,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-  Text,
-  Title,
-} from "@tremor/react";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {
-  FiBox,
-  FiEye,
-  FiMessageSquare,
-  FiTrash,
-  FiTrendingUp,
-  FiUser,
-} from "react-icons/fi";
 
 export default function Templates() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [modelUser, setModelUser] = useState({
+    user: {},
+    isModelOpen: false,
+  })
   
   const { push } = useRouter();
 
@@ -59,12 +42,25 @@ export default function Templates() {
     loadAdmin();
   }, []);
 
+  function showUserInfo(id: number) {
+    const user = users.filter((user: any) => user.id === id);
+    setModelUser({
+      user: user[0],
+      isModelOpen: true
+    })
+  }
+
   return (
     <div className="px-5 bg-gray-100 h-screen">
       {loading ? (
         <LoadingPage />
       ) : (
-        <AdminUsers users={users} />
+        <>
+          { modelUser.isModelOpen && (
+            <UserProfileCard modelUser={modelUser} setModelUser={setModelUser} />
+          )}
+          <AdminUsers users={users} showUserInfo={showUserInfo} />
+        </>
       )}
   </div>
   );
