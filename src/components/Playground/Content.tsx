@@ -14,13 +14,14 @@ import {
 } from "@tremor/react";
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
+import { config } from "process";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
   message: string;
 };
 
-let dummy_assistants = [
+let dummy_configs = [
   {
     id: 1,
     name: "Assistant #1",
@@ -64,13 +65,28 @@ let dummy_assistants = [
   },
 ];
 
+const msgs: any = [
+  {
+    role: "Assistant #1",
+    message: "Hello.",
+  },
+  {
+    role: "Assistant #2",
+    message: "Hello, I am an assistant.",
+  },
+  {
+    role: "Assistant #3",
+    message: "Hello, I am an assistant.",
+  },
+];
+
 export default function PlaygroundContent({
   name,
   setIsBusy,
   isBusy,
   initialValues,
-  msgs,
-}: {
+}: // msgs,
+{
   name: string;
   setIsBusy: (b: boolean) => void;
   isBusy: boolean;
@@ -87,7 +103,6 @@ export default function PlaygroundContent({
       message: "Hello, I am an assistant.",
     },
   ]);
-
   const [configModel, setConfigModel] = useState<any>({
     isOpen: false,
     name: "",
@@ -102,7 +117,7 @@ export default function PlaygroundContent({
   });
   const [loading, setLoading] = useState(false);
   const [itteration, setItteration] = useState(5);
-  const [assistants, setAssistants] = useState(dummy_assistants);
+  const [configs, setConfigs] = useState(dummy_configs);
 
   useEffect(() => {
     if (msgs) {
@@ -113,10 +128,6 @@ export default function PlaygroundContent({
   useEffect(() => {
     setIsBusy(loading);
   }, [loading]);
-
-  const setConversation = useConversationStore(
-    (state: any) => state.setConversation
-  );
 
   const formikRef = useRef<any>();
 
@@ -135,15 +146,18 @@ export default function PlaygroundContent({
 
   useEffect(() => {
     if (itteration < formikRef.current.values.responses_to_generate) {
-      // generateResponse(formikRef.current.values);
+      generateResponse(formikRef.current.values);
     }
   }, [itteration]);
+
+  // const setConversation = useConversationStore(
+  //   (state: any) => state.setConversation
+  // );
 
   // a function to save the conversation
   // async function saveConversation() {
   //   await setConversation({
-  //     config1: formikRef.current.values.config1,
-  //     config2: formikRef.current.values.config2,
+  //     configs: configs,
   //     messages: messages,
   //     name: name,
   //   });
@@ -154,33 +168,6 @@ export default function PlaygroundContent({
     setMessages((prev) => prev.filter((_, i) => i !== index));
   }
 
-  // a fucntion that adds a new message to the messages array
-  function addMessage() {
-    // check last messae role
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role:
-            lastMessage.role === "Assistant #1"
-              ? "Assistant #2"
-              : "Assistant #1",
-          message: "",
-        },
-      ]);
-    } else {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "Assistant #1",
-          message: "",
-        },
-      ]);
-    }
-  }
-
-  // a functoion that updates the message in the messages array
   function updateMessage(index: number, msg: string) {
     setMessages((prev) =>
       prev.map((message, i) => {
@@ -195,20 +182,49 @@ export default function PlaygroundContent({
     );
   }
 
-  // a function that alternates the role of a message in the messages array
   function changeRole(index: number) {
-    setMessages((prev) =>
-      prev.map((message, i) => {
-        if (i === index) {
-          return {
-            ...message,
-            role:
-              message.role === "Assistant #1" ? "Assistant #2" : "Assistant #1",
-          };
-        }
-        return message;
-      })
-    );
+    setMessages((prev: any) => {
+      const currentRole = prev[index].role;
+      const currentRoleIndex = configs.findIndex((config) => config.name === currentRole);
+      const nextRoleIndex = (currentRoleIndex + 1) % configs.length;
+      const nextRole = configs[nextRoleIndex].name;
+  
+      return [
+        ...prev.slice(0, index),
+        {
+          ...prev[index],
+          role: nextRole,
+        },
+        ...prev.slice(index + 1),
+      ];
+    });
+  }
+  
+
+  function addMessage() {
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage) {
+      setMessages((prev: any) => {
+        const configIndex =
+          prev.length >= configs.length
+            ? (prev.length - configs.length) % configs.length
+            : prev.length;
+
+        return [
+          ...prev,
+          {
+            role: configs[configIndex].name,
+            message: "",
+          },
+        ];
+      });
+    } else {
+      setMessages((prev: any) => [
+        ...prev,
+        { role: configs[0] ? configs[0].name : "Assistant #1", message: "" },
+      ]);
+    }
   }
 
   // a function that calls an API over post
@@ -223,18 +239,17 @@ export default function PlaygroundContent({
     setItteration(0);
   }
 
-
   function saveAssistantConfig() {
     // save the configuration of the selected assistant somewhere...
-    console.log('savedConfig', configModel);
+    console.log("savedConfig", configModel);
   }
 
   function addAssistant() {
-    setAssistants((prev: any) => [
+    setConfigs((prev: any) => [
       ...prev,
       {
         name: `Assistant #${prev.length + 1}`,
-        id: prev.length+1,
+        id: prev.length + 1,
         system: "",
         model: "gpt-4",
         temperature: "0.7",
@@ -255,12 +270,12 @@ export default function PlaygroundContent({
     }));
     const systemMessage =
       lastMessage.role === "Assistant #1"
-        ? values.config2.system
-        : values.config1.system;
+        ? values.configs[0].system
+        : values.configs[1].system;
     const model =
       lastMessage.role === "Assistant #1"
-        ? values.config2.model
-        : values.config1.model;
+        ? values.config[0].model
+        : values.config[1].model;
     await axios
       .post("https://dribs.dev/ai/chat", {
         messages: [
@@ -303,7 +318,7 @@ export default function PlaygroundContent({
       configs: [],
     };
 
-    assistants.map((assistant, index) => {
+    configs.map((assistant, index) => {
       intValues.configs.push({
         name: assistant.name,
         id: assistant.id,
@@ -317,8 +332,7 @@ export default function PlaygroundContent({
       });
     });
 
-    console.log(intValues)
-
+    console.log("intValues", intValues);
   } else {
     intValues = initialValues;
   }
@@ -326,7 +340,13 @@ export default function PlaygroundContent({
   return (
     <>
       {configModel.isOpen && (
-        <AssistantConfig configModel={configModel} setConfigModel={setConfigModel} formikRef={formikRef} saveConfig={saveAssistantConfig} intValues={intValues.configs[configModel.index]} />
+        <AssistantConfig
+          configModel={configModel}
+          setConfigModel={setConfigModel}
+          formikRef={formikRef}
+          saveConfig={saveAssistantConfig}
+          intValues={intValues.configs[configModel.index]}
+        />
       )}
 
       <Formik
@@ -341,7 +361,7 @@ export default function PlaygroundContent({
           >
             <aside className="w-96 h-full flex flex-col gap-4 py-6">
               <AccordionList className="w-full outline-none">
-                {assistants.map((assistant, index) => {
+                {configs.map((assistant, index) => {
                   return (
                     <Accordion key={assistant.id} className="w-full">
                       <AccordionHeader className="font-semibold font-mono">
@@ -375,10 +395,8 @@ export default function PlaygroundContent({
                                 temperature: values.temperature,
                                 maxLength: values.maxLength,
                                 top_p: values.top_p,
-                                frequency_penalty:
-                                  values.frequency_penalty,
-                                presence_penalty:
-                                  values.presence_penalty,
+                                frequency_penalty: values.frequency_penalty,
+                                presence_penalty: values.presence_penalty,
                               });
                             }}
                           >
@@ -394,13 +412,15 @@ export default function PlaygroundContent({
                 })}
               </AccordionList>
 
-              <button className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2" onClick={addAssistant}>
+              <button
+                className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2"
+                onClick={addAssistant}
+              >
                 <span>
                   <GoPlus />
                 </span>
                 <span>Add Assistant</span>
               </button>
-
             </aside>
             <section className="w-full flex flex-col gap-2 py-6">
               <div className="w-full h-full flex-1 overflow-y-auto">
@@ -474,255 +494,6 @@ export default function PlaygroundContent({
                 </div>
               </footer>
             </section>
-            {/* <aside className="w-96 h-full flex flex-col gap-4 border-l border-gray-300 px-4 py-2 overflow-y-auto">
-                <h4>System #1</h4>
-                <div>
-                  <div>
-                    <select
-                      disabled={isBusy}
-                      name="config1.model"
-                      value={values.config1.model}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full p-2 mb-2"
-                    >
-                      <option value="gpt-4">GPT-4</option>
-                      <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                    </select>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Temperature</p>
-                      <p>{values.config1.temperature}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config1.temperature"
-                      value={values.config1.temperature}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      // bind:value={config1.temperature}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Maximum Length</p>
-                      <p>{values.config1.maxLength}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config1.maxLength"
-                      value={values.config1.maxLength}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="1"
-                      min="1"
-                      max="2048"
-                      // bind:value={config1.max_length}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Top P</p>
-                      <p>{values.config1.top_p}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config1.top_p"
-                      value={values.config1.top_p}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      // bind:value={config1.top_p}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Frequency Penalty</p>
-                      <p>{values.config1.frequency_penalty}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config1.frequency_penalty"
-                      value={values.config1.frequency_penalty}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="2"
-                      // bind:value={config1.frequency_penalty}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Presence Penalty</p>
-                      <p>{values.config1.presence_penalty}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config1.presence_penalty"
-                      value={values.config1.presence_penalty}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="2"
-                      // bind:value={config1.presence_penalty}
-                    />
-                  </div>
-                </div>
-                <hr />
-                <h4>System #2</h4>
-                <div>
-                  <div>
-                    <select /*bind:value={model2}
-                      disabled={isBusy}
-                      className="w-full p-2 mb-2"
-                      name="config2.model"
-                      value={values.config2.model}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                    >
-                      <option value="gpt-4">GPT-4</option>
-                      <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                    </select>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Temperature</p>
-                      <p>{values.config2.temperature}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config2.temperature"
-                      value={values.config2.temperature}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      // bind:value={config2.temperature}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Maximum Length</p>
-                      <p>{values.config2.maxLength}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config2.maxLength"
-                      value={values.config2.maxLength}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="1"
-                      min="1"
-                      max="2048"
-                      // bind:value={config2.max_length}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Top P</p>
-                      <p>{values.config2.top_p}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config2.top_p"
-                      value={values.config2.top_p}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      // bind:value={config2.top_p}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Frequency Penalty</p>
-                      <p>{values.config2.frequency_penalty}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config2.frequency_penalty"
-                      value={values.config2.frequency_penalty}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="2"
-                      // bind:value={config2.frequency_penalty}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <p>Presence Penalty</p>
-                      <p>{values.config2.presence_penalty}</p>
-                    </div>
-                    <input
-                      disabled={isBusy}
-                      name="config2.presence_penalty"
-                      value={values.config2.presence_penalty}
-                      onChange={async (e) => {
-                        await handleChange(e);
-                        saveConversation();
-                      }}
-                      className="w-full accent-teal-700"
-                      type="range"
-                      step="0.01"
-                      min="0"
-                      max="2"
-                      // bind:value={config2.presence_penalty}
-                    />
-                  </div>
-                </div>
-              </aside> */}
           </Form>
         )}
       </Formik>
