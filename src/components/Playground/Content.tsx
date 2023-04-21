@@ -15,6 +15,7 @@ import {
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
 import { config } from "process";
+import { useConfigStore } from "@/stores/configsStore";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
@@ -25,43 +26,37 @@ let dummy_configs = [
   {
     id: 1,
     name: "Assistant #1",
-    config: {
-      system: "",
-      model: "gpt-4",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
-    },
+    system: "",
+    model: "gpt-4",
+    temperature: "0.7",
+    maxLength: "256",
+    top_p: "1",
+    frequency_penalty: "0",
+    presence_penalty: "0",
   },
   {
     id: 2,
     name: "Assistant #2",
     value: "Assistant #2",
-    config: {
-      system: "",
-      model: "gpt-4",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
-    },
+    system: "",
+    model: "gpt-4",
+    temperature: "0.7",
+    maxLength: "256",
+    top_p: "1",
+    frequency_penalty: "0",
+    presence_penalty: "0",
   },
   {
     id: 3,
     name: "Assistant #3",
     value: "Assistant #3",
-    config: {
-      system: "",
-      model: "gpt-4",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
-    },
+    system: "",
+    model: "gpt-4",
+    temperature: "0.7",
+    maxLength: "256",
+    top_p: "1",
+    frequency_penalty: "0",
+    presence_penalty: "0",
   },
 ];
 
@@ -139,29 +134,33 @@ export default function PlaygroundContent({
 
   useEffect(() => {
     // saveConversation();
+    async function genRes() {
+        await generateResponse(formikRef.current.values);  
+    }
     if (itteration < formikRef.current.values.responses_to_generate - 1) {
+      genRes();
       setItteration((prev) => prev + 1);
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (itteration < formikRef.current.values.responses_to_generate) {
-      generateResponse(formikRef.current.values);
-    }
-  }, [itteration]);
+  // useEffect(() => {
+  //   if (itteration < formikRef.current.values.responses_to_generate) {
+  //     generateResponse(formikRef.current.values);
+  //   }
+  // }, [itteration]);
 
-  // const setConversation = useConversationStore(
-  //   (state: any) => state.setConversation
-  // );
+  const setConversation = useConversationStore(
+    (state: any) => state.setConversation
+  );
 
   // a function to save the conversation
-  // async function saveConversation() {
-  //   await setConversation({
-  //     configs: configs,
-  //     messages: messages,
-  //     name: name,
-  //   });
-  // }
+  async function saveConversation() {
+    await setConversation({
+      configs: configs,
+      messages: messages,
+      name: name,
+    });
+  }
 
   // a function that deletes a particular message from the messages array based on index
   function deleteMessage(index: number) {
@@ -185,10 +184,12 @@ export default function PlaygroundContent({
   function changeRole(index: number) {
     setMessages((prev: any) => {
       const currentRole = prev[index].role;
-      const currentRoleIndex = configs.findIndex((config) => config.name === currentRole);
+      const currentRoleIndex = configs.findIndex(
+        (config) => config.name === currentRole
+      );
       const nextRoleIndex = (currentRoleIndex + 1) % configs.length;
       const nextRole = configs[nextRoleIndex].name;
-  
+
       return [
         ...prev.slice(0, index),
         {
@@ -199,7 +200,6 @@ export default function PlaygroundContent({
       ];
     });
   }
-  
 
   function addMessage() {
     const lastMessage = messages[messages.length - 1];
@@ -231,18 +231,39 @@ export default function PlaygroundContent({
   async function generateResponses(values: any) {
     setLoading(true);
     // call generateResponse based on the number of responses to generate
-    for (let i = 0; i < values.responses_to_generate; i++) {
-      await generateResponse(values);
-    }
+    // for (let i = 0; i < values.responses_to_generate; i++) {
+    //   await generateResponse(values);
+    // }
+
+    await generateResponse(values);
 
     setLoading(false);
     setItteration(0);
   }
 
   function saveAssistantConfig() {
-    // save the configuration of the selected assistant somewhere...
-    console.log("savedConfig", configModel);
+    // update the current config in the configs array
+    setConfigs((prev: any) => {
+      return prev.map((config: any, i: number) => {
+        if (i === configModel.index) {
+          return {
+            name: configModel.name,
+            system: configModel.system,
+            model: configModel.model,
+            temperature: configModel.temperature,
+            maxLength: configModel.maxLength,
+            top_p: configModel.top_p,
+            frequency_penalty: configModel.frequency_penalty,
+            presence_penalty: configModel.presence_penalty,
+          };
+        }
+        return config;
+      });
+    });
+
+    console.log(configs);
   }
+    
 
   function addAssistant() {
     setConfigs((prev: any) => [
@@ -261,55 +282,56 @@ export default function PlaygroundContent({
     ]);
   }
 
+
   async function generateResponse(values: any) {
     setLoading(true);
     const lastMessage = messages[messages.length - 1];
     const generatedMessages = messages.map((message) => ({
-      role: message.role === lastMessage.role ? "user" : "assistant",
-      content: message.message,
+        role: message.role === lastMessage.role ? "user" : "assistant",
+        content: message.message,
     }));
-    const systemMessage =
-      lastMessage.role === "Assistant #1"
-        ? values.configs[0].system
-        : values.configs[1].system;
-    const model =
-      lastMessage.role === "Assistant #1"
-        ? values.config[0].model
-        : values.config[1].model;
+
+    // Get the index of the last assistant's role in the configs array
+    const lastAssistantIndex = configs.findIndex(config => config.name === lastMessage.role);
+
+    // Determine the next assistant's role based on the index
+    const nextAssistantIndex = lastAssistantIndex + 1 >= configs.length ? 0 : lastAssistantIndex + 1;
+    const nextAssistantRole = configs[nextAssistantIndex].name;
+
+    // const systemMessage = configs[lastAssistantIndex].system;
+    const systemMessage = configs[nextAssistantIndex].system;
+
+    const model = configs[lastAssistantIndex].model;
+
+    console.log(configs)
+
     await axios
-      .post("https://dribs.dev/ai/chat", {
-        messages: [
-          {
-            role: "system",
-            content: systemMessage
-              ? systemMessage
-              : "You are a helpful assistant.",
-          },
-          ...generatedMessages,
-        ],
-        model: model,
-      })
-      .then(async (res) => {
-        // console.log("Updating Message", { res });
-        const newMessage = res.data.choices[0].message.content;
-        // console.log("Get New Message", newMessage);
-        await setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            role:
-              lastMessage.role === "Assistant #1"
-                ? "Assistant #2"
-                : "Assistant #1",
-            message: newMessage,
-          },
-        ]);
-        console.log("Message Updated", messages);
-      })
-      .catch((err) => {
-        console.log({ err });
-      });
+        .post("https://dribs.dev/ai/chat", {
+            messages: [
+                {
+                    role: "system",
+                    content: systemMessage ? systemMessage : "You are a helpful assistant.",
+                },
+                ...generatedMessages,
+            ],
+            model: model,
+        })
+        .then(async (res) => {
+            const newMessage = res.data.choices[0].message.content;
+            await setMessages((prevMessages: any) => [
+                ...prevMessages,
+                {
+                    role: nextAssistantRole,
+                    message: newMessage,
+                },
+            ]);
+        })
+        .catch((err) => {
+            console.log({ err });
+        });
     setLoading(false);
-  }
+}
+
 
   let intValues: any;
   if (!initialValues) {
@@ -323,7 +345,7 @@ export default function PlaygroundContent({
         name: assistant.name,
         id: assistant.id,
         system: "",
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         temperature: "0.7",
         maxLength: "256",
         top_p: "1",
@@ -373,11 +395,27 @@ export default function PlaygroundContent({
                           <textarea
                             onChange={(e) => {
                               handleChange(e);
+                              // setConfigModel({
+                              //   name: assistant.name,
+                              //   id: assistant.id,
+                              //   isOpen: false,
+                              //   index,
+                              //   system: e.target.value,
+                              //   model: values.configs[index].model,
+                              //   temperature: values.configs[index].temperature,
+                              //   maxLength: values.configs[index].maxLength,
+                              //   top_p: values.configs[index].top_p,
+                              //   frequency_penalty:
+                              //     values.configs[index].frequency_penalty,
+                              //   presence_penalty:
+                              //     values.configs[index].presence_penalty,
+                              // })
+                              saveAssistantConfig();
                               // saveConversation();
                             }}
                             disabled={isBusy}
                             onBlur={handleBlur}
-                            name="config1.system"
+                            name="system"
                             className="h-full w-full resize-none outline-none"
                             placeholder="You are a helpful assistant."
                           />
@@ -413,6 +451,7 @@ export default function PlaygroundContent({
               </AccordionList>
 
               <button
+                type="button"
                 className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2"
                 onClick={addAssistant}
               >

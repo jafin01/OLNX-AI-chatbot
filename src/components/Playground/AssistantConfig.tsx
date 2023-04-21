@@ -7,6 +7,7 @@ type ConfigType =  {
   name: string,
   id?: string | number,
   model: string,
+  system: string,
   temperature: number,
   maxLength: number,
   top_p: number,
@@ -37,11 +38,9 @@ function AssistantConfig({
   function onSave(values:any) {
     if(values)
     setConfigModel({
-      isOpen: true,
-      index: configModel.index,
-      name: configModel.name,
-      id: configModel.id,
-      ...values
+      ...configModel,
+      ...values,
+      system: configModel.system,
     })
 
    saveConfig();
