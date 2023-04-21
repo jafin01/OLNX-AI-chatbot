@@ -14,8 +14,6 @@ import {
 } from "@tremor/react";
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
-import { config } from "process";
-import { useConfigStore } from "@/stores/configsStore";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
@@ -26,7 +24,6 @@ let dummy_configs = [
   {
     id: 1,
     name: "Assistant #1",
-    system: "",
     model: "gpt-4",
     temperature: "0.7",
     maxLength: "256",
@@ -37,8 +34,6 @@ let dummy_configs = [
   {
     id: 2,
     name: "Assistant #2",
-    value: "Assistant #2",
-    system: "",
     model: "gpt-4",
     temperature: "0.7",
     maxLength: "256",
@@ -49,8 +44,6 @@ let dummy_configs = [
   {
     id: 3,
     name: "Assistant #3",
-    value: "Assistant #3",
-    system: "",
     model: "gpt-4",
     temperature: "0.7",
     maxLength: "256",
@@ -102,7 +95,6 @@ export default function PlaygroundContent({
     isOpen: false,
     name: "",
     index: -1,
-    system: "",
     model: "gpt-4",
     temperature: "0.7",
     maxLength: "256",
@@ -149,18 +141,18 @@ export default function PlaygroundContent({
   //   }
   // }, [itteration]);
 
-  const setConversation = useConversationStore(
-    (state: any) => state.setConversation
-  );
+  // const setConversation = useConversationStore(
+  //   (state: any) => state.setConversation
+  // );
 
   // a function to save the conversation
-  async function saveConversation() {
-    await setConversation({
-      configs: configs,
-      messages: messages,
-      name: name,
-    });
-  }
+  // async function saveConversation() {
+  //   await setConversation({
+  //     configs: configs,
+  //     messages: messages,
+  //     name: name,
+  //   });
+  // }
 
   // a function that deletes a particular message from the messages array based on index
   function deleteMessage(index: number) {
@@ -241,28 +233,13 @@ export default function PlaygroundContent({
     setItteration(0);
   }
 
-  function saveAssistantConfig() {
-    // update the current config in the configs array
-    setConfigs((prev: any) => {
-      return prev.map((config: any, i: number) => {
-        if (i === configModel.index) {
-          return {
-            name: configModel.name,
-            system: configModel.system,
-            model: configModel.model,
-            temperature: configModel.temperature,
-            maxLength: configModel.maxLength,
-            top_p: configModel.top_p,
-            frequency_penalty: configModel.frequency_penalty,
-            presence_penalty: configModel.presence_penalty,
-          };
-        }
-        return config;
-      });
-    });
+  // function saveAssistantConfig() {
+  //   console.log("configModel", configModel)
+  // }
 
-    console.log(configs);
-  }
+  useEffect(() => {
+    console.log("configs", configs);
+  }, [configs]);
     
 
   function addAssistant() {
@@ -271,7 +248,6 @@ export default function PlaygroundContent({
       {
         name: `Assistant #${prev.length + 1}`,
         id: prev.length + 1,
-        system: "",
         model: "gpt-4",
         temperature: "0.7",
         maxLength: "256",
@@ -344,7 +320,7 @@ export default function PlaygroundContent({
       intValues.configs.push({
         name: assistant.name,
         id: assistant.id,
-        system: "",
+        [`system_${assistant.id}`]: "",
         model: "gpt-3.5-turbo",
         temperature: "0.7",
         maxLength: "256",
@@ -359,6 +335,37 @@ export default function PlaygroundContent({
     intValues = initialValues;
   }
 
+  // function saveAssistantConfig() {
+    
+  // }
+
+  // a useEffect that will run when the configModel changes and updates the configs array
+  useEffect(() => {
+    // update the configs array with the data in configModel
+    setConfigs((prev: any) => {
+      const newConfigs = [...prev];
+      newConfigs[configModel.index] = {
+        ...newConfigs[configModel.index],
+        ...configModel,
+        name: configModel.name,
+        // system: configModel.system,
+        model: configModel.model,
+        temperature: configModel.temperature,
+        maxLength: configModel.maxLength,
+        top_p: configModel.top_p,
+        frequency_penalty: configModel.frequency_penalty,
+        presence_penalty: configModel.presence_penalty,
+      };
+
+      return newConfigs;
+    });
+
+  }, [configModel]);
+
+  useEffect(() => {
+    console.log('configModel', configModel)
+  }, [configModel])
+
   return (
     <>
       {configModel.isOpen && (
@@ -366,7 +373,7 @@ export default function PlaygroundContent({
           configModel={configModel}
           setConfigModel={setConfigModel}
           formikRef={formikRef}
-          saveConfig={saveAssistantConfig}
+          // saveAssistantConfig={saveAssistantConfig}
           intValues={intValues.configs[configModel.index]}
         />
       )}
@@ -395,22 +402,22 @@ export default function PlaygroundContent({
                           <textarea
                             onChange={(e) => {
                               handleChange(e);
-                              // setConfigModel({
-                              //   name: assistant.name,
-                              //   id: assistant.id,
-                              //   isOpen: false,
-                              //   index,
-                              //   system: e.target.value,
-                              //   model: values.configs[index].model,
-                              //   temperature: values.configs[index].temperature,
-                              //   maxLength: values.configs[index].maxLength,
-                              //   top_p: values.configs[index].top_p,
-                              //   frequency_penalty:
-                              //     values.configs[index].frequency_penalty,
-                              //   presence_penalty:
-                              //     values.configs[index].presence_penalty,
-                              // })
-                              saveAssistantConfig();
+                              // saveAssistantConfig(e.target.value, index, assistant.id)
+
+                              setConfigModel({
+                                id: assistant.id,
+                                isOpen: false,
+                                name: assistant.name,
+                                index,
+                                [`system_${assistant.id}`]: e.target.value,
+                                model: configModel.model,
+                                temperature: configModel.temperature,
+                                maxLength: configModel.maxLength,
+                                top_p: configModel.top_p,
+                                frequency_penalty: configModel.frequency_penalty,
+                                presence_penalty: configModel.presence_penalty,
+                              });
+                              
                               // saveConversation();
                             }}
                             disabled={isBusy}
@@ -428,7 +435,6 @@ export default function PlaygroundContent({
                                 isOpen: true,
                                 name: assistant.name,
                                 index,
-                                system: values.system,
                                 model: values.model,
                                 temperature: values.temperature,
                                 maxLength: values.maxLength,

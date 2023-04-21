@@ -7,7 +7,6 @@ type ConfigType =  {
   name: string,
   id?: string | number,
   model: string,
-  system: string,
   temperature: number,
   maxLength: number,
   top_p: number,
@@ -19,31 +18,31 @@ function AssistantConfig({
     configModel, 
     setConfigModel, 
     formikRef, 
-    saveConfig, 
+    // saveAssistantConfig, 
     intValues
   } : { 
-    configModel: ConfigType, 
+    configModel: any, 
     setConfigModel: any, 
     formikRef: any, 
-    saveConfig: () => void, 
+    // saveAssistantConfig: (value: any, index: any, assistantId: any) => void, 
     intValues: ConfigType 
   },) {
     
     // function start here 
-  // useEffect(() => {
-  //   console.log('configModel', configModel)
-  //   console.log('intValues', intValues)
-  // }, [configModel, intValues])
+  useEffect(() => {
+    console.log('configModel', configModel)
+    console.log('intValues', intValues)
+  }, [configModel, intValues])
 
   function onSave(values:any) {
     if(values)
     setConfigModel({
       ...configModel,
       ...values,
-      system: configModel.system,
+      [`system_${configModel.id}`]: configModel[`system_${configModel.id}`]
     })
 
-   saveConfig();
+    // saveAssistantConfig(configModel.system, configModel.index, configModel.id);
   }
 
   return (
