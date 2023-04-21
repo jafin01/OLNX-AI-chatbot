@@ -40,7 +40,7 @@ export default function UserProfileCard({
           //   handleRedirect();
           // }}
         >
-          <div className="absolute shadow-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/4 h-3/4 bg-white rounded-2xl">
+          <div className="absolute shadow-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/4 h-3/4 flex-wrap bg-white rounded-2xl">
             <div className="bg-violet-400 h-1/2 w-full rounded-br-[30%] rounded-t-2xl">
               <div className="w-full text-right text-xl">
                 <button

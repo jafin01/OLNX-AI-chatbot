@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent, { Message } from "@/components/Playground/Content";
@@ -112,10 +113,24 @@ export default function Playground() {
             setIsBusy={setIsBusy}
             isBusy={isBusy}
             name={name}
-            initialValues={intValues}
+            // initialValues={intValues}
+            initialValues={initValues}
           />
         </>
       )}
     </>
   );
+}
+
+const initValues = {
+  responses_to_generate: 5,
+  config: {
+    system: "",
+    model: "gpt-4",
+    temperature: "0.7",
+    maxLength: "256",
+    top_p: "1",
+    frequency_penalty: "0",
+    presence_penalty: "0",
+  }
 }

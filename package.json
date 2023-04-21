@@ -13,6 +13,8 @@
     "@openreplay/tracker-assist": "^5.0.2",
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.52.0",
+    "@tanstack/react-query": "^4.29.3",
+    "@tanstack/react-query-devtools": "^4.29.3",
     "@tremor/react": "^2.0.2",
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
