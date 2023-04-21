@@ -1,6 +1,5 @@
 import {
   Badge,
-  Button,
   Card,
   Icon,
   Table,
@@ -12,26 +11,33 @@ import {
   Text,
   Title,
 } from "@tremor/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import {
   FiBox,
   FiCheck,
-  FiEye,
   FiKey,
   FiMessageSquare,
   FiSend,
   FiTrash,
-  FiTrendingUp,
   FiUser,
   FiUsers,
   FiX,
 } from "react-icons/fi";
 
-export default function AdminUsers({ users }: { users: any }) {
+export default function AdminUsers({
+  users,
+  showUserInfo,
+}: {
+  users: any,
+  showUserInfo: (id: number) => void,
+}) {
+  const { push } = useRouter();
   return (
     <Card>
       <Title className="flex items-center gap-2">
         <FiUsers />
-        <span>Users</span>
+        <span>Users</span>  
       </Title>
       <Table className="mt-5">
         <TableHead>
@@ -42,20 +48,21 @@ export default function AdminUsers({ users }: { users: any }) {
             <TableHeaderCell>Admin</TableHeaderCell>
             <TableHeaderCell>Created</TableHeaderCell>
             <TableHeaderCell>Updated</TableHeaderCell>
+            <TableHeaderCell>Navigate</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map((user: any) => {
             return (
-              <TableRow className="hover:bg-gray-100" key={user.id}>
-                <TableCell>
+              <TableRow className="hover:bg-gray-100 cursor-pointer" key={user.id}>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Text>{user.name}</Text>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Text>{user.email}</Text>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Badge
                     color={user.email_verified_at ? "emerald" : "rose"}
                     icon={user.email_verified_at ? FiCheck : FiX}
@@ -63,7 +70,7 @@ export default function AdminUsers({ users }: { users: any }) {
                     {user.email_verified_at ? "Verified" : "Not Verified"}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Badge
                     color={user.is_admin ? "emerald" : "blue"}
                     icon={user.is_admin ? FiKey : FiUser}
@@ -71,12 +78,29 @@ export default function AdminUsers({ users }: { users: any }) {
                     {user.is_admin ? "Admin" : "User"}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Text>{new Date(user.created_at).toLocaleDateString()}</Text>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => showUserInfo(user.id)}>
                   <Text>{new Date(user.updated_at).toLocaleDateString()}</Text>
                 </TableCell>
+                <TableCell>
+                  <Icon
+                    icon={FiMessageSquare}
+                    variant="simple"
+                    color="amber"
+                    tooltip="Playgrounds"
+                    onClick={() => push(`/admin/playgrounds?userId=${user.id}`)}
+                  />
+                  <Icon
+                    icon={FiBox}
+                    variant="simple"
+                    color="emerald"
+                    tooltip="Templates"
+                    onClick={() => push(`/admin/templates?userId=${user.id}`)}
+                  />
+                </TableCell>
+                
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {!user.email_verified_at ? (
@@ -109,19 +133,8 @@ export default function AdminUsers({ users }: { users: any }) {
                         color="blue"
                       />
                     )}
-                    {/* <Icon icon={FiEye} variant="simple" tooltip="View" />
-                    <Icon
-                      icon={FiMessageSquare}
-                      variant="simple"
-                      color="amber"
-                      tooltip="Playgrounds"
-                    />
-                    <Icon
-                      icon={FiBox}
-                      variant="simple"
-                      color="emerald"
-                      tooltip="Templates"
-                    /> */}
+                    {/* <Icon icon={FiEye} variant="simple" tooltip="View" /> */}
+                    
                     <Icon
                       icon={FiTrash}
                       variant="simple"

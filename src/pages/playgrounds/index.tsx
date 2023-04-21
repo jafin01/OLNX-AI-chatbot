@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent from "@/components/Playground/Content";
@@ -56,6 +57,7 @@ export default function Playgrounds() {
     }
     loadPlaygrounds();
   }, []);
+  
   return (
     <>
       <Navbar />
