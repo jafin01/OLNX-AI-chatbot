@@ -53,6 +53,20 @@ let dummy_configs = [
   },
 ];
 
+type Config = {
+  id: number;
+  name: string;
+  model: string;
+  temperature: string;
+  maxLength: string;
+  top_p: string;
+  frequency_penalty: string;
+  presence_penalty: string;
+  // [`system_${number}`]: string;
+  [key: number]: string;
+}
+
+
 const msgs: any = [
   {
     role: "Assistant #1",
@@ -104,7 +118,7 @@ export default function PlaygroundContent({
   });
   const [loading, setLoading] = useState(false);
   const [itteration, setItteration] = useState(5);
-  const [configs, setConfigs] = useState(dummy_configs);
+  const [configs, setConfigs] = useState<any[]>(dummy_configs);
 
   useEffect(() => {
     if (msgs) {
@@ -262,6 +276,7 @@ export default function PlaygroundContent({
   async function generateResponse(values: any) {
     setLoading(true);
     const lastMessage = messages[messages.length - 1];
+
     const generatedMessages = messages.map((message) => ({
         role: message.role === lastMessage.role ? "user" : "assistant",
         content: message.message,
@@ -275,7 +290,14 @@ export default function PlaygroundContent({
     const nextAssistantRole = configs[nextAssistantIndex].name;
 
     // const systemMessage = configs[lastAssistantIndex].system;
-    const systemMessage = configs[nextAssistantIndex].system;
+    // const system = configs[lastAssistantIndex];
+    // const ss = configs[nextAssistantIndex].id;
+    const nextConfig = configs[nextAssistantIndex];
+    const systemMessage = configs[nextAssistantIndex][`system_${nextConfig.id}`];
+
+    console.log(configs[nextAssistantIndex])
+    console.log(`system_${nextConfig.id}`)
+    console.log(systemMessage)
 
     const model = configs[lastAssistantIndex].model;
 
@@ -293,6 +315,7 @@ export default function PlaygroundContent({
             model: model,
         })
         .then(async (res) => {
+            console.log(res.data);
             const newMessage = res.data.choices[0].message.content;
             await setMessages((prevMessages: any) => [
                 ...prevMessages,
