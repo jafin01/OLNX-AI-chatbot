@@ -283,6 +283,8 @@ export default function PlaygroundContent({
     const systemMessage =
       configs[nextAssistantIndex][`system_${nextConfig.id}`];
 
+    console.log("nextConfig", nextConfig)
+
     const model = configs[lastAssistantIndex].model;
 
     await axios
@@ -297,6 +299,11 @@ export default function PlaygroundContent({
           ...generatedMessages,
         ],
         model: model,
+        temperature: +nextConfig.temperature,
+        top_p: +nextConfig.top_p,
+        frequency_penalty: +nextConfig.frequency_penalty,
+        presence_penalty: +nextConfig.presence_penalty,
+        max_tokens: +nextConfig.maxLength,
       })
       .then(async (res) => {
         const newMessage = res.data.choices[0].message.content;
