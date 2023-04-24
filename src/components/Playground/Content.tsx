@@ -320,7 +320,7 @@ export default function PlaygroundContent({
       intValues.configs.push({
         name: assistant.name,
         id: assistant.id,
-        [`system_${assistant.id}`]: "",
+        // [`system_${assistant.id}`]: "",
         model: "gpt-3.5-turbo",
         temperature: "0.7",
         maxLength: "256",
@@ -436,6 +436,7 @@ export default function PlaygroundContent({
                                 name: assistant.name,
                                 index,
                                 model: values.model,
+                                [`system_${assistant.id}`]: configModel[`system_${assistant.id}`],
                                 temperature: values.temperature,
                                 maxLength: values.maxLength,
                                 top_p: values.top_p,
