@@ -62,10 +62,8 @@ type Config = {
   top_p: string;
   frequency_penalty: string;
   presence_penalty: string;
-  // [`system_${number}`]: string;
   [key: number]: string;
-}
-
+};
 
 const msgs: any = [
   {
@@ -132,16 +130,16 @@ export default function PlaygroundContent({
 
   const formikRef = useRef<any>();
 
-  useEffect(() => {
-    if (formikRef) {
-      // saveConversation();
-    }
-  }, [formikRef]);
+  // useEffect(() => {
+  //   if (formikRef) {
+  //     // saveConversation();
+  //   }
+  // }, [formikRef]);
 
   useEffect(() => {
     // saveConversation();
     async function genRes() {
-        await generateResponse(formikRef.current.values);  
+      await generateResponse(formikRef.current.values);
     }
     if (itteration < formikRef.current.values.responses_to_generate - 1) {
       genRes();
@@ -236,6 +234,7 @@ export default function PlaygroundContent({
   // a function that calls an API over post
   async function generateResponses(values: any) {
     setLoading(true);
+
     // call generateResponse based on the number of responses to generate
     // for (let i = 0; i < values.responses_to_generate; i++) {
     //   await generateResponse(values);
@@ -246,15 +245,6 @@ export default function PlaygroundContent({
     setLoading(false);
     setItteration(0);
   }
-
-  // function saveAssistantConfig() {
-  //   console.log("configModel", configModel)
-  // }
-
-  useEffect(() => {
-    console.log("configs", configs);
-  }, [configs]);
-    
 
   function addAssistant() {
     setConfigs((prev: any) => [
@@ -272,65 +262,57 @@ export default function PlaygroundContent({
     ]);
   }
 
-
   async function generateResponse(values: any) {
     setLoading(true);
     const lastMessage = messages[messages.length - 1];
 
     const generatedMessages = messages.map((message) => ({
-        role: message.role === lastMessage.role ? "user" : "assistant",
-        content: message.message,
+      role: message.role === lastMessage.role ? "user" : "assistant",
+      content: message.message,
     }));
 
-    // Get the index of the last assistant's role in the configs array
-    const lastAssistantIndex = configs.findIndex(config => config.name === lastMessage.role);
+    const lastAssistantIndex = configs.findIndex(
+      (config) => config.name === lastMessage.role
+    );
 
-    // Determine the next assistant's role based on the index
-    const nextAssistantIndex = lastAssistantIndex + 1 >= configs.length ? 0 : lastAssistantIndex + 1;
+    const nextAssistantIndex =
+      lastAssistantIndex + 1 >= configs.length ? 0 : lastAssistantIndex + 1;
     const nextAssistantRole = configs[nextAssistantIndex].name;
 
-    // const systemMessage = configs[lastAssistantIndex].system;
-    // const system = configs[lastAssistantIndex];
-    // const ss = configs[nextAssistantIndex].id;
     const nextConfig = configs[nextAssistantIndex];
-    const systemMessage = configs[nextAssistantIndex][`system_${nextConfig.id}`];
-
-    console.log(configs[nextAssistantIndex])
-    console.log(`system_${nextConfig.id}`)
-    console.log(systemMessage)
+    const systemMessage =
+      configs[nextAssistantIndex][`system_${nextConfig.id}`];
 
     const model = configs[lastAssistantIndex].model;
 
-    console.log(configs)
-
     await axios
-        .post("https://dribs.dev/ai/chat", {
-            messages: [
-                {
-                    role: "system",
-                    content: systemMessage ? systemMessage : "You are a helpful assistant.",
-                },
-                ...generatedMessages,
-            ],
-            model: model,
-        })
-        .then(async (res) => {
-            console.log(res.data);
-            const newMessage = res.data.choices[0].message.content;
-            await setMessages((prevMessages: any) => [
-                ...prevMessages,
-                {
-                    role: nextAssistantRole,
-                    message: newMessage,
-                },
-            ]);
-        })
-        .catch((err) => {
-            console.log({ err });
-        });
+      .post("https://dribs.dev/ai/chat", {
+        messages: [
+          {
+            role: "system",
+            content: systemMessage
+              ? systemMessage
+              : "You are a helpful assistant.",
+          },
+          ...generatedMessages,
+        ],
+        model: model,
+      })
+      .then(async (res) => {
+        const newMessage = res.data.choices[0].message.content;
+        await setMessages((prevMessages: any) => [
+          ...prevMessages,
+          {
+            role: nextAssistantRole,
+            message: newMessage,
+          },
+        ]);
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
     setLoading(false);
-}
-
+  }
 
   let intValues: any;
   if (!initialValues) {
@@ -339,11 +321,11 @@ export default function PlaygroundContent({
       configs: [],
     };
 
-    configs.map((assistant, index) => {
+    configs.map((config, index) => {
       intValues.configs.push({
-        name: assistant.name,
-        id: assistant.id,
-        // [`system_${assistant.id}`]: "",
+        name: config.name,
+        id: config.id,
+        [`system_${config.id}`]: "",
         model: "gpt-3.5-turbo",
         temperature: "0.7",
         maxLength: "256",
@@ -352,26 +334,20 @@ export default function PlaygroundContent({
         presence_penalty: "0",
       });
     });
-
-    console.log("intValues", intValues);
   } else {
     intValues = initialValues;
   }
 
-  // function saveAssistantConfig() {
-    
-  // }
-
-  // a useEffect that will run when the configModel changes and updates the configs array
-  useEffect(() => {
-    // update the configs array with the data in configModel
+  function saveAssistantConfig(click = false) {
     setConfigs((prev: any) => {
+      const configIndex = prev.findIndex(
+        (config: any) => config.id === configModel.id
+      );
       const newConfigs = [...prev];
-      newConfigs[configModel.index] = {
-        ...newConfigs[configModel.index],
-        ...configModel,
+      newConfigs[configIndex] = {
         name: configModel.name,
-        // system: configModel.system,
+        id: configModel.id,
+        [`system_${configModel.id}`]: configModel[`system_${configModel.id}`],
         model: configModel.model,
         temperature: configModel.temperature,
         maxLength: configModel.maxLength,
@@ -379,15 +355,24 @@ export default function PlaygroundContent({
         frequency_penalty: configModel.frequency_penalty,
         presence_penalty: configModel.presence_penalty,
       };
-
       return newConfigs;
     });
 
-  }, [configModel]);
+    if (click) {
+      setConfigModel((prev: any) => ({
+        ...prev,
+        isOpen: false,
+      }));
+    }
+  }
 
   useEffect(() => {
-    console.log('configModel', configModel)
-  }, [configModel])
+    console.log("configs", configs);
+  }, [configs]);
+
+  useEffect(() => {
+    console.log("configModel", configModel);
+  }, [configModel]);
 
   return (
     <>
@@ -396,8 +381,8 @@ export default function PlaygroundContent({
           configModel={configModel}
           setConfigModel={setConfigModel}
           formikRef={formikRef}
-          // saveAssistantConfig={saveAssistantConfig}
-          intValues={intValues.configs[configModel.index]}
+          saveAssistantConfig={saveAssistantConfig}
+          intValues={configs[configModel.index]}
         />
       )}
 
@@ -413,11 +398,11 @@ export default function PlaygroundContent({
           >
             <aside className="w-96 h-full flex flex-col gap-4 py-6">
               <AccordionList className="w-full outline-none">
-                {configs.map((assistant, index) => {
+                {configs.map((config, index) => {
                   return (
-                    <Accordion key={assistant.id} className="w-full">
+                    <Accordion key={config.id} className="w-full">
                       <AccordionHeader className="font-semibold font-mono">
-                        {assistant.name}
+                        {config.name}
                       </AccordionHeader>
 
                       <AccordionBody className="h-64">
@@ -425,22 +410,26 @@ export default function PlaygroundContent({
                           <textarea
                             onChange={(e) => {
                               handleChange(e);
-                              // saveAssistantConfig(e.target.value, index, assistant.id)
-
                               setConfigModel({
-                                id: assistant.id,
-                                isOpen: false,
-                                name: assistant.name,
+                                ...configModel,
+                                id: config.id,
                                 index,
-                                [`system_${assistant.id}`]: e.target.value,
-                                model: configModel.model,
-                                temperature: configModel.temperature,
-                                maxLength: configModel.maxLength,
-                                top_p: configModel.top_p,
-                                frequency_penalty: configModel.frequency_penalty,
-                                presence_penalty: configModel.presence_penalty,
+                                name: config.name,
+                                [`system_${config.id}`]: e.target.value,
+                                // id: config.id,
+                                // isOpen: false,
+                                // name: config.name,
+                                // index,
+                                // [`system_${config.id}`]: e.target.value,
+                                // model: config.model,
+                                // temperature: config.temperature,
+                                // maxLength: config.maxLength,
+                                // top_p: config.top_p,
+                                // frequency_penalty: config.frequency_penalty,
+                                // presence_penalty: config.presence_penalty,
                               });
-                              
+
+                              saveAssistantConfig();
                               // saveConversation();
                             }}
                             disabled={isBusy}
@@ -455,16 +444,18 @@ export default function PlaygroundContent({
                             className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2"
                             onClick={() => {
                               setConfigModel({
+                                id: config.id,
                                 isOpen: true,
-                                name: assistant.name,
+                                name: config.name,
                                 index,
-                                model: values.model,
-                                [`system_${assistant.id}`]: configModel[`system_${assistant.id}`],
-                                temperature: values.temperature,
-                                maxLength: values.maxLength,
-                                top_p: values.top_p,
-                                frequency_penalty: values.frequency_penalty,
-                                presence_penalty: values.presence_penalty,
+                                [`system_${config.id}`]:
+                                  config[`system_${config.id}`],
+                                model: config.model,
+                                temperature: config.temperature,
+                                maxLength: config.maxLength,
+                                top_p: config.top_p,
+                                frequency_penalty: config.frequency_penalty,
+                                presence_penalty: config.presence_penalty,
                               });
                             }}
                           >

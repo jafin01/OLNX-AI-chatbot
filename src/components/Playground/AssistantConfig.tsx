@@ -17,38 +17,43 @@ type ConfigType =  {
 function AssistantConfig({ 
     configModel, 
     setConfigModel, 
+    // updateConfig,
     formikRef, 
-    // saveAssistantConfig, 
+    saveAssistantConfig, 
     intValues
   } : { 
     configModel: any, 
     setConfigModel: any, 
     formikRef: any, 
-    // saveAssistantConfig: (value: any, index: any, assistantId: any) => void, 
+    // updateConfig: () => void,
+    saveAssistantConfig: (click: boolean) => void, 
     intValues: ConfigType 
   },) {
     
-    // function start here 
-  useEffect(() => {
-    console.log('configModel', configModel)
-    console.log('intValues', intValues)
-  }, [configModel, intValues])
+  // function start here 
+  // useEffect(() => {
+  //   console.log('configModel', configModel)
+  //   console.log('intValues', intValues)
+  // }, [configModel, intValues])
 
   function onSave(values:any) {
-    if(values)
-    setConfigModel({
-      ...configModel,
-      ...values,
-      [`system_${configModel.id}`]: configModel[`system_${configModel.id}`]
-    })
-
-    // saveAssistantConfig(configModel.system, configModel.index, configModel.id);
+    console.log(configModel)
+    saveAssistantConfig(true);
   }
+
+  // function saveChangesinModal() {
+  //   setConfigModel({
+
+  //   })
+  // }
 
   return (
     <div
           className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
-          onClick={() => setConfigModel({ isOpen: false })}
+          onClick={() => setConfigModel({
+            ...configModel, 
+            isOpen: false 
+          })}
         >
           <div
             className="w-96 h-auto bg-white rounded-md shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -56,9 +61,10 @@ function AssistantConfig({
           >
             <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
               <h1 className="text-lg font-semibold font-mono">{configModel.name}</h1>
+              <p>{configModel[`system_${configModel.id}`]}</p>
               <button
                 className="text-gray-500 hover:text-gray-600"
-                onClick={() => setConfigModel({ isOpen: false })}
+                onClick={() => setConfigModel({ ...configModel, isOpen: false })}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +88,6 @@ function AssistantConfig({
                 //   validationSchema={validationSchema}
                 innerRef={formikRef}
                 onSubmit={onSave}
-                // handleChange={onChange}
               >
                 {({ values, errors, touched, handleChange, handleBlur }) => (
                   <Form>
@@ -96,6 +101,12 @@ function AssistantConfig({
                               onChange={async (e) => {
                                 await handleChange(e);
                                 // saveConversation();
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  model: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full p-2 mb-2"
                             >
@@ -116,7 +127,13 @@ function AssistantConfig({
                               value={values.temperature}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
+
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  temperature: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -136,7 +153,13 @@ function AssistantConfig({
                               value={values.maxLength}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
+
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  maxLength: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -156,7 +179,13 @@ function AssistantConfig({
                               value={values.top_p}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
+
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  top_p: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -176,7 +205,13 @@ function AssistantConfig({
                               value={values.frequency_penalty}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
+
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  frequency_penalty: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -196,7 +231,12 @@ function AssistantConfig({
                               value={values.presence_penalty}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
+                                setConfigModel({
+                                  ...configModel,
+                                  name: configModel.name,
+                                  presence_penalty: e.target.value,
+                                })
+                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"

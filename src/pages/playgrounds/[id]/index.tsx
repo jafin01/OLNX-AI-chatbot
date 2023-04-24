@@ -127,7 +127,7 @@ export default function Playground() {
             setIsBusy={setIsBusy}
             isBusy={isBusy}
             name={name}
-            initialValues={intValues}
+            // initialValues={intValues}
           />
         </>
       )}
