@@ -4,7 +4,7 @@ import PlaygroundChatBubble from "./ChatBubble";
 import PlaygroundAddChatBubble from "./AddChatBubble";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useConversationStore } from "@/stores/conversation";
+// import { useConversationStore } from "@/stores/conversation";
 import { FiSend, FiLoader } from "react-icons/fi";
 import {
   AccordionList,
@@ -397,7 +397,7 @@ export default function PlaygroundContent({
             style={{ height: "calc(100vh - 8rem)" }}
           >
             <aside className="w-96 h-full flex flex-col gap-4 py-6">
-              <AccordionList className="w-full outline-none">
+              <AccordionList className="w-full outline-none h-full overflow-y-auto">
                 {configs.map((config, index) => {
                   return (
                     <Accordion key={config.id} className="w-full">
@@ -416,17 +416,6 @@ export default function PlaygroundContent({
                                 index,
                                 name: config.name,
                                 [`system_${config.id}`]: e.target.value,
-                                // id: config.id,
-                                // isOpen: false,
-                                // name: config.name,
-                                // index,
-                                // [`system_${config.id}`]: e.target.value,
-                                // model: config.model,
-                                // temperature: config.temperature,
-                                // maxLength: config.maxLength,
-                                // top_p: config.top_p,
-                                // frequency_penalty: config.frequency_penalty,
-                                // presence_penalty: config.presence_penalty,
                               });
 
                               saveAssistantConfig();
@@ -441,7 +430,7 @@ export default function PlaygroundContent({
                           <button
                             disabled={isBusy}
                             type="button"
-                            className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2"
+                            className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2 disabled:bg-gray-300 disabled:text-gray-500"
                             onClick={() => {
                               setConfigModel({
                                 id: config.id,
@@ -473,7 +462,8 @@ export default function PlaygroundContent({
 
               <button
                 type="button"
-                className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2"
+                disabled={isBusy}
+                className="bg-teal-700 py-2 text-white rounded flex justify-center items-center gap-2 disabled:bg-gray-300 disabled:text-gray-500"
                 onClick={addAssistant}
               >
                 <span>
@@ -484,7 +474,7 @@ export default function PlaygroundContent({
             </aside>
             <section className="w-full flex flex-col gap-2 py-6">
               <div className="w-full h-full flex-1 overflow-y-auto">
-                {/* {#each messages as message} */}
+
                 {messages.map((message, index) => {
                   return (
                     <PlaygroundChatBubble
@@ -503,7 +493,6 @@ export default function PlaygroundContent({
                     />
                   );
                 })}
-                {/* {/each} */}
                 <PlaygroundAddChatBubble onClick={addMessage} />
               </div>
               <footer className="w-full p-4 flex h-16 items-center">

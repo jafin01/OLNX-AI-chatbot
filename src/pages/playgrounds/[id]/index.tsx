@@ -59,24 +59,6 @@ export default function Playground() {
             const initialValues = {
               responses_to_generate: 5,
               configs: [],
-              // config1: {
-              //   system: res.data.conversation.system_1,
-              //   model: res.data.config.model_1,
-              //   temperature: res.data.config.temperature_1,
-              //   maxLength: res.data.config.max_length_1,
-              //   top_p: res.data.config.top_p_1,
-              //   frequency_penalty: res.data.config.frequency_penalty_1,
-              //   presence_penalty: res.data.config.presence_penalty_1,
-              // },
-              // config2: {
-              //   system: res.data.conversation.system_2,
-              //   model: res.data.config.model_2,
-              //   temperature: res.data.config.temperature_2,
-              //   maxLength: res.data.config.max_length_2,
-              //   top_p: res.data.config.top_p_2,
-              //   frequency_penalty: res.data.config.frequency_penalty_2,
-              //   presence_penalty: res.data.config.presence_penalty_2,
-              // },
             };
             const msgs = res.data.messages.map((message: any) => {
               return {
@@ -127,7 +109,7 @@ export default function Playground() {
             setIsBusy={setIsBusy}
             isBusy={isBusy}
             name={name}
-            // initialValues={intValues}
+            initialValues={intValues}
           />
         </>
       )}

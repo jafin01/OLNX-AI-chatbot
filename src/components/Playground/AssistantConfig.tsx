@@ -1,5 +1,5 @@
+import React from 'react'
 import { Form, Formik } from 'formik';
-import React, { useEffect } from 'react'
 
 type ConfigType =  {
   isOpen?: boolean,
@@ -17,7 +17,6 @@ type ConfigType =  {
 function AssistantConfig({ 
     configModel, 
     setConfigModel, 
-    // updateConfig,
     formikRef, 
     saveAssistantConfig, 
     intValues
@@ -25,27 +24,14 @@ function AssistantConfig({
     configModel: any, 
     setConfigModel: any, 
     formikRef: any, 
-    // updateConfig: () => void,
     saveAssistantConfig: (click: boolean) => void, 
     intValues: ConfigType 
   },) {
-    
-  // function start here 
-  // useEffect(() => {
-  //   console.log('configModel', configModel)
-  //   console.log('intValues', intValues)
-  // }, [configModel, intValues])
 
   function onSave(values:any) {
     console.log(configModel)
     saveAssistantConfig(true);
   }
-
-  // function saveChangesinModal() {
-  //   setConfigModel({
-
-  //   })
-  // }
 
   return (
     <div
@@ -61,7 +47,6 @@ function AssistantConfig({
           >
             <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300">
               <h1 className="text-lg font-semibold font-mono">{configModel.name}</h1>
-              <p>{configModel[`system_${configModel.id}`]}</p>
               <button
                 className="text-gray-500 hover:text-gray-600"
                 onClick={() => setConfigModel({ ...configModel, isOpen: false })}
@@ -85,7 +70,6 @@ function AssistantConfig({
             <div className="p-4">
               <Formik
                 initialValues={intValues}
-                //   validationSchema={validationSchema}
                 innerRef={formikRef}
                 onSubmit={onSave}
               >
@@ -133,7 +117,6 @@ function AssistantConfig({
                                   name: configModel.name,
                                   temperature: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -159,7 +142,6 @@ function AssistantConfig({
                                   name: configModel.name,
                                   maxLength: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -185,7 +167,6 @@ function AssistantConfig({
                                   name: configModel.name,
                                   top_p: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -211,7 +192,6 @@ function AssistantConfig({
                                   name: configModel.name,
                                   frequency_penalty: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
@@ -236,7 +216,6 @@ function AssistantConfig({
                                   name: configModel.name,
                                   presence_penalty: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full accent-teal-700"
                               type="range"
