@@ -14,6 +14,7 @@ import {
 } from "@tremor/react";
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
+import { useQuery } from "@tanstack/react-query";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";

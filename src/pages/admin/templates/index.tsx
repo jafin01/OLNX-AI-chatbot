@@ -1,5 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AdminTemplates from "@/components/Admin/Templates";
 import { LoadingPage } from "@/components/Loading";
+import { loadAdmin } from "@/services/admin/admin.services";
+import { useQuery } from "@tanstack/react-query";
 import {
   Button,
   Card,
@@ -28,39 +31,33 @@ import {
 
 export default function Templates() {
   const [templates, setTemplates] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   
   const { push } = useRouter();
 
-  async function loadAdmin() {
-    setLoading(true);
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-          Accept: "application/json",
-        },
-      })
-      .then((res: any) => {
-        setTemplates(res.data.templates.data);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-    setLoading(false);
-  }
+  const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
+    queryKey: ["fetch-admin"],
+    queryFn: loadAdmin,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setTemplates(data.templates.data)
+    } else if (error) {
+      console.log(error);
+    }
+  }, [ error, data]);
 
   useEffect(() => {
     if (!window.localStorage.getItem("accessToken")) {
       push("/login");
     }
-    // push(route)
-    loadAdmin();
   }, []);
 
   return (
     <div className="px-5 bg-gray-100 h-screen">
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : (
         <AdminTemplates templates={templates} />

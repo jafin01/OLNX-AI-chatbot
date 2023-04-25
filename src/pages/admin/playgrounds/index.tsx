@@ -1,45 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AdminPlaygrounds from '@/components/Admin/Playgrounds';
 import { LoadingPage } from '@/components/Loading';
-import axios from 'axios';
+import { loadAdmin } from '@/services/admin/admin.services';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 
 function Playgrounds() {
   const [playgrounds, setPlaygrounds] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   
   const { push } = useRouter();
 
-  async function loadAdmin() {
-    setLoading(true);
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-          Accept: "application/json",
-        },
-      })
-      .then((res: any) => {
-        setPlaygrounds(res.data.playgrounds.data);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-    setLoading(false);
-  }
+  const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
+    queryKey: ["fetch-admin"],
+    queryFn: loadAdmin,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setPlaygrounds(data.playgrounds.data);
+    } else if (error) {
+      console.log(error);
+    }
+  }, [data, error]);
 
   useEffect(() => {
     if (!window.localStorage.getItem("accessToken")) {
       push("/login");
     }
-    // push(route)
-    loadAdmin();
   }, []);
   
   return (
     <div className='bg-gray-100 h-screen px-5'>
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : 
       <AdminPlaygrounds playgrounds={playgrounds} />
