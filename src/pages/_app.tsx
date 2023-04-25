@@ -13,6 +13,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const tracker = new Tracker({
   projectKey: "OOfFclJkE8QmRYP6LCY7",
@@ -34,8 +35,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <AdminLayout route={router.pathname} />
       )}
       <Component {...pageProps} />
-      <Toaster position={"bottom-right"} />
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      {/* <Toaster position={"bottom-right"} /> */}
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
   );
 }
