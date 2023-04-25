@@ -6,6 +6,13 @@ import Tracker from "@openreplay/tracker";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "@/components/Admin/Layout";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 const tracker = new Tracker({
   projectKey: "OOfFclJkE8QmRYP6LCY7",
@@ -18,15 +25,17 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   const router = useRouter();
+  const queryClient = new QueryClient();
 
   // console.log(router.pathname.includes("admin"));
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       {router.pathname.includes("admin") && (    
         <AdminLayout route={router.pathname} />
       )}
       <Component {...pageProps} />
       <Toaster position={"bottom-right"} />
-    </>
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+    </QueryClientProvider>
   );
 }
