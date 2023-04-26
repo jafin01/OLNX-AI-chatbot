@@ -377,7 +377,6 @@ export default function PlaygroundContent({
   const setConversation = useConversationStore((state: any) => state.setConversation);
 
   useEffect(() => {
-  //   // update the useConversation zustand globas state soon after the configs get updated in the local state of this component
     setConversation({
       messages,
       configs,

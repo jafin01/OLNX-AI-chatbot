@@ -16,6 +16,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
+import { authorizeUser } from "@/services/auth";
+import { useQuery } from "@tanstack/react-query";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -24,56 +26,72 @@ const LoginSchema = Yup.object().shape({
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [abc, setIsFetching] = useState<boolean>(false);
+  const [userData, setUserData] = useState<{ email: string; password: string }>(
+    {
+      email: "",
+      password: "",
+    }
+  );
 
   const { push } = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
+  useEffect(() => {}, [push]);
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["Authorization"],
+    queryFn: () =>
+      authorizeUser({ email: userData.email, password: userData.password }),
+    enabled: abc,
+    retry: false,
+  });
+
   useEffect(() => {
     if (window.localStorage.getItem("accessToken")) {
       push("/playgrounds");
+    } else if (!window.localStorage.getItem("accessToken")) {
+      push("/login");
+    }else if(error){
+        console.log(error);
+    } else if (data) {
+        console.log(data);
+        push("/");
+        // push("/playgrounds");
     }
-  }, [push]);
+  }, [error, data, isLoading, push])
 
   async function submitHandler(values: any) {
-    console.log(values);
+    setUserData({
+      email: values.email,
+      password: values.password,
+    });
     setLoading(true);
+    setIsFetching(true);
     const toastLoadingId = notify.loading("Logging in...");
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // console.log(res);
-        window.localStorage.setItem("accessToken", res.data.token);
-        notify.dismiss(toastLoadingId);
-        notify.success("Logged in successfully");
-        push("/");
-      })
-      .catch((err) => {
-        // console.log(err);
-        notify.dismiss(toastLoadingId);
-        notify.error("Invalid Credentials");
+    try {
+      const response: any = await authorizeUser({
+        email: values.email,
+        password: values.password,
       });
-
-    setLoading(false);
+      window.localStorage.setItem("accessToken", response.token);
+      notify.dismiss(toastLoadingId);
+      notify.success("Logged in successfully");
+      return response;
+    } catch (error) {
+      notify.dismiss(toastLoadingId);
+      notify.error("Invalid Credentials");
+      return error;
+    } finally {
+      setLoading(false);
+      setIsFetching(false);
+    }
   }
 
   const defaultOptions = {
     loop: true,
     autoplay: true,
     animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
   };
 
   return (
@@ -84,9 +102,14 @@ function Login() {
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-          <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
-            <span className="inline md:block"><span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">Log</span>in</span>
-          </h1>
+            <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+              <span className="inline md:block">
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">
+                  Log
+                </span>
+                in
+              </span>
+            </h1>
             <Formik
               initialValues={{ email: "", password: "" }}
               validationSchema={LoginSchema}
