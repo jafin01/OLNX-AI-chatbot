@@ -102,7 +102,7 @@ export default function Playground() {
             setIsBusy={setIsBusy}
             nme={nme}
             id={query.id as string}
-            isTemplate={isTemplate}
+            isTempl={isTemplate}
           />
           <PlaygroundContent
             msgs={messages}

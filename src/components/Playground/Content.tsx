@@ -15,6 +15,8 @@ import {
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
 import { useQuery } from "@tanstack/react-query";
+import { useConversationStore } from "@/stores/conversation";
+import { config } from "process";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
@@ -284,8 +286,6 @@ export default function PlaygroundContent({
     const systemMessage =
       configs[nextAssistantIndex][`system_${nextConfig.id}`];
 
-    console.log("nextConfig", nextConfig)
-
     const model = configs[lastAssistantIndex].model;
 
     await axios
@@ -374,9 +374,16 @@ export default function PlaygroundContent({
     }
   }
 
+  const setConversation = useConversationStore((state: any) => state.setConversation);
+
   useEffect(() => {
-    console.log("configs", configs);
-  }, [configs]);
+  //   // update the useConversation zustand globas state soon after the configs get updated in the local state of this component
+    setConversation({
+      messages,
+      configs,
+    });
+    
+  }, [configs, messages]);
 
   useEffect(() => {
     console.log("configModel", configModel);

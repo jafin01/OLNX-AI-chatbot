@@ -1,6 +1,9 @@
+import { savePlayground } from "@/services/admin/admin.services";
 import { useConversationStore } from "@/stores/conversation";
-import axios from "axios";
-import { useState } from "react";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { rejects } from "assert";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import {
   FiLoader,
   FiSave,
@@ -14,54 +17,51 @@ export default function PlaygroundNavbar({
   setIsBusy,
   nme,
   id,
-  isTemplate = false,
+  isTempl = false,
 }: {
   isBusy: boolean;
   setIsBusy: (b: boolean) => void;
   nme?: string;
   id?: string;
-  isTemplate?: boolean;
+  isTempl?: boolean;
 }) {
   const messages = useConversationStore((state: any) => state.messages);
-  const config1 = useConversationStore((state: any) => state.config1);
-  const config2 = useConversationStore((state: any) => state.config2);
+  const configs = useConversationStore((state: any) => state.configs);
 
   const [name, setName] = useState(nme ? nme : "");
   const [saving, setSaving] = useState(false);
+  const [isTemplate, setIsTemplate] = useState(isTempl)
 
-  async function saveConversation({ template }: { template?: boolean }) {
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["saveConversation"],
+    queryFn: () => savePlayground({ messages, configs, template: isTemplate, id }),
+    enabled: saving,
+    retry: false,
+  })
+
+  useEffect(() => {
+    if (error) {
+      toast.error('error saving conversation')
+      console.log(error);
+    } else if (data) {
+      toast.success('conversation saved successfully');
+      console.log(data);
+    }
+  }, [error, data, isLoading]);
+  
+  async function handleSave({ template }: { template: boolean }) {
     setSaving(true);
     setIsBusy(true);
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
-          id ? "/update" : ""
-        }`,
-        {
-          messages: messages,
-          config1: config1,
-          config2: config2,
-          name: name,
-          template: template ? true : false,
-          id: id ? id : null,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        console.log("Saving: ", res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setSaving(false);
-    setIsBusy(false);
+    try {
+      const res = await savePlayground({ messages, configs, template, id });
+      return res;
+    } catch (error) {
+      // Promise.reject(error)
+      return error;
+    } finally {
+      setSaving(false);
+      setIsBusy(false);
+    }
   }
 
   return (
@@ -78,9 +78,11 @@ export default function PlaygroundNavbar({
         onChange={(e) => setName(e.target.value)}
       />
       <div className="flex items-center gap-2">
-        {!isTemplate ? (
+        {!isTempl ? (
           <button
-            onClick={() => saveConversation({ template: false })}
+            type="button"
+            // onClick={() => saveConversation({ template: false })}
+            onClick={() => handleSave({ template: false })}
             disabled={isBusy ? true : saving}
             className="rounded px-4 py-2 bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -99,9 +101,11 @@ export default function PlaygroundNavbar({
         ) : (
           <></>
         )}
-        {isTemplate ? (
+        {isTempl ? (
           <button
-            onClick={() => saveConversation({ template: true })}
+            type="button"
+            // onClick={() => saveConversation({ template: true })}
+            onClick={() => handleSave({ template: true })}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -110,15 +114,17 @@ export default function PlaygroundNavbar({
           </button>
         ) : (
           <button
-            onClick={() => saveConversation({ template: true })}
+            type="button"
+            // onClick={() => saveConversation({ template: true })}
+            onClick={() => handleSave({ template: true })}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
             <FiBox />
             <span>Save as Template</span>
           </button>
-        )}
-        {/* {navigator.share && (
+         )}
+        {/*{navigator.share && (
           <button
             onClick={() =>
               navigator.share({
@@ -137,3 +143,39 @@ export default function PlaygroundNavbar({
     </nav>
   );
 }
+
+
+// async function saveConversation({ template }: { template?: boolean }) {
+  //   setSaving(true);
+  //   setIsBusy(true);
+  //   await axios
+  //     .post(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
+  //         id ? "/update" : ""
+  //       }`,
+  //       {
+  //         messages,
+  //         configs,
+  //         // config1: config1,
+  //         // config2: config2,
+  //         template: template ? true : false,
+  //         id: id ? id : null,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${window.localStorage.getItem(
+  //             "accessToken"
+  //           )}`,
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       console.log("Saving: ", res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  //   setSaving(false);
+  //   setIsBusy(false);
+  // }

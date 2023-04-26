@@ -15,7 +15,7 @@ function Playgrounds() {
   const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
     queryKey: ["fetch-admin"],
     queryFn: loadAdmin,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   useEffect(() => {
