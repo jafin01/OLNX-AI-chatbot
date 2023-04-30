@@ -17,6 +17,7 @@ import {
   Title,
 } from "@tremor/react";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -64,4 +65,20 @@ export default function Templates() {
       )}
   </div>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

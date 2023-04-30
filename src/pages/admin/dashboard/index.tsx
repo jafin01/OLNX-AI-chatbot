@@ -5,6 +5,7 @@ import { loadAdmin } from "@/services/admin/admin.services";
 import { useQuery } from "@tanstack/react-query";
 import { Grid, Card, Flex, Icon, Metric, Text, Button } from "@tremor/react";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiActivity, FiBox, FiMessageSquare, FiUser } from "react-icons/fi";
@@ -61,4 +62,20 @@ export default function Dashboard({
       )}
     </div>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

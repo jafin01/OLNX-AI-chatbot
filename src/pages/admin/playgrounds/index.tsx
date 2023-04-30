@@ -3,6 +3,7 @@ import AdminPlaygrounds from '@/components/Admin/Playgrounds';
 import { LoadingPage } from '@/components/Loading';
 import { loadAdmin } from '@/services/admin/admin.services';
 import { useQuery } from '@tanstack/react-query';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 
@@ -44,3 +45,19 @@ function Playgrounds() {
 }
 
 export default Playgrounds;
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}

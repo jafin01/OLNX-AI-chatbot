@@ -1,6 +1,7 @@
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -110,4 +111,20 @@ export default function Playgrounds() {
       )}
     </>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

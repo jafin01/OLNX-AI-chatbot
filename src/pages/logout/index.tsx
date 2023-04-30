@@ -3,11 +3,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { LoadingPage } from "@/components/Loading";
 import notify from "react-hot-toast";
+import Cookies from "js-cookie";
+import { signOut } from "next-auth/react";
 
 export default function Logout() {
   const { push } = useRouter();
+
   useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
+    const session = Cookies.get("accessToken");
+    if (session) {
       const toastLoadingId = notify.loading("Logging you out...");
       axios
         .post(
@@ -16,18 +20,17 @@ export default function Logout() {
           {
             headers: {
               Accept: "application/json",
-              Authorization: `Bearer ${window.localStorage.getItem(
-                "accessToken"
-              )}`,
+              Authorization: `Bearer ${session}`,
             },
           }
         )
         .then(() => {
-          window.localStorage.removeItem("accessToken");
-          push("/login");
+          Cookies.remove("accessToken");
+          // push("/login");
+          signOut();
         })
         .catch((err) => {
-          window.localStorage.removeItem("accessToken");
+          Cookies.remove("accessToken");
           push("/login");
           // console.log(err);
         });

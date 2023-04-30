@@ -16,8 +16,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
-import { authorizeUser } from "@/services/auth";
-import { useQuery } from "@tanstack/react-query";
+import { LoginData } from "./login.types";
+import { getSession, signIn } from "next-auth/react";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -26,66 +26,40 @@ const LoginSchema = Yup.object().shape({
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [abc, setIsFetching] = useState<boolean>(false);
-  const [userData, setUserData] = useState<{ email: string; password: string }>(
-    {
-      email: "",
-      password: "",
-    }
-  );
-
+  const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {}, [push]);
+  // Google handler function
+  async function handleGoogleSignIn() {
+    await signIn("google", { callbackUrl: "http://localhost:3000/playgrounds" });
+  }
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["Authorization"],
-    queryFn: () =>
-      authorizeUser({ email: userData.email, password: userData.password }),
-    enabled: abc,
-    retry: false,
-  });
+  // Github handler function
+  async function handleGithubSignIn() {
+    await signIn("github", { callbackUrl: "http://localhost:3000/playgrounds" });
+  }
 
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      push("/playgrounds");
-    } else if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }else if(error){
-        console.log(error);
-    } else if (data) {
-        console.log(data);
-        push("/");
-        // push("/playgrounds");
+  async function submitHandler(values: LoginData) {
+    setIsLoading(true);
+
+    const email = values.email;
+    const password = values.password;
+
+    const status = await signIn("credentials", { 
+      redirect: false,
+      email,
+      password,
+      callbackUrl: "http://localhost:3000/playgrounds",
+    })
+
+    console.log(status);
+
+    if (status?.ok === true) {
+      push("/playgrounds")
+    } else {
+      alert('error')
     }
-  }, [error, data, isLoading, push])
 
-  async function submitHandler(values: any) {
-    setUserData({
-      email: values.email,
-      password: values.password,
-    });
-    setLoading(true);
-    setIsFetching(true);
-    const toastLoadingId = notify.loading("Logging in...");
-    try {
-      const response: any = await authorizeUser({
-        email: values.email,
-        password: values.password,
-      });
-      window.localStorage.setItem("accessToken", response.token);
-      notify.dismiss(toastLoadingId);
-      notify.success("Logged in successfully");
-      return response;
-    } catch (error) {
-      notify.dismiss(toastLoadingId);
-      notify.error("Invalid Credentials");
-      return error;
-    } finally {
-      setLoading(false);
-      setIsFetching(false);
-    }
   }
 
   const defaultOptions = {
@@ -196,12 +170,12 @@ function Login() {
                   <div className="flex text-center justify-between mb-4">
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={isLoading}
                       className={`outline-gray-50 bg-gray-200 text-gray-700 text-center w-full font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-                        !loading && "hover:bg-blue-200"
+                        !isLoading && "hover:bg-blue-200"
                       }`}
                     >
-                      {loading ? (
+                      {isLoading ? (
                         <FiLoader className="animate-spin my-1 mx-auto" />
                       ) : (
                         "Login"
@@ -230,13 +204,21 @@ function Login() {
             </div>
             <div className="lg:items-center lg:justify-around xl:items-center xl:justify-around 2xl:items-center 2xl:justify-around lg:flex xl:flex 2xl:flex">
               <div className="py-2">
-                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
+                <button 
+                  type='button'
+                  className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center"
+                  onClick={handleGoogleSignIn}
+                >
                   <FaGoogle className="text-red-500 mr-2" />
                   <span>Sign in with Google</span>
                 </button>
               </div>
               <div className="py-2">
-                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
+                <button 
+                  type='button'
+                  className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center"
+                  onClick={handleGithubSignIn}
+                >
                   <FaGithub className="text-white mr-2" />
                   <span>Sign in with GitHub</span>
                 </button>
@@ -250,3 +232,24 @@ function Login() {
 }
 
 export default Login;
+
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+
+

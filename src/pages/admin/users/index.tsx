@@ -4,6 +4,7 @@ import UserProfileCard from "@/components/Admin/Users/UserProfileCard";
 import { LoadingPage } from "@/components/Loading";
 import { loadAdmin } from "@/services/admin/admin.services";
 import { useQuery } from "@tanstack/react-query";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -74,4 +75,20 @@ export default function Templates() {
       )}
   </div>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

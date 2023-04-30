@@ -5,6 +5,7 @@ import PlaygroundContent, { Message } from "@/components/Playground/Content";
 import PlaygroundNavbar from "@/components/Playground/Navbar";
 import { useConversationStore } from "@/stores/conversation";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -37,9 +38,9 @@ export default function Playground() {
   const [isTemplate, setIsTemplate] = useState(false);
 
   useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
+    // if (!window.localStorage.getItem("accessToken")) {
+    //   push("/login");
+    // }
     async function loadConversation() {
       setLoading(true);
       if (query.id) {
@@ -115,4 +116,20 @@ export default function Playground() {
       )}
     </>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

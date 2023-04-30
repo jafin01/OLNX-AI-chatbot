@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
+import { getSession } from "next-auth/react";
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -33,11 +34,11 @@ function Register() {
     useState<boolean>(false);
   const { push } = useRouter();
 
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      push("/playgrounds");
-    }
-  }, [push]);
+  // useEffect(() => {
+  //   if (window.localStorage.getItem("accessToken")) {
+  //     push("/playgrounds");
+  //   }
+  // }, [push]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -310,3 +311,20 @@ function Register() {
 }
 
 export default Register;
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
