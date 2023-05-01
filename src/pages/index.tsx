@@ -1,16 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 import HomeNavbar from "@/components/HomeNavbar";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { getSession, useSession } from "next-auth/react";
 
 export default function Home() {
-  let [accessToken, setAccessToken] = useState<string | null>(null);
+  // let [accessToken, setAccessToken] = useState<string | null>(null);
+  const { data: session, status } = useSession();
+
 
   useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      setAccessToken(window.localStorage.getItem("accessToken"));
+    if(session) {
+      console.log(session, status)
     }
-  }, []);
+  }, [session, status])
+  
   return (
     <>
       <section
@@ -18,7 +23,7 @@ export default function Home() {
         data-tails-scripts="//unpkg.com/alpinejs"
       >
         <div className="mx-auto max-w-7xl">
-          <HomeNavbar accessToken={accessToken} />
+          <HomeNavbar session={session} />
 
           <div className="container max-w-lg px-4 py-20 mx-auto mt-px text-left md:py-32 md:max-w-none md:text-center">
             <h1 className="text-5xl font-extrabold tracking-tight text-left text-gray-900 pb-3 md:pb-0 md:text-center md:text-6xl lg:text-7xl">
@@ -43,7 +48,7 @@ export default function Home() {
                   only $20/mo
                 </span>
               </span>
-              {!accessToken && (
+              {!session && (
                 <Link href="/login" className="mt-3 text-sm text-indigo-500">
                   Already have an account?
                 </Link>
@@ -305,3 +310,6 @@ export default function Home() {
     </>
   );
 }
+
+
+

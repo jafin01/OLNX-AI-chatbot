@@ -2,13 +2,15 @@
 import AdminUsers from "@/components/Admin/Users";
 import UserProfileCard from "@/components/Admin/Users/UserProfileCard";
 import { LoadingPage } from "@/components/Loading";
-import axios from "axios";
+import { loadAdmin } from "@/services/admin/admin.services";
+import { useQuery } from "@tanstack/react-query";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function Templates() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [isRedirect, setIsRedirect] = useState<boolean>(false);
   const [modelUser, setModelUser] = useState({
     user: {},
@@ -16,31 +18,27 @@ export default function Templates() {
   })
   const router = useRouter();
   const { push } = router;
+  const { data: session } = useSession();
 
-  async function loadAdmin() {
-    setLoading(true);
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-          Accept: "application/json",
-        },
-      })
-      .then((res: any) => {
-        setUsers(res.data.users.data);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-    setLoading(false);
-  }
+  const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
+    queryKey: ["fetch-admin"],
+    queryFn: () => {
+      return loadAdmin({ token: session?.user?.token || "" });
+    },
+    // staleTime: 1000 * 60 * 5,
 
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
+    onSuccess: (data: any) => {
+      setUsers(data.users.data);
     }
-    loadAdmin();
-  }, []);
+  });
+
+  // useEffect(() => {
+  //   if (data) {
+  //     setUsers(data.users.data)
+  //   } else {
+  //     console.log(error);
+  //   }
+  // }, [error, data]);
 
   function handleRedirectedPreview () {
     if (isRedirect) {
@@ -66,7 +64,7 @@ export default function Templates() {
 
   return (
     <div className="px-5 bg-gray-100 h-screen">
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : (
         <>
@@ -78,4 +76,20 @@ export default function Templates() {
       )}
   </div>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

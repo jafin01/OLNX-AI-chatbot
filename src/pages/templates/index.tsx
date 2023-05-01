@@ -1,6 +1,9 @@
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
+import { getTemplates } from "@/services/templates/getTemplates";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -9,9 +12,10 @@ import { FiBox, FiClock, FiMessageSquare, FiPlusCircle } from "react-icons/fi";
 export default function Playgrounds() {
   //   const [accessToken, setAccessToken] = useState<string | null>(null);
   const { push } = useRouter();
+  const { data: session } = useSession();
 
-  const [playgrounds, setPlaygrounds] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [templates, setTemplates] = useState<any[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   const colors = [
     "bg-teal-700",
@@ -28,35 +32,23 @@ export default function Playgrounds() {
     "bg-gray-700",
   ];
 
-  useEffect(() => {
-    setLoading(true);
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
+  const { data, isLoading } = useQuery({
+    queryKey: ["get-templates"],
+    queryFn: async () => {
+      return await getTemplates({ token: session?.user?.token || "" });
+    },
+    staleTime: 1000 * 60 * 5,
+
+    onSuccess: (data: any) => {
+      console.log('hello');
+      setTemplates(data);
     }
-    async function loadTemplates() {
-      await axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/templates`, {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-            Accept: "application/json",
-          },
-        })
-        .then((res) => {
-          setPlaygrounds(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    loadTemplates();
-    setLoading(false);
-  }, []);
+  });
+
   return (
     <>
       <Navbar />
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : (
         <section
@@ -67,7 +59,7 @@ export default function Playgrounds() {
             <FiBox />
             <span>Templates</span>
           </h1>
-          <main className="grid grid-cols-1 gap-6">
+          <main className="grid grid-cols-4 gap-6">
             <Link
               href="/playgrounds/new"
               className="rounded overflow-hidden border border-gray-300 h-32 text-gray-500"
@@ -79,27 +71,27 @@ export default function Playgrounds() {
                 <span>New Playground</span>
               </div>
             </Link>
-            {playgrounds.map((playground) => {
+            {templates.map((template) => {
               return (
                 <Link
-                  key={playground.id}
-                  href={`/playgrounds/${playground.id}`}
+                  key={template.id}
+                  href={`/playgrounds/${template.id}`}
                   className="rounded overflow-hidden border border-gray-300 bg-white shadow-none h-32 flex flex-col transition-all duration-150 hover:shadow-xl cursor-pointer"
                 >
                   <div className="p-6 flex-1 w-full flex items-center gap-2">
                     <FiMessageSquare />
                     <span className="flex-1 font-mono truncate">
-                      {playground.name}
+                      {template.name}
                     </span>
                   </div>
                   <div
                     className={`h-14 w-full ${
-                      colors[playground.id % colors.length]
+                      colors[template.id % colors.length]
                     } p-4 flex items-center justify-between text-white font-mono`}
                   >
                     <FiClock />
                     <span>
-                      {new Date(playground.created_at).toLocaleDateString()}
+                      {new Date(template.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </Link>
@@ -110,4 +102,20 @@ export default function Playgrounds() {
       )}
     </>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

@@ -19,80 +19,13 @@ import {
 } from "react-icons/fi";
 
 export default function AdminLayout({ route }: any) {
-  //   const [accessToken, setAccessToken] = useState<string | null>(null);
   const { push } = useRouter();
-  // const [playgroundsCount, setPlaygroundsCount] = useState<number>(0);
-  // const [templatesCount, setTemplatesCount] = useState<number>(0);
-  // const [usersCount, setUsersCount] = useState<number>(0);
-  // const [playgrounds, setPlaygrounds] = useState<any>([]);
-  // const [templates, setTemplates] = useState<any>([]);
-  // const [users, setUsers] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [tab, setTab] = useState<string>("dashboard");
-  // const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
-  // const [modelUser, setModelUser] = useState<any>({
-  //   user: null,
-  //   isModelOpen: false,
-  // });
-
-  // const router = useRouter();
-
-  
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-    setLoading(false);
-  }, [])
   
   useEffect(() => {
     setTab(route?.split("/")[2] || "dashboard");
   }, [route]);
-
-  // useEffect(() => {
-  //   if (router.query?.user) {
-  //     users.filter((user: any) => {
-  //       if (user.id == router.query?.user) {
-  //         setModelUser({
-  //           user,
-  //           isModelOpen: true,
-  //         });
-  //       }
-  //     });
-
-  //     setTab("users");
-  //   }
-  // }, [users, router.query?.user]);
-
-  // async function loadAdmin() {
-  //   setLoading(true);
-  //   await axios
-  //     .get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
-  //       headers: {
-  //         Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-  //         Accept: "application/json",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       setPlaygrounds(res.data.playgrounds.data);
-  //       setTemplates(res.data.templates.data);
-  //       setUsers(res.data.users.data);
-  //       setPlaygroundsCount(res.data.playgrounds_count);
-  //       setTemplatesCount(res.data.templates_count);
-  //       setUsersCount(res.data.users_count);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   setLoading(false);
-  // }
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-    // loadAdmin(); 
-  }, [push, tab]);
 
   return (
     <div>

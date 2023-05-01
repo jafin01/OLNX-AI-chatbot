@@ -3,9 +3,13 @@ import React, { useEffect, useState } from "react";
 import { FiLogOut, FiMessageSquare } from "react-icons/fi";
 import { AiOutlineLogin } from "react-icons/ai";
 import { GiArchiveRegister } from "react-icons/gi";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 
-function HomeNavbar({ accessToken }: any) {
+function HomeNavbar({ session }: any) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { push } = useRouter();
 
   function closeNavbar() {
     setIsOpen(false);
@@ -47,7 +51,16 @@ function HomeNavbar({ accessToken }: any) {
               </span>
             </Link>
           </div>
-          <div>
+          <div className="flex items-center gap-5">
+              {session ? (
+                <span className="text-gray-800">
+                  Hi, {session.user.name}
+                </span>
+              ) : (
+                <span className="text-gray-800">
+                  Not signed in
+                </span>
+              )}
             <button
               type="button"
               className="flex md:hidden px-5 text-gray-800 hover:text-gray-500 focus:outline-none focus:text-gray-500"
@@ -85,7 +98,7 @@ function HomeNavbar({ accessToken }: any) {
             </button>
 
             <div className="hidden md:flex ">
-              {accessToken ? (
+              {session ? (
                 <>
                   <Link
                     href="/playgrounds"
@@ -95,6 +108,7 @@ function HomeNavbar({ accessToken }: any) {
                     Playgrounds
                   </Link>
                   <Link
+                    onClick={() => signOut()}
                     href="/logout"
                     className="justify-center p-5 flex gap-2 items-center w-full px-3 py-2 mr-0 text-gray-700 md:mr-2 lg:mr-3 md:w-auto hover:text-cyan-500"
                   >
@@ -124,7 +138,7 @@ function HomeNavbar({ accessToken }: any) {
       </div>
       {isOpen && (
         <div className="absolute bg-white h-screen w-full mt-12 items-center gap-2">
-          {accessToken ? (
+          {session ? (
             <>
               <Link
                 href="/playgrounds"
@@ -134,6 +148,7 @@ function HomeNavbar({ accessToken }: any) {
                 Playgrounds
               </Link>
               <Link
+                onClick={() => signOut()}
                 href="/logout"
                 className="justify-center p-5 flex gap-2 items-center"
               >
