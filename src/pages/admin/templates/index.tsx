@@ -17,7 +17,7 @@ import {
   Title,
 } from "@tremor/react";
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -35,26 +35,26 @@ export default function Templates() {
   // const [loading, setLoading] = useState(false);
   
   const { push } = useRouter();
+  const { data: session } = useSession();
 
   const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
     queryKey: ["fetch-admin"],
-    queryFn: loadAdmin,
-    staleTime: 1000 * 60 * 5,
+    queryFn: () => {
+      return loadAdmin({ token: session?.user?.token || "" });
+    },
+    // staleTime: 1000 * 60 * 5,
+    onSuccess: (data) => {
+      setTemplates(data.templates.data);
+    }
   });
 
-  useEffect(() => {
-    if (data) {
-      setTemplates(data.templates.data)
-    } else if (error) {
-      console.log(error);
-    }
-  }, [ error, data]);
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     setTemplates(data.templates.data)
+  //   } else if (error) {
+  //     console.log(error);
+  //   }
+  // }, [ error, data]);
 
   return (
     <div className="px-5 bg-gray-100 h-screen">

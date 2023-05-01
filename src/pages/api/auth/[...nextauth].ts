@@ -41,7 +41,7 @@ import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "next-auth";
 // import { User } from "../../login/login.types";
 // import { UseAuthorize } from "@/hooks/useAuthorize";
@@ -64,25 +64,28 @@ export default NextAuth({
         credentials: { email: string, password: string},
         req: NextApiRequest
       ): Promise<User | null> {
-        const result = await authorizeUser(credentials);
-        const { data, error, token } = result;
+        const response = await authorizeUser(credentials);
 
-        console.log(token)
-
-        // set token to cookie
-        Cookies.set("AccessToken", token);
-
-
-        if (!result.user) {
+        if (!response.user) {
           throw new Error("No User found with email, Please sign up...!");
         }
         
-        return result.user;
+        return response.user;
 
       },
     } as any),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...user, ...token };
+    },
+    async session({ session, token }: any) {
+      session.user =  token;
+      return session;
+    },
+  },
   pages: {
     signOut: "/logout",
   },
+  secret: process.env.NEXT_PUBLIC_SECRET,
 });

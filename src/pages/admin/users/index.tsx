@@ -4,7 +4,7 @@ import UserProfileCard from "@/components/Admin/Users/UserProfileCard";
 import { LoadingPage } from "@/components/Loading";
 import { loadAdmin } from "@/services/admin/admin.services";
 import { useQuery } from "@tanstack/react-query";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -18,26 +18,27 @@ export default function Templates() {
   })
   const router = useRouter();
   const { push } = router;
+  const { data: session } = useSession();
 
   const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
     queryKey: ["fetch-admin"],
-    queryFn: loadAdmin,
-    staleTime: 1000 * 60 * 5,
+    queryFn: () => {
+      return loadAdmin({ token: session?.user?.token || "" });
+    },
+    // staleTime: 1000 * 60 * 5,
+
+    onSuccess: (data: any) => {
+      setUsers(data.users.data);
+    }
   });
 
-  useEffect(() => {
-    if (data) {
-      setUsers(data.users.data)
-    } else {
-      console.log(error);
-    }
-  }, [error, data]);
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     setUsers(data.users.data)
+  //   } else {
+  //     console.log(error);
+  //   }
+  // }, [error, data]);
 
   function handleRedirectedPreview () {
     if (isRedirect) {

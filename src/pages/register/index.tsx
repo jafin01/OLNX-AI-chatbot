@@ -282,7 +282,7 @@ function Register() {
               )}
             </Formik>
 
-            <div className="flex items-center justify-center mb-8">
+            {/* <div className="flex items-center justify-center mb-8">
               <hr className="w-[20%] border-gray-400" />
               <span className="px-4 font-bold text-gray-500 text-center">
                 Or Sign up with
@@ -302,7 +302,7 @@ function Register() {
                   <span>Sign up with GitHub</span>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

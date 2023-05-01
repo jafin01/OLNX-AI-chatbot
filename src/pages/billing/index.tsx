@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "@/components/Navbar";
 import { FiCreditCard, FiSkipBack } from "react-icons/fi";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
@@ -14,15 +14,15 @@ export default function Billing() {
   const [clientSecret, setClientSecret] = useState("");
   const [itemName, setItemName] = useState<string | null>(null);
 
+  const { data: session } = useSession();
+
   useEffect(() => {
     async function getClientSecret() {
       await axios
         .get(`${process.env.NEXT_PUBLIC_API_URL}/api/billing/intent`, {
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
+            Authorization: `Bearer ${session?.user?.token}`,
           },
         })
         .then((res) => {

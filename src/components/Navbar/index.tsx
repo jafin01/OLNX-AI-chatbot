@@ -1,5 +1,7 @@
+import { getUser } from "@/services/playground/getUsers";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -15,34 +17,27 @@ import {
 
 export default function Navbar() {
   // const [billingUrl, setBillingUrl] = useState<string | null>(null);
-  const [is_admin, setIsAdmin] = useState<boolean>(false);
-  const [is_subscribed, setIsSubscribed] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    async function getUser() {
-      setLoading(true);
-      const res = await axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/user`, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-          },
-        })
-        .then((res) => {
-          setIsSubscribed(res.data.subscribed);
-          setIsAdmin(res.data.user.is_admin);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      setLoading(false);
+  const { data: session } = useSession();
+
+  const { data, isLoading, error } = useQuery(
+    ["user"],
+    async () => {
+      return await getUser({token: session?.user.token || ""});
+    },
+    {
+      enabled: !!session?.user.token,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: false,
     }
-    getUser();
-  }, []);
+  );
+
+    if(error) {
+      alert(error);
+    }
 
   function closeNavbar() {
     setIsOpen(false);
@@ -130,7 +125,7 @@ export default function Navbar() {
               <span>Templates</span>
             </Link>
 
-            {is_admin ? (
+            {session?.user.is_admin ? (
               <Link
                 href="/admin/dashboard"
                 className="bg-white hover:bg-gray-300 px-4 py-2 rounded flex gap-2 items-center"
@@ -179,7 +174,7 @@ export default function Navbar() {
                 <span>Templates</span>
               </Link>
 
-              {is_admin ? (
+              {session?.user.is_admin ? (
                 <Link
                   href="/admin"
                   className="justify-center py-5 flex gap-2 items-center"
@@ -215,11 +210,11 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {loading ? (
+      {isLoading ? (
         <></>
-      ) : is_subscribed ? (
+      ) : session?.user.is_subscribed ? (
         <></>
-      ) : is_admin ? (
+      ) : session?.user.is_admin ? (
         <></>
       ) : (
         <aside className="bg-amber-500 flex items-center px-6 md:h-14 font-mono font-bold text-white gap-4">

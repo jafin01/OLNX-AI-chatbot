@@ -5,7 +5,7 @@ import { loadAdmin } from "@/services/admin/admin.services";
 import { useQuery } from "@tanstack/react-query";
 import { Grid, Card, Flex, Icon, Metric, Text, Button } from "@tremor/react";
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiActivity, FiBox, FiMessageSquare, FiUser } from "react-icons/fi";
@@ -22,32 +22,24 @@ export default function Dashboard({
   const [playgroundsCount, setPlaygroundsCount] = useState<number>(0);
   const [templatesCount, setTemplatesCount] = useState<number>(0);
   const [usersCount, setUsersCount] = useState<number>(0);
-  // const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const { push } = router;
+  const { data: session } = useSession();
 
-  const { isLoading, data }: { isLoading: boolean; error: any; data: any } =
-    useQuery({
+  const { isLoading, data } = useQuery({
       queryKey: ["fetch-admin"],
-      queryFn: loadAdmin,
-      staleTime: 1000 * 60 * 5,
+      queryFn: () => {
+        return loadAdmin({ token: session?.user?.token || "" });
+      },
+      // staleTime: 1000 * 60 * 5,
+      onSuccess: (data) => {
+        console.log('hi')
+        setPlaygroundsCount(data.playgrounds_count);
+        setTemplatesCount(data.templates_count);
+        setUsersCount(data.users_count);
+      },
     });
-
-  useEffect(() => {
-    if (data) {
-      setPlaygroundsCount(data.playgrounds_count);
-      setTemplatesCount(data.templates_count);
-      setUsersCount(data.users_count);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-
-  }, []);
 
   return (
     <div className="bg-gray-100 h-screen px-5">

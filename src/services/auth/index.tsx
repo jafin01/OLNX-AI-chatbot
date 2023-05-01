@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export async function authorizeUser({ email, password }: { email: string, password: string }) {
     try {
@@ -14,7 +15,12 @@ export async function authorizeUser({ email, password }: { email: string, passwo
           },
         }
       );
-      return res.data;
+      return {
+        user: {
+          ...res.data.user,
+          token: res.data.token,
+        }
+      }
     } catch (error: any) {
       throw new Error(error.message);
     }

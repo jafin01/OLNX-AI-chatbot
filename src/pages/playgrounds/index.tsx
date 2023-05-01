@@ -3,20 +3,33 @@ import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent from "@/components/Playground/Content";
 import PlaygroundNavbar from "@/components/Playground/Navbar";
+import { getPlaygrounds } from "@/services/playground/getPlaygrounds";
 import { useConversationStore } from "@/stores/conversation";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import Cookies from "js-cookie";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { FiClock, FiMessageSquare, FiPlusCircle } from "react-icons/fi";
 
 export default function Playgrounds() {
-  //   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const { push } = useRouter();
+  const { data: session } = useSession();
 
   const [playgrounds, setPlaygrounds] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["get-playgrounds"],
+    queryFn: async () => {
+      return await getPlaygrounds({ token: session?.user?.token || "" });
+    },
+    staleTime: 1000 * 60 * 5,
+
+    onSuccess: (data: any) => {
+      setPlaygrounds(data);
+    }
+  });
 
   const colors = [
     "bg-teal-700",
@@ -33,36 +46,10 @@ export default function Playgrounds() {
     "bg-gray-700",
   ];
 
-  useEffect(() => {
-    // if (!window.localStorage.getItem("accessToken")) {
-    //   push("/login");
-    // }
-    async function loadPlaygrounds() {
-      setLoading(true);
-      await axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/conversation`, {
-          headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              "accessToken"
-            )}`,
-            Accept: "application/json",
-          },
-        })
-        .then((res) => {
-          setPlaygrounds(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      setLoading(false);
-    }
-    loadPlaygrounds();
-  }, []);
-
   return (
     <>
       <Navbar />
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : (
         <section
@@ -128,6 +115,7 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
+  // console.log(session.user.token)
 
   return {
     props: { session },

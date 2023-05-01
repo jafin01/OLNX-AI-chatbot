@@ -9,6 +9,7 @@ export default function Home() {
   // let [accessToken, setAccessToken] = useState<string | null>(null);
   const { data: session, status } = useSession();
 
+
   useEffect(() => {
     if(session) {
       console.log(session, status)
