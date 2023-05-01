@@ -16,8 +16,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
-import { LoginData } from "./login.types";
 import { getSession, signIn } from "next-auth/react";
+import { LoginData } from "@/types/login";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
