@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Tracker from "@openreplay/tracker";
 // import trackerAssist from "@openreplay/tracker-assist";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "@/components/Admin/Layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,7 +16,6 @@ const tracker = new Tracker({
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [session, setSession] = useState<string | null | undefined>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
         {router.pathname.includes("admin") && (
           <AdminLayout route={router.pathname} />
         )}
+        <title>OLNX</title>
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>

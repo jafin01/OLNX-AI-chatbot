@@ -2,20 +2,17 @@ import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import { getTemplates } from "@/services/templates/getTemplates";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiBox, FiClock, FiMessageSquare, FiPlusCircle } from "react-icons/fi";
 
 export default function Playgrounds() {
-  //   const [accessToken, setAccessToken] = useState<string | null>(null);
   const { push } = useRouter();
   const { data: session } = useSession();
 
   const [templates, setTemplates] = useState<any[]>([]);
-  // const [loading, setLoading] = useState<boolean>(true);
 
   const colors = [
     "bg-teal-700",
@@ -32,7 +29,7 @@ export default function Playgrounds() {
     "bg-gray-700",
   ];
 
-  const { data, isLoading } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["get-templates"],
     queryFn: async () => {
       return await getTemplates({ token: session?.user?.token || "" });
