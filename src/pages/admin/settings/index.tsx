@@ -6,7 +6,7 @@ function Settings() {
   return (
     <div className='bg-gray-100 h-screen'>
       <div className='w-full flex justify-center'>
-        <AdminSettings className="w-1/2" />
+        <AdminSettings className="w-full md:w-1/2" />
       </div>
     </div>
   )

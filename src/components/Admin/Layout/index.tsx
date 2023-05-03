@@ -22,10 +22,27 @@ export default function AdminLayout({ route }: any) {
   const { push } = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [tab, setTab] = useState<string>("dashboard");
+  const [isSmallerScreen, setIsSmallerScreen] = useState<boolean>(true);
   
   useEffect(() => {
     setTab(route?.split("/")[2] || "dashboard");
   }, [route]);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth > 375) {
+        setIsSmallerScreen(true);
+      } else {
+        setIsSmallerScreen(false);
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div>
@@ -57,11 +74,11 @@ export default function AdminLayout({ route }: any) {
             }}
             className="my-6"
           >
-            <Tab value="dashboard" text="Dashboard" icon={FiHome} />
-            <Tab value="playgrounds" text="Playgrounds" icon={FiActivity} />
-            <Tab value="templates" text="Templates" icon={FiBox} />
-            <Tab value="users" text="Users" icon={FiUsers} />
-            <Tab value="settings" text="Settings" icon={FiSettings} />
+            <Tab value="dashboard" text={isSmallerScreen ? "Dashboard" : ""} icon={FiHome} />
+            <Tab value="playgrounds" text={isSmallerScreen ? "Playgrounds" : ""} icon={FiActivity} />
+            <Tab value="templates" text={isSmallerScreen ? "Templates" : ""} icon={FiBox} />
+            <Tab value="users" text={isSmallerScreen ? "Users" : ""} icon={FiUsers} />
+            <Tab value="settings" text={isSmallerScreen ? "Settings" : ""} icon={FiSettings} />
           </TabList>
           {/* {tab === "dashboard" && (
             <AdminHome

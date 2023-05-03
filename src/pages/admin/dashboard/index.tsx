@@ -42,7 +42,7 @@ export default function Dashboard({
     });
 
   return (
-    <div className="bg-gray-100 h-screen px-5">
+    <div className="bg-gray-100 px-5">
       {isLoading ? (
         <LoadingPage />
       ) : (
