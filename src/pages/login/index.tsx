@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import notify from "react-hot-toast";
 import Lottie from "react-lottie";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -28,10 +29,12 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
 
+  // Google handler function
   async function handleGoogleSignIn() {
     await signIn("google", { callbackUrl: "http://localhost:3000/playgrounds" });
   }
 
+  // Github handler function
   async function handleGithubSignIn() {
     await signIn("github", { callbackUrl: "http://localhost:3000/playgrounds" });
   }
@@ -241,6 +244,7 @@ export async function getServerSideProps(context: any) {
       },
     };
   }
+
   return {
     props: {},
   };

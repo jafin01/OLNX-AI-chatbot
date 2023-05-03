@@ -1,28 +1,46 @@
+import axios from "axios";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { LoadingPage } from "@/components/Loading";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
+import notify from "react-hot-toast";
+import Cookies from "js-cookie";
+import { signOut } from "next-auth/react";
 
 export default function Logout() {
   const { push } = useRouter();
-  const { data: session } = useSession();
 
-  useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      return await logoutUser({ token: session?.user.token || "" });
-    },
-    enabled: !!session?.user.token,
-    retry: true,
-    onSuccess: (data: any) => {
-      push("/login")
-      console.log(data);
-    },
-    onError: (error: any) => {
-      console.log(error);
+  useEffect(() => {
+    const session = Cookies.get("accessToken");
+    if (session) {
+      const toastLoadingId = notify.loading("Logging you out...");
+      axios
+        .post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/logout`,
+          {},
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${session}`,
+            },
+          }
+        )
+        .then(() => {
+          Cookies.remove("accessToken");
+          // push("/login");
+          signOut();
+        })
+        .catch((err) => {
+          Cookies.remove("accessToken");
+          push("/login");
+          // console.log(err);
+        });
+      notify.dismiss(toastLoadingId);
+      notify.success("Logged out successfully!");
+    } else {
+      push("/login");
+      notify.error("You are not logged in!");
     }
   });
-  
   return (
     <>
       <LoadingPage text="Securely Logging You Out..." fullHeight={true} />

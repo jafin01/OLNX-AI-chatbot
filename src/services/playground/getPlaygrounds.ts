@@ -14,7 +14,6 @@ export async function getPlaygrounds({ token }: { token: string }) {
     console.log(res.data)
     return res.data;
   } catch (error: any) {
-    console.log(error)
     throw new Error(error.message);
   }
 }

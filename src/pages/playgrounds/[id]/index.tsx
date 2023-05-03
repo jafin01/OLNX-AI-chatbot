@@ -38,6 +38,9 @@ export default function Playground() {
   const [isTemplate, setIsTemplate] = useState(false);
 
   useEffect(() => {
+    // if (!window.localStorage.getItem("accessToken")) {
+    //   push("/login");
+    // }
     async function loadConversation() {
       setLoading(true);
       if (query.id) {
@@ -125,6 +128,7 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
+
   return {
     props: { session },
   };

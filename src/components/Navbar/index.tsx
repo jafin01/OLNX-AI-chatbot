@@ -1,9 +1,8 @@
 import { getUser } from "@/services/playground/getUsers";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getSession, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   FiCreditCard,
@@ -20,7 +19,6 @@ export default function Navbar() {
   // const [billingUrl, setBillingUrl] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { push } = useRouter();
   const { data: session } = useSession();
 
   const { data, isLoading, error } = useQuery(
@@ -38,7 +36,7 @@ export default function Navbar() {
   );
 
     if(error) {
-      push('/verification')
+      alert(error);
     }
 
   function closeNavbar() {
@@ -239,20 +237,3 @@ export default function Navbar() {
     </>
   );
 }
-
-export async function getServerSideProps({ req }: { req: any }) {
-  const session = await getSession({ req });
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  
-  return {
-    props: { session },
-  };
-}
-

@@ -1,11 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
-import { getSession, signOut } from "next-auth/react";
+import Footer from "@/components/Footer";
+import NewNavbar from "@/components/HomeNavbar";
+import { Button } from "@tremor/react";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
 
 export default function Home() {
+  let [accessToken, setAccessToken] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [seconds, setSeconds] = useState<number>(30);
+
+  useEffect(() => {
+    if (window.localStorage.getItem("accessToken")) {
+      setAccessToken(window.localStorage.getItem("accessToken"));
+    }
+  }, []);
 
   useEffect(() => {
     seconds > 0 &&
@@ -58,10 +69,7 @@ export default function Home() {
                   <div className="flex-1"></div>
                   <div className="flex flex-col items-start justify-end w-full pt-4 md:items-center md:w-1/3 md:flex-row md:py-0">
                     <Link
-                      onClick={() => {
-                        signOut();
-                      }}
-                      href="/logout"
+                      href="/register"
                       className="inline-flex items-center w-full px-6 py-3 text-sm font-medium leading-4 text-white bg-indigo-600 md:px-3 md:w-auto md:rounded-full lg:px-5 hover:bg-indigo-500 focus:outline-none md:focus:ring-2 focus:ring-0 focus:ring-offset-2 focus:ring-indigo-600"
                     >
                       Logout
@@ -154,6 +162,7 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
+
   return {
     props: { session },
   };

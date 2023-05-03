@@ -5,11 +5,8 @@ import AdminSettings from "@/components/Admin/Settings";
 import AdminTemplates from "@/components/Admin/Templates";
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
-import { loadAdmin } from "@/services/admin/admin.services";
-import { useQuery } from "@tanstack/react-query";
 import { TabList, Tab } from "@tremor/react";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
@@ -23,25 +20,8 @@ import {
 
 export default function AdminLayout({ route }: any) {
   const { push } = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const [tab, setTab] = useState<string>("dashboard");
-
-  const { data: session } = useSession();
-
-  const { isLoading } = useQuery({
-    queryKey: ["fetch-admin"],
-    queryFn: async () => {
-      return await loadAdmin({ token: session?.user?.token || "" });
-    },
-    onSuccess: (data: any) => {
-      // setPlaygrounds(data.playgrounds.data);
-      // setTemplates(data.templates.data);
-      // setUsers(data.users.data);
-      // setPlaygroundsCount(data.playgroundsCount);
-      // setTemplatesCount(data.templatesCount);
-      // setUsersCount(data.usersCount);
-    },
-  });
-
   
   useEffect(() => {
     setTab(route?.split("/")[2] || "dashboard");
@@ -50,7 +30,7 @@ export default function AdminLayout({ route }: any) {
   return (
     <div>
       <Navbar />
-      {isLoading ? (
+      {loading ? (
         <LoadingPage />
       ) : (
         <section

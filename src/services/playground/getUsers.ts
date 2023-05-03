@@ -10,7 +10,6 @@ export async function getUser({ token }: { token: string }) {
     });
     return response.data;
   } catch (error: any) {
-    console.log(error);
-    throw new Error("User is not verified");
+    throw new Error(error.message);
   }
 }

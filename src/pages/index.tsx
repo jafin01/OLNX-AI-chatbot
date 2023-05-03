@@ -6,7 +6,15 @@ import React, { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 
 export default function Home() {
+  // let [accessToken, setAccessToken] = useState<string | null>(null);
   const { data: session, status } = useSession();
+
+
+  useEffect(() => {
+    if(session) {
+      console.log(session, status)
+    }
+  }, [session, status])
   
   return (
     <>

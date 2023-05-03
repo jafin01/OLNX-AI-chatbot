@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 export default function Templates() {
   const [users, setUsers] = useState([]);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [isRedirect, setIsRedirect] = useState<boolean>(false);
   const [modelUser, setModelUser] = useState({
     user: {},
@@ -19,15 +20,25 @@ export default function Templates() {
   const { push } = router;
   const { data: session } = useSession();
 
-  const { isLoading }: { isLoading: boolean, error: any, data: any} = useQuery({
+  const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
     queryKey: ["fetch-admin"],
     queryFn: () => {
       return loadAdmin({ token: session?.user?.token || "" });
     },
+    // staleTime: 1000 * 60 * 5,
+
     onSuccess: (data: any) => {
       setUsers(data.users.data);
     }
   });
+
+  // useEffect(() => {
+  //   if (data) {
+  //     setUsers(data.users.data)
+  //   } else {
+  //     console.log(error);
+  //   }
+  // }, [error, data]);
 
   function handleRedirectedPreview () {
     if (isRedirect) {
@@ -77,6 +88,7 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
+
   return {
     props: { session },
   };
