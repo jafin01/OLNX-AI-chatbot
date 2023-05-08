@@ -2,6 +2,7 @@ import { getUser } from "@/services/playground/getUsers";
 import { useQuery } from "@tanstack/react-query";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   FiCreditCard,
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data: session } = useSession();
+  const { push } = useRouter();
 
   const { isLoading, error } = useQuery(
     ["user"],
@@ -35,7 +37,7 @@ export default function Navbar() {
   );
 
   if (error) {
-    alert(error);
+    push("/verification");
   }
 
   function closeNavbar() {

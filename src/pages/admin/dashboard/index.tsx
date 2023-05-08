@@ -2,6 +2,7 @@
 import AdminHome from "@/components/Admin/Home";
 import { LoadingPage } from "@/components/Loading";
 import { loadAdmin } from "@/services/admin/admin.services";
+import { useAdminStore } from "@/stores/admin";
 import { useQuery } from "@tanstack/react-query";
 import { Grid, Card, Flex, Icon, Metric, Text, Button } from "@tremor/react";
 import axios from "axios";
@@ -19,39 +20,41 @@ export default function Dashboard({
   templates: number;
   users: number;
 }) {
-  const [playgroundsCount, setPlaygroundsCount] = useState<number>(0);
-  const [templatesCount, setTemplatesCount] = useState<number>(0);
-  const [usersCount, setUsersCount] = useState<number>(0);
+  // const [playgroundsCount, setPlaygroundsCount] = useState<number>(0);
+  // const [templatesCount, setTemplatesCount] = useState<number>(0);
+  // const [usersCount, setUsersCount] = useState<number>(0);
 
   const router = useRouter();
   const { push } = router;
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
-  const { isLoading, data } = useQuery({
-      queryKey: ["fetch-admin"],
-      queryFn: () => {
-        return loadAdmin({ token: session?.user?.token || "" });
-      },
-      // staleTime: 1000 * 60 * 5,
-      onSuccess: (data) => {
-        console.log('hi')
-        setPlaygroundsCount(data.playgrounds_count);
-        setTemplatesCount(data.templates_count);
-        setUsersCount(data.users_count);
-      },
-    });
+  const { playgroundsCount, templatesCount, usersCount }: any = useAdminStore();
+
+  // const { isLoading, data } = useQuery({
+  //     queryKey: ["fetch-admin"],
+  //     queryFn: () => {
+  //       return loadAdmin({ token: session?.user?.token || "" });
+  //     },
+  //     // staleTime: 1000 * 60 * 5,
+  //     onSuccess: (data) => {
+  //       console.log('hi')
+  //       setPlaygroundsCount(data.playgrounds_count);
+  //       setTemplatesCount(data.templates_count);
+  //       setUsersCount(data.users_count);
+  //     },
+  //   });
 
   return (
     <div className="bg-gray-100 px-5">
-      {isLoading ? (
+      {/* {isLoading ? (
         <LoadingPage />
-      ) : (
+      ) : ( */}
         <AdminHome
           playgrounds={playgroundsCount}
           templates={templatesCount}
           users={usersCount}
         />
-      )}
+      {/* )} */}
     </div>
   );
 }

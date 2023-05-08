@@ -2,6 +2,7 @@
 import AdminTemplates from "@/components/Admin/Templates";
 import { LoadingPage } from "@/components/Loading";
 import { loadAdmin } from "@/services/admin/admin.services";
+import { useAdminStore } from "@/stores/admin";
 import { useQuery } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 import { useState } from "react";
@@ -28,27 +29,29 @@ import { useState } from "react";
 // } from "react-icons/fi";
 
 export default function Templates() {
-  const [templates, setTemplates] = useState([]);
-  
-  const { data: session } = useSession();
+  // const [templates, setTemplates] = useState([]);
 
-  const { isLoading }: { isLoading: boolean, error: any, data: any} = useQuery({
-    queryKey: ["fetch-admin"],
-    queryFn: () => {
-      return loadAdmin({ token: session?.user?.token || "" });
-    },
-    onSuccess: (data) => {
-      setTemplates(data.templates.data);
-    }
-  });
+  const { templates }: any = useAdminStore();
+  
+  // const { data: session } = useSession();
+
+  // const { isLoading }: { isLoading: boolean, error: any, data: any} = useQuery({
+  //   queryKey: ["fetch-admin"],
+  //   queryFn: () => {
+  //     return loadAdmin({ token: session?.user?.token || "" });
+  //   },
+  //   onSuccess: (data) => {
+  //     setTemplates(data.templates.data);
+  //   }
+  // });
 
   return (
     <div className="px-5 bg-gray-100 h-screen">
-      {isLoading ? (
+      {/* {isLoading ? (
         <LoadingPage />
-      ) : (
+      ) : ( */}
         <AdminTemplates templates={templates} />
-      )}
+      {/* )} */}
   </div>
   );
 }

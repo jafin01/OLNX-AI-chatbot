@@ -24,7 +24,7 @@ export default function Playgrounds() {
     queryFn: async () => {
       return await getPlaygrounds({ token: session?.user?.token || "" });
     },
-    staleTime: 1000 * 60 * 5,
+    // staleTime: 1000 * 60 * 5,
 
     onSuccess: (data: any) => {
       setPlaygrounds(data);
