@@ -4,12 +4,9 @@ import { FiLogOut, FiMessageSquare } from "react-icons/fi";
 import { AiOutlineLogin } from "react-icons/ai";
 import { GiArchiveRegister } from "react-icons/gi";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/router";
 
 function HomeNavbar({ session }: any) {
   const [isOpen, setIsOpen] = useState(false);
-
-  const { push } = useRouter();
 
   function closeNavbar() {
     setIsOpen(false);

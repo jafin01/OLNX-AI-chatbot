@@ -44,6 +44,7 @@ function Register() {
 
   async function submitHandler(values: any) {
     console.log(values);
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/register`)
     setLoading(true);
     const toastLoadingId = notify.loading("Logging in...");
     await axios
@@ -69,6 +70,7 @@ function Register() {
         push("/playgrounds");
       })
       .catch((err) => {
+        console.log(err);
         // console.log(err);
         notify.dismiss(toastLoadingId);
         notify.error("Invalid Credentials");
