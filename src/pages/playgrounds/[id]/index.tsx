@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 const dummy_configs = {
   responses_to_generate: 5,
   config: {
-    system: "",
     model: "gpt-4",
+    system: "",
     temperature: "0.7",
     maxLength: "256",
     top_p: "1",
