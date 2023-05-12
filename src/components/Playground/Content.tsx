@@ -28,6 +28,7 @@ let dummy_configs = [
     id: 1,
     name: "Assistant #1",
     model: "gpt-4",
+    system: "",
     temperature: "0.7",
     maxLength: "256",
     top_p: "1",
@@ -38,6 +39,7 @@ let dummy_configs = [
     id: 2,
     name: "Assistant #2",
     model: "gpt-4",
+    system: "",
     temperature: "0.7",
     maxLength: "256",
     top_p: "1",
@@ -48,6 +50,7 @@ let dummy_configs = [
     id: 3,
     name: "Assistant #3",
     model: "gpt-4",
+    system: "",
     temperature: "0.7",
     maxLength: "256",
     top_p: "1",
@@ -111,6 +114,7 @@ export default function PlaygroundContent({
     name: "",
     index: -1,
     model: "gpt-4",
+    system: '',
     temperature: "0.7",
     maxLength: "256",
     top_p: "1",
@@ -256,6 +260,7 @@ export default function PlaygroundContent({
         name: `Assistant #${prev.length + 1}`,
         id: prev.length + 1,
         model: "gpt-4",
+        system: '',
         temperature: "0.7",
         maxLength: "256",
         top_p: "1",
@@ -307,6 +312,7 @@ export default function PlaygroundContent({
         max_tokens: +nextConfig.maxLength,
       })
       .then(async (res) => {
+        console.log(res.data);
         const newMessage = res.data.choices[0].message.content;
         await setMessages((prevMessages: any) => [
           ...prevMessages,
@@ -333,7 +339,8 @@ export default function PlaygroundContent({
       intValues.configs.push({
         name: config.name,
         id: config.id,
-        [`system_${config.id}`]: "",
+        // [`system_${config.id}`]: "",
+        system: "",
         model: "gpt-3.5-turbo",
         temperature: "0.7",
         maxLength: "256",
@@ -355,7 +362,8 @@ export default function PlaygroundContent({
       newConfigs[configIndex] = {
         name: configModel.name,
         id: configModel.id,
-        [`system_${configModel.id}`]: configModel[`system_${configModel.id}`],
+        // [`system_${configModel.id}`]: configModel[`system_${configModel.id}`],
+        system: configModel.system,
         model: configModel.model,
         temperature: configModel.temperature,
         maxLength: configModel.maxLength,
@@ -429,7 +437,8 @@ export default function PlaygroundContent({
                                 id: config.id,
                                 index,
                                 name: config.name,
-                                [`system_${config.id}`]: e.target.value,
+                                // [`system_${config.id}`]: e.target.value,
+                                system: e.target.value,
                               });
 
                               saveAssistantConfig();
@@ -451,8 +460,9 @@ export default function PlaygroundContent({
                                 isOpen: true,
                                 name: config.name,
                                 index,
-                                [`system_${config.id}`]:
-                                  config[`system_${config.id}`],
+                                // [`system_${config.id}`]:
+                                //   config[`system_${config.id}`],
+                                system: config.system,
                                 model: config.model,
                                 temperature: config.temperature,
                                 maxLength: config.maxLength,

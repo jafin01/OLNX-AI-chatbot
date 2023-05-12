@@ -1,7 +1,9 @@
 import { savePlayground } from "@/services/admin/admin.services";
 import { useConversationStore } from "@/stores/conversation";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { rejects } from "assert";
+import { log } from "console";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -32,14 +34,29 @@ export default function PlaygroundNavbar({
 
   const [name, setName] = useState(nme ? nme : "");
   const [saving, setSaving] = useState(false);
-  const [isTemplate, setIsTemplate] = useState(isTempl)
+  const [isTemplate, setIsTemplate] = useState(isTempl);
+  const { data: session} = useSession();
+  
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["saveConversation"],
-    queryFn: () => savePlayground({ messages, configs, template: isTemplate, id }),
-    enabled: saving,
-    retry: false,
-  })
+  // const { isLoading, error, data } = useQuery({
+  //   queryKey: ["saveConversation"],
+  //   queryFn: () => savePlayground({ messages, configs, template: isTemplate, id, name, token: session?.user.token || "" }),
+  //   enabled: saving,
+  //   retry: false,
+  // })
+
+  const { mutate, isLoading, error, data } = useMutation(savePlayground,
+    {
+      onSuccess: (data) => {
+        toast.success('conversation saved successfully');
+        console.log(data);
+      },
+      onError: (error) => {
+        toast.error('error saving conversation')
+        console.log(error);
+      },
+    }
+  )
 
   useEffect(() => {
     if (error) {
@@ -55,10 +72,11 @@ export default function PlaygroundNavbar({
     setSaving(true);
     setIsBusy(true);
     try {
-      const res = await savePlayground({ messages, configs, template, id });
-      return res;
+      mutate({
+        messages, configs, template, token: session?.user.token || "", id:2, name
+      });
+      console.log(id);
     } catch (error) {
-      // Promise.reject(error)
       return error;
     } finally {
       setSaving(false);

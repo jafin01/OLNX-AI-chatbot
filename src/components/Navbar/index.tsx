@@ -36,9 +36,9 @@ export default function Navbar() {
     }
   );
 
-  if (error) {
-    push("/verification");
-  }
+  // if (error) {
+  //   push("/verification");
+  // }
 
   function closeNavbar() {
     setIsOpen(false);
