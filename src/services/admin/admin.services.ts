@@ -62,6 +62,6 @@ export async function savePlayground({
     
     return res.data;
   } catch (err: any) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }

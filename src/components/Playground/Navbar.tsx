@@ -2,6 +2,7 @@ import { savePlayground } from "@/services/admin/admin.services";
 import { useConversationStore } from "@/stores/conversation";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { rejects } from "assert";
+import axios from "axios";
 import { log } from "console";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -24,7 +25,7 @@ export default function PlaygroundNavbar({
   isBusy: boolean;
   setIsBusy: (b: boolean) => void;
   nme?: string;
-  id?: string;
+  id?: string | string[] | number | null;
   isTempl?: boolean;
 }) {
   const messages = useConversationStore((state: any) => state.messages);
@@ -36,14 +37,6 @@ export default function PlaygroundNavbar({
   const [saving, setSaving] = useState(false);
   const [isTemplate, setIsTemplate] = useState(isTempl);
   const { data: session} = useSession();
-  
-
-  // const { isLoading, error, data } = useQuery({
-  //   queryKey: ["saveConversation"],
-  //   queryFn: () => savePlayground({ messages, configs, template: isTemplate, id, name, token: session?.user.token || "" }),
-  //   enabled: saving,
-  //   retry: false,
-  // })
 
   const { mutate, isLoading, error, data } = useMutation(savePlayground,
     {
@@ -51,9 +44,9 @@ export default function PlaygroundNavbar({
         toast.success('conversation saved successfully');
         console.log(data);
       },
-      onError: (error) => {
+      onError: (error:any) => {
         toast.error('error saving conversation')
-        console.log(error);
+        console.log(error.response.data);
       },
     }
   )
@@ -73,10 +66,9 @@ export default function PlaygroundNavbar({
     setIsBusy(true);
     try {
       mutate({
-        messages, configs, template, token: session?.user.token || "", id:2, name
+        messages, configs, template, token: session?.user.token || "", id, name
       });
-      console.log(id);
-    } catch (error) {
+    } catch (error: any) {
       return error;
     } finally {
       setSaving(false);

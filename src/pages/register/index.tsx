@@ -63,7 +63,7 @@ function Register() {
         }
       )
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         window.localStorage.setItem("accessToken", res.data.token);
         notify.dismiss(toastLoadingId);
         notify.success("Registered Successfully");

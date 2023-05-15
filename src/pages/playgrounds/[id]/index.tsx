@@ -3,11 +3,13 @@ import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent, { Message } from "@/components/Playground/Content";
 import PlaygroundNavbar from "@/components/Playground/Navbar";
+import { getOnePlayground } from "@/services/playground/getOnePlayground";
 import { useConversationStore } from "@/stores/conversation";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 const dummy_configs = {
   responses_to_generate: 5,
@@ -23,66 +25,36 @@ const dummy_configs = {
 }
 
 export default function Playground() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [intValues, setIntValues] = useState<any>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [intValues, setIntValues] = useState<any>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [nme, setNme] = useState<string>("");
   const [contentLoading, setContentLoading] = useState<boolean>(true);
+  const [isBusy, setIsBusy] = useState<boolean>(false);
+  const [isTemplate, setIsTemplate] = useState<boolean>(false);
 
-  const { push, query } = useRouter();
+  const { data: session } = useSession();
 
-  const [isBusy, setIsBusy] = useState(false);
+  const { id } = useRouter().query;
 
-  const { name } = useConversationStore((state: any) => state);
-
-  const [isTemplate, setIsTemplate] = useState(false);
-
-  useEffect(() => {
-    // if (!window.localStorage.getItem("accessToken")) {
-    //   push("/login");
-    // }
-    async function loadConversation() {
-      setLoading(true);
-      if (query.id) {
-        await axios
-          .get(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/conversation/${query.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${window.localStorage.getItem(
-                  "accessToken"
-                )}`,
-                Accept: "application/json",
-              },
-            }
-          )
-          .then((res) => {
-            const initialValues = {
-              responses_to_generate: 5,
-              configs: [],
-            };
-            const msgs = res.data.messages.map((message: any) => {
-              return {
-                role: message.sender,
-                message: message.message,
-              };
-            });
-            setMessages(msgs);
-            setIntValues(initialValues);
-            setIsTemplate(res.data.conversation.template);
-            setNme(res.data.conversation.name);
-            setLoading(false);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+  const { isLoading, data } = useQuery({
+    queryKey: ["get-conversation"],
+    queryFn: async () => {
+      return await getOnePlayground({ token: session?.user?.token || "", id: id ? id : null });
+    },
+    onSuccess: (data: any) => {
+      console.log(data);
       setContentLoading(false);
+      setNme(data.conversation.name);
+    },
+    onError: (err: any) => {
+      console.log(err);
     }
-    loadConversation();
-  }, [query]);
+  });
 
-  if (loading) {
+  // const { name } = useConversationStore((state: any) => state);
+
+  if (isLoading) {
     return (
       <>
         <Navbar />
@@ -102,15 +74,15 @@ export default function Playground() {
             isBusy={isBusy}
             setIsBusy={setIsBusy}
             nme={nme}
-            id={query.id as string}
+            id={id}
             isTempl={isTemplate}
           />
           <PlaygroundContent
-            msgs={messages}
+            msgs={data.messages}
             setIsBusy={setIsBusy}
             isBusy={isBusy}
-            name={name}
-            initialValues={intValues}
+            name={data.conversation.name}
+            initialValues={data.configs}
           />
         </>
       )}

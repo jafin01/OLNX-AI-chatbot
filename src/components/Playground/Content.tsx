@@ -91,7 +91,8 @@ export default function PlaygroundContent({
   setIsBusy,
   isBusy,
   initialValues,
-}: // msgs,
+  msgs,
+}:
 {
   name: string;
   setIsBusy: (b: boolean) => void;
@@ -132,16 +133,17 @@ export default function PlaygroundContent({
   }, []);
 
   useEffect(() => {
+    if(initialValues) {
+      console.log(initialValues);
+      setConfigs(initialValues);
+    }
+  }, []);
+
+  useEffect(() => {
     setIsBusy(loading);
   }, [loading]);
 
   const formikRef = useRef<any>();
-
-  // useEffect(() => {
-  //   if (formikRef) {
-  //     // saveConversation();
-  //   }
-  // }, [formikRef]);
 
   useEffect(() => {
     // saveConversation();
@@ -153,25 +155,6 @@ export default function PlaygroundContent({
       setItteration((prev) => prev + 1);
     }
   }, [messages]);
-
-  // useEffect(() => {
-  //   if (itteration < formikRef.current.values.responses_to_generate) {
-  //     generateResponse(formikRef.current.values);
-  //   }
-  // }, [itteration]);
-
-  // const setConversation = useConversationStore(
-  //   (state: any) => state.setConversation
-  // );
-
-  // a function to save the conversation
-  // async function saveConversation() {
-  //   await setConversation({
-  //     configs: configs,
-  //     messages: messages,
-  //     name: name,
-  //   });
-  // }
 
   // a function that deletes a particular message from the messages array based on index
   function deleteMessage(index: number) {
@@ -241,11 +224,6 @@ export default function PlaygroundContent({
   // a function that calls an API over post
   async function generateResponses(values: any) {
     setLoading(true);
-
-    // call generateResponse based on the number of responses to generate
-    // for (let i = 0; i < values.responses_to_generate; i++) {
-    //   await generateResponse(values);
-    // }
 
     await generateResponse(values);
 
@@ -350,14 +328,16 @@ export default function PlaygroundContent({
       });
     });
   } else {
+    console.log("initialValues", initialValues);
     intValues = initialValues;
   }
 
-  function saveAssistantConfig(click = false) {
+  function saveAssistantConfig(e: any, click = false) {
     setConfigs((prev: any) => {
       const configIndex = prev.findIndex(
         (config: any) => config.id === configModel.id
       );
+      // console.log(e.target.value)
       const newConfigs = [...prev];
       newConfigs[configIndex] = {
         name: configModel.name,
@@ -441,10 +421,11 @@ export default function PlaygroundContent({
                                 system: e.target.value,
                               });
 
-                              saveAssistantConfig();
+                              saveAssistantConfig(e);
                               // saveConversation();
                             }}
                             disabled={isBusy}
+                            id={`system_${config.id}`}
                             onBlur={handleBlur}
                             name="system"
                             className="h-full w-full resize-none outline-none"
