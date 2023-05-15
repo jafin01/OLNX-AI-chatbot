@@ -31,7 +31,8 @@ export default function PlaygroundNavbar({
   const messages = useConversationStore((state: any) => state.messages);
   const configs = useConversationStore((state: any) => state.configs);
 
-  console.log(configs);
+  console.log('save cheyyan pokunna configs array', configs);
+  console.log('messages', messages);
 
   const [name, setName] = useState(nme ? nme : "");
   const [saving, setSaving] = useState(false);

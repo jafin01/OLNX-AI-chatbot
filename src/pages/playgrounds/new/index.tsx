@@ -3,8 +3,7 @@ import PlaygroundContent from "@/components/Playground/Content";
 import PlaygroundNavbar from "@/components/Playground/Navbar";
 import { useConversationStore } from "@/stores/conversation";
 import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Playground() {
   const [isBusy, setIsBusy] = useState(false);
@@ -29,7 +28,6 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
-
   return {
     props: { session },
   };
