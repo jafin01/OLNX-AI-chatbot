@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import PlaygroundContent, { Message } from "@/components/Playground/Content";
@@ -6,6 +7,19 @@ import { useConversationStore } from "@/stores/conversation";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
+const dummy_configs = {
+  responses_to_generate: 5,
+  config: {
+    system: "",
+    model: "gpt-4",
+    temperature: "0.7",
+    maxLength: "256",
+    top_p: "1",
+    frequency_penalty: "0",
+    presence_penalty: "0",
+  }
+}
 
 export default function Playground() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,24 +58,7 @@ export default function Playground() {
           .then((res) => {
             const initialValues = {
               responses_to_generate: 5,
-              config1: {
-                system: res.data.conversation.system_1,
-                model: res.data.config.model_1,
-                temperature: res.data.config.temperature_1,
-                maxLength: res.data.config.max_length_1,
-                top_p: res.data.config.top_p_1,
-                frequency_penalty: res.data.config.frequency_penalty_1,
-                presence_penalty: res.data.config.presence_penalty_1,
-              },
-              config2: {
-                system: res.data.conversation.system_2,
-                model: res.data.config.model_2,
-                temperature: res.data.config.temperature_2,
-                maxLength: res.data.config.max_length_2,
-                top_p: res.data.config.top_p_2,
-                frequency_penalty: res.data.config.frequency_penalty_2,
-                presence_penalty: res.data.config.presence_penalty_2,
-              },
+              configs: [],
             };
             const msgs = res.data.messages.map((message: any) => {
               return {
