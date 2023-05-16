@@ -5,7 +5,7 @@ type ConfigType =  {
   isOpen?: boolean,
   index?: number,
   name: string,
-  id?: string | number,
+  id?: number,
   model: string,
   temperature: number,
   maxLength: number,
@@ -115,7 +115,7 @@ function AssistantConfig({
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
-                                  temperature: e.target.value,
+                                  temperature: +e.target.value,
                                 })
                               }}
                               className="w-full accent-teal-700"
@@ -140,7 +140,7 @@ function AssistantConfig({
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
-                                  maxLength: e.target.value,
+                                  maxLength: +e.target.value,
                                 })
                               }}
                               className="w-full accent-teal-700"
@@ -165,7 +165,7 @@ function AssistantConfig({
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
-                                  top_p: e.target.value,
+                                  top_p: +e.target.value,
                                 })
                               }}
                               className="w-full accent-teal-700"
@@ -190,7 +190,7 @@ function AssistantConfig({
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
-                                  frequency_penalty: e.target.value,
+                                  frequency_penalty: +e.target.value,
                                 })
                               }}
                               className="w-full accent-teal-700"
@@ -214,7 +214,7 @@ function AssistantConfig({
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
-                                  presence_penalty: e.target.value,
+                                  presence_penalty: +e.target.value,
                                 })
                               }}
                               className="w-full accent-teal-700"
