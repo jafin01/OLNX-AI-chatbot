@@ -5,6 +5,7 @@ import { rejects } from "assert";
 import axios from "axios";
 import { log } from "console";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -38,6 +39,7 @@ export default function PlaygroundNavbar({
   const [saving, setSaving] = useState(false);
   const [isTemplate, setIsTemplate] = useState(isTempl);
   const { data: session} = useSession();
+  const { push } = useRouter();
 
   const { mutate, isLoading, error, data } = useMutation(savePlayground,
     {
@@ -96,7 +98,11 @@ export default function PlaygroundNavbar({
           <button
             type="button"
             // onClick={() => saveConversation({ template: false })}
-            onClick={() => handleSave({ template: false })}
+            onClick={() => {
+              handleSave({ template: false })
+                push('/playgrounds');
+              }
+            }
             disabled={isBusy ? true : saving}
             className="rounded px-4 py-2 bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -119,7 +125,10 @@ export default function PlaygroundNavbar({
           <button
             type="button"
             // onClick={() => saveConversation({ template: true })}
-            onClick={() => handleSave({ template: true })}
+            onClick={() => {
+              handleSave({ template: true });
+              push('/templates');
+            }}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -130,7 +139,10 @@ export default function PlaygroundNavbar({
           <button
             type="button"
             // onClick={() => saveConversation({ template: true })}
-            onClick={() => handleSave({ template: true })}
+            onClick={() => {
+              handleSave({ template: true });
+              push('/templates');
+            }}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
