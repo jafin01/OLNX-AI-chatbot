@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Lottie from "react-lottie";
 import axios from "axios";
 import notify from "react-hot-toast";
@@ -34,12 +34,6 @@ function Register() {
     useState<boolean>(false);
   const { push } = useRouter();
 
-  // useEffect(() => {
-  //   if (window.localStorage.getItem("accessToken")) {
-  //     push("/playgrounds");
-  //   }
-  // }, [push]);
-
   const [loading, setLoading] = useState<boolean>(false);
 
   async function submitHandler(values: any) {
@@ -71,7 +65,6 @@ function Register() {
       })
       .catch((err) => {
         console.log(err);
-        // console.log(err);
         notify.dismiss(toastLoadingId);
         notify.error("Invalid Credentials");
       });

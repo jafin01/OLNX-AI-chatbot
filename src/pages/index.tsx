@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import HomeNavbar from "@/components/HomeNavbar";
-import Cookies from "js-cookie";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-  // let [accessToken, setAccessToken] = useState<string | null>(null);
   const { data: session, status } = useSession();
-
 
   useEffect(() => {
     if(session) {
@@ -35,12 +32,6 @@ export default function Home() {
             <div className="mx-auto mt-5 text-gray-500 md:mt-12 md:max-w-lg md:text-center lg:text-lg">
               Simplifying the creation of chat bots and so much more!
             </div>
-{/* <div className="">
-  <div className="absolute inset-0 border-4 border-transparent bg-gradient-to-br from-green-500 to-purple-500 via-red-400 opacity-25"></div>
-  <div className="p-4 z-10">
-    Helloooo
-  </div>
-</div> */}
             <div className="flex flex-col items-center mt-12 text-center">
               <span className="relative inline-flex w-full md:w-auto">
                 <Link

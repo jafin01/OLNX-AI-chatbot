@@ -1,8 +1,5 @@
-import playgrounds from "@/pages/playgrounds";
-import templates from "@/pages/templates";
 import { Grid, Card, Flex, Icon, Metric, Text, Button } from "@tremor/react";
-import { useState } from "react";
-import { FiActivity, FiBox, FiMessageSquare, FiUser } from "react-icons/fi";
+import { FiBox, FiMessageSquare, FiUser } from "react-icons/fi";
 
 export default function AdminHome({
   playgrounds,
@@ -28,11 +25,6 @@ export default function AdminHome({
             <Metric className="truncate">{playgrounds}</Metric>
           </div>
         </Flex>
-        {/* <div className="text-right">
-          <Button onClick={} size="xs" variant="light" className="mt-4">
-            View all Playgrounds
-          </Button>
-        </div> */}
       </Card>
       <Card decoration="top" decorationColor={"rose"}>
         <Flex justifyContent="start" className="space-x-4">

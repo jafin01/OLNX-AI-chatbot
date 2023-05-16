@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import notify from "react-hot-toast";
+import React, { useState } from "react";
 import Lottie from "react-lottie";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";

@@ -26,13 +26,11 @@ export default function Logout() {
         )
         .then(() => {
           Cookies.remove("accessToken");
-          // push("/login");
           signOut();
         })
         .catch((err) => {
           Cookies.remove("accessToken");
           push("/login");
-          // console.log(err);
         });
       notify.dismiss(toastLoadingId);
       notify.success("Logged out successfully!");

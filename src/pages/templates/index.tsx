@@ -4,7 +4,6 @@ import { getTemplates } from "@/services/templates/getTemplates";
 import { useQuery } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { FiBox, FiClock, FiMessageSquare, FiPlusCircle } from "react-icons/fi";
 

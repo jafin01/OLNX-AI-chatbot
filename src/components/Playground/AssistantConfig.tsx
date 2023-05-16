@@ -84,13 +84,11 @@ function AssistantConfig({
                               value={values.model}
                               onChange={async (e) => {
                                 await handleChange(e);
-                                // saveConversation();
                                 setConfigModel({
                                   ...configModel,
                                   name: configModel.name,
                                   model: e.target.value,
                                 })
-                                // saveAssistantConfig();
                               }}
                               className="w-full p-2 mb-2"
                             >
@@ -123,7 +121,6 @@ function AssistantConfig({
                               step="0.01"
                               min="0"
                               max="1"
-                              // bind:value={config1.temperature}
                             />
                           </div>
                           <div>
@@ -148,7 +145,6 @@ function AssistantConfig({
                               step="1"
                               min="1"
                               max="2048"
-                              // bind:value={config1.max_length}
                             />
                           </div>
                           <div>
@@ -173,7 +169,6 @@ function AssistantConfig({
                               step="0.01"
                               min="0"
                               max="1"
-                              // bind:value={config1.top_p}
                             />
                           </div>
                           <div>
@@ -198,7 +193,6 @@ function AssistantConfig({
                               step="0.01"
                               min="0"
                               max="2"
-                              // bind:value={config1.frequency_penalty}
                             />
                           </div>
                           <div>
@@ -222,7 +216,6 @@ function AssistantConfig({
                               step="0.01"
                               min="0"
                               max="2"
-                              // bind:value={config1.presence_penalty}
                             />
                           </div>
                         <button type="submit" className="bg-teal-700 mt-5 h-12 rounded text-white">Save</button>

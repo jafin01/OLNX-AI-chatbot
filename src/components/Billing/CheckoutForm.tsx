@@ -1,6 +1,5 @@
 import {
   AddressElement,
-  CardElement,
   PaymentElement,
   useElements,
   useStripe,
@@ -13,7 +12,6 @@ export default function CheckoutForm({ plan }: { plan?: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentMethod, setPaymentMethod] = useState<null | string>(null);
-  const { push } = useRouter();
 
   async function handleSubmit(event: any) {
     event.preventDefault();
@@ -31,7 +29,6 @@ export default function CheckoutForm({ plan }: { plan?: string }) {
     });
 
     if (error) {
-      // Show error to your customer (for example, payment details incomplete)
       console.log(error.message);
     } else {
       if (setupIntent.payment_method) {

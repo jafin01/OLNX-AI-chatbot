@@ -1,22 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import Footer from "@/components/Footer";
-import NewNavbar from "@/components/HomeNavbar";
-import { Button } from "@tremor/react";
 import { getSession, signOut } from "next-auth/react";
 import Link from "next/link";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
-  let [accessToken, setAccessToken] = useState<string | null>(null);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const [seconds, setSeconds] = useState<number>(30);
-
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      setAccessToken(window.localStorage.getItem("accessToken"));
-    }
-  }, []);
 
   useEffect(() => {
     seconds > 0 &&
@@ -81,9 +70,6 @@ export default function Home() {
                 </div>
               </div>
               <div
-                onClick={() => {
-                  //"showMenu = !showMenu"
-                }}
                 className="absolute right-0 flex flex-col items-center justify-center w-10 h-10 bg-white rounded-full cursor-pointer md:hidden hover:bg-gray-100"
               >
                 <svg
