@@ -33,10 +33,8 @@ export default function Playgrounds() {
     queryFn: async () => {
       return await getTemplates({ token: session?.user?.token || "" });
     },
-    staleTime: 1000 * 60 * 5,
 
     onSuccess: (data: any) => {
-      console.log('hello');
       setTemplates(data);
     }
   });
@@ -55,7 +53,7 @@ export default function Playgrounds() {
             <FiBox />
             <span>Templates</span>
           </h1>
-          <main className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <main className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6">
             <Link
               href="/playgrounds/new"
               className="rounded overflow-hidden border border-gray-300 h-32 text-gray-500"
