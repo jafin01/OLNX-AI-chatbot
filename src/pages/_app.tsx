@@ -16,7 +16,6 @@ const tracker = new Tracker({
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [session, setSession] = useState<string | null | undefined>(null);
   const router = useRouter();
 
   useEffect(() => {

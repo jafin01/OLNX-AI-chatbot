@@ -1,7 +1,8 @@
-import { savePlayground } from "@/services/admin/admin.services";
+import { savePlayground } from "@/services/playground/savePlayground";
 import { useConversationStore } from "@/stores/conversation";
-import { QueryClient, useQuery } from "@tanstack/react-query";
-import { rejects } from "assert";
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -22,22 +23,32 @@ export default function PlaygroundNavbar({
   isBusy: boolean;
   setIsBusy: (b: boolean) => void;
   nme?: string;
-  id?: string;
+  id?: string | string[] | number | null;
   isTempl?: boolean;
 }) {
   const messages = useConversationStore((state: any) => state.messages);
   const configs = useConversationStore((state: any) => state.configs);
 
+  console.log('save cheyyan pokunna configs array', configs);
+  console.log('messages', messages);
+
   const [name, setName] = useState(nme ? nme : "");
   const [saving, setSaving] = useState(false);
-  const [isTemplate, setIsTemplate] = useState(isTempl)
+  const { data: session} = useSession();
+  const { push } = useRouter();
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["saveConversation"],
-    queryFn: () => savePlayground({ messages, configs, template: isTemplate, id }),
-    enabled: saving,
-    retry: false,
-  })
+  const { mutate, isLoading, error, data } = useMutation(savePlayground,
+    {
+      onSuccess: (data) => {
+        toast.success('conversation saved successfully');
+        console.log(data);
+      },
+      onError: (error:any) => {
+        toast.error('error saving conversation')
+        console.log(error.response.data);
+      },
+    }
+  )
 
   useEffect(() => {
     if (error) {
@@ -52,11 +63,12 @@ export default function PlaygroundNavbar({
   async function handleSave({ template }: { template: boolean }) {
     setSaving(true);
     setIsBusy(true);
+    console.log('save cheyyan pokunna configs array', configs);
     try {
-      const res = await savePlayground({ messages, configs, template, id });
-      return res;
-    } catch (error) {
-      // Promise.reject(error)
+      mutate({
+        messages, configs, template, token: session?.user.token || "", id, name
+      });
+    } catch (error: any) {
       return error;
     } finally {
       setSaving(false);
@@ -81,8 +93,11 @@ export default function PlaygroundNavbar({
         {!isTempl ? (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: false })}
-            onClick={() => handleSave({ template: false })}
+            onClick={() => {
+              handleSave({ template: false })
+                push('/playgrounds');
+              }
+            }
             disabled={isBusy ? true : saving}
             className="rounded px-4 py-2 bg-teal-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -104,8 +119,10 @@ export default function PlaygroundNavbar({
         {isTempl ? (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: true })}
-            onClick={() => handleSave({ template: true })}
+            onClick={() => {
+              handleSave({ template: true });
+              push('/templates');
+            }}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -115,8 +132,10 @@ export default function PlaygroundNavbar({
         ) : (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: true })}
-            onClick={() => handleSave({ template: true })}
+            onClick={() => {
+              handleSave({ template: true });
+              push('/templates');
+            }}
             disabled={isBusy}
             className="rounded px-4 py-2 bg-rose-700 text-white disabled:bg-gray-300 disabled:text-gray-500 flex items-center gap-2"
           >
@@ -143,39 +162,3 @@ export default function PlaygroundNavbar({
     </nav>
   );
 }
-
-
-// async function saveConversation({ template }: { template?: boolean }) {
-  //   setSaving(true);
-  //   setIsBusy(true);
-  //   await axios
-  //     .post(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
-  //         id ? "/update" : ""
-  //       }`,
-  //       {
-  //         messages,
-  //         configs,
-  //         // config1: config1,
-  //         // config2: config2,
-  //         template: template ? true : false,
-  //         id: id ? id : null,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${window.localStorage.getItem(
-  //             "accessToken"
-  //           )}`,
-  //           Accept: "application/json",
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       console.log("Saving: ", res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   setSaving(false);
-  //   setIsBusy(false);
-  // }

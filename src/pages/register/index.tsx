@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Lottie from "react-lottie";
 import axios from "axios";
 import notify from "react-hot-toast";
@@ -34,16 +34,11 @@ function Register() {
     useState<boolean>(false);
   const { push } = useRouter();
 
-  // useEffect(() => {
-  //   if (window.localStorage.getItem("accessToken")) {
-  //     push("/playgrounds");
-  //   }
-  // }, [push]);
-
   const [loading, setLoading] = useState<boolean>(false);
 
   async function submitHandler(values: any) {
     console.log(values);
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/register`)
     setLoading(true);
     const toastLoadingId = notify.loading("Logging in...");
     await axios
@@ -62,14 +57,14 @@ function Register() {
         }
       )
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         window.localStorage.setItem("accessToken", res.data.token);
         notify.dismiss(toastLoadingId);
         notify.success("Registered Successfully");
         push("/playgrounds");
       })
       .catch((err) => {
-        // console.log(err);
+        console.log(err);
         notify.dismiss(toastLoadingId);
         notify.error("Invalid Credentials");
       });

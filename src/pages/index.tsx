@@ -1,14 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import HomeNavbar from "@/components/HomeNavbar";
-import Cookies from "js-cookie";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { getSession, useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-  // let [accessToken, setAccessToken] = useState<string | null>(null);
   const { data: session, status } = useSession();
-
 
   useEffect(() => {
     if(session) {

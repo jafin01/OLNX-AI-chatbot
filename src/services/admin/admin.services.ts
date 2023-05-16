@@ -17,37 +17,4 @@ export async function loadAdmin({ token }: { token: string }) {
   }
 }
 
-export async function savePlayground({
-  messages,
-  configs,
-  template,
-  id,
-}: {
-  messages: any;
-  configs: any;
-  template: boolean;
-  id: any;
-}) {
-  try {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
-        id ? "/update" : ""
-      }`,
-      {
-        messages,
-        configs,
-        template,
-        id: id ? id : null,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-          Accept: "application/json",
-        },
-      }
-    );
-    return res.data;
-  } catch (err: any) {
-    throw new Error(err.message);
-  }
-}
+

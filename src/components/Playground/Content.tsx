@@ -4,7 +4,6 @@ import PlaygroundChatBubble from "./ChatBubble";
 import PlaygroundAddChatBubble from "./AddChatBubble";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-// import { useConversationStore } from "@/stores/conversation";
 import { FiSend, FiLoader } from "react-icons/fi";
 import {
   AccordionList,
@@ -14,81 +13,20 @@ import {
 } from "@tremor/react";
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
-import { useQuery } from "@tanstack/react-query";
 import { useConversationStore } from "@/stores/conversation";
-import { config } from "process";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
   message: string;
 };
 
-let dummy_configs = [
-  {
-    id: 1,
-    name: "Assistant #1",
-    model: "gpt-4",
-    temperature: "0.7",
-    maxLength: "256",
-    top_p: "1",
-    frequency_penalty: "0",
-    presence_penalty: "0",
-  },
-  {
-    id: 2,
-    name: "Assistant #2",
-    model: "gpt-4",
-    temperature: "0.7",
-    maxLength: "256",
-    top_p: "1",
-    frequency_penalty: "0",
-    presence_penalty: "0",
-  },
-  {
-    id: 3,
-    name: "Assistant #3",
-    model: "gpt-4",
-    temperature: "0.7",
-    maxLength: "256",
-    top_p: "1",
-    frequency_penalty: "0",
-    presence_penalty: "0",
-  },
-];
-
-type Config = {
-  id: number;
-  name: string;
-  model: string;
-  temperature: string;
-  maxLength: string;
-  top_p: string;
-  frequency_penalty: string;
-  presence_penalty: string;
-  [key: number]: string;
-};
-
-const msgs: any = [
-  {
-    role: "Assistant #1",
-    message: "Hello.",
-  },
-  {
-    role: "Assistant #2",
-    message: "Hello, I am an assistant.",
-  },
-  {
-    role: "Assistant #3",
-    message: "Hello, I am an assistant.",
-  },
-];
-
 export default function PlaygroundContent({
   name,
   setIsBusy,
   isBusy,
   initialValues,
-}: // msgs,
+  msgs,
+}:
 {
   name: string;
   setIsBusy: (b: boolean) => void;
@@ -96,7 +34,7 @@ export default function PlaygroundContent({
   initialValues?: any;
   msgs?: Message[];
 }) {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<Message[]>(msgs || [
     {
       role: "Assistant #1",
       message: "Hello.",
@@ -111,21 +49,39 @@ export default function PlaygroundContent({
     name: "",
     index: -1,
     model: "gpt-4",
-    temperature: "0.7",
-    maxLength: "256",
-    top_p: "1",
-    frequency_penalty: "0",
-    presence_penalty: "0",
+    system: '',
+    temperature: 0.7,
+    maxLength: 256,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
   });
   const [loading, setLoading] = useState(false);
   const [itteration, setItteration] = useState(5);
-  const [configs, setConfigs] = useState<any[]>(dummy_configs);
-
-  useEffect(() => {
-    if (msgs) {
-      setMessages(msgs);
-    }
-  }, []);
+  const [configs, setConfigs] = useState<any[]>(initialValues || [
+    {
+      id: 1,
+      name: "Assistant #1",
+      model: "gpt-4",
+      system: "",
+      temperature: 0.7,
+      maxLength: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    },
+    {
+      id: 2,
+      name: "Assistant #2",
+      model: "gpt-4",
+      system: "",
+      temperature: 0.7,
+      maxLength: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    },
+  ]);
 
   useEffect(() => {
     setIsBusy(loading);
@@ -133,14 +89,7 @@ export default function PlaygroundContent({
 
   const formikRef = useRef<any>();
 
-  // useEffect(() => {
-  //   if (formikRef) {
-  //     // saveConversation();
-  //   }
-  // }, [formikRef]);
-
   useEffect(() => {
-    // saveConversation();
     async function genRes() {
       await generateResponse(formikRef.current.values);
     }
@@ -150,26 +99,6 @@ export default function PlaygroundContent({
     }
   }, [messages]);
 
-  // useEffect(() => {
-  //   if (itteration < formikRef.current.values.responses_to_generate) {
-  //     generateResponse(formikRef.current.values);
-  //   }
-  // }, [itteration]);
-
-  // const setConversation = useConversationStore(
-  //   (state: any) => state.setConversation
-  // );
-
-  // a function to save the conversation
-  // async function saveConversation() {
-  //   await setConversation({
-  //     configs: configs,
-  //     messages: messages,
-  //     name: name,
-  //   });
-  // }
-
-  // a function that deletes a particular message from the messages array based on index
   function deleteMessage(index: number) {
     setMessages((prev) => prev.filter((_, i) => i !== index));
   }
@@ -234,14 +163,8 @@ export default function PlaygroundContent({
     }
   }
 
-  // a function that calls an API over post
   async function generateResponses(values: any) {
     setLoading(true);
-
-    // call generateResponse based on the number of responses to generate
-    // for (let i = 0; i < values.responses_to_generate; i++) {
-    //   await generateResponse(values);
-    // }
 
     await generateResponse(values);
 
@@ -256,11 +179,12 @@ export default function PlaygroundContent({
         name: `Assistant #${prev.length + 1}`,
         id: prev.length + 1,
         model: "gpt-4",
-        temperature: "0.7",
-        maxLength: "256",
-        top_p: "1",
-        frequency_penalty: "0",
-        presence_penalty: "0",
+        system: '',
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       },
     ]);
   }
@@ -284,7 +208,7 @@ export default function PlaygroundContent({
 
     const nextConfig = configs[nextAssistantIndex];
     const systemMessage =
-      configs[nextAssistantIndex][`system_${nextConfig.id}`];
+      configs[nextAssistantIndex].system;
 
     const model = configs[lastAssistantIndex].model;
 
@@ -307,6 +231,7 @@ export default function PlaygroundContent({
         max_tokens: +nextConfig.maxLength,
       })
       .then(async (res) => {
+        console.log(res.data);
         const newMessage = res.data.choices[0].message.content;
         await setMessages((prevMessages: any) => [
           ...prevMessages,
@@ -333,13 +258,13 @@ export default function PlaygroundContent({
       intValues.configs.push({
         name: config.name,
         id: config.id,
-        [`system_${config.id}`]: "",
+        system: "",
         model: "gpt-3.5-turbo",
-        temperature: "0.7",
-        maxLength: "256",
-        top_p: "1",
-        frequency_penalty: "0",
-        presence_penalty: "0",
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       });
     });
   } else {
@@ -351,11 +276,12 @@ export default function PlaygroundContent({
       const configIndex = prev.findIndex(
         (config: any) => config.id === configModel.id
       );
+
       const newConfigs = [...prev];
       newConfigs[configIndex] = {
         name: configModel.name,
         id: configModel.id,
-        [`system_${configModel.id}`]: configModel[`system_${configModel.id}`],
+        system: configModel.system,
         model: configModel.model,
         temperature: configModel.temperature,
         maxLength: configModel.maxLength,
@@ -381,10 +307,10 @@ export default function PlaygroundContent({
       messages,
       configs,
     });
-    
   }, [configs, messages]);
 
   useEffect(() => {
+    console.log("configs", configs);
     console.log("configModel", configModel);
   }, [configModel]);
 
@@ -422,19 +348,15 @@ export default function PlaygroundContent({
                       <AccordionBody className="h-64">
                         <div className="p-4 h-full border border-gray-300 rounded-sm flex flex-col">
                           <textarea
-                            onChange={(e) => {
-                              handleChange(e);
-                              setConfigModel({
-                                ...configModel,
-                                id: config.id,
-                                index,
-                                name: config.name,
-                                [`system_${config.id}`]: e.target.value,
-                              });
-
-                              saveAssistantConfig();
-                              // saveConversation();
-                            }}
+                          value={config.system}
+                          onChange={(e) => {
+                            const updatedConfigs = [...configs];
+                            updatedConfigs[index] = {
+                              ...config,
+                              system: e.target.value,
+                            };
+                            setConfigs(updatedConfigs);
+                          }}
                             disabled={isBusy}
                             onBlur={handleBlur}
                             name="system"
@@ -451,8 +373,7 @@ export default function PlaygroundContent({
                                 isOpen: true,
                                 name: config.name,
                                 index,
-                                [`system_${config.id}`]:
-                                  config[`system_${config.id}`],
+                                system: config.system,
                                 model: config.model,
                                 temperature: config.temperature,
                                 maxLength: config.maxLength,
@@ -501,8 +422,6 @@ export default function PlaygroundContent({
                       onClickName={() => {
                         changeRole(index);
                       }}
-                      // bind:name={message.role}
-                      // bind:message={message.message}
                       removeMessage={() => deleteMessage(index)}
                     />
                   );
@@ -531,11 +450,9 @@ export default function PlaygroundContent({
                     max="100"
                     onChange={async (e) => {
                       await handleChange(e);
-                      // saveConversation();
                     }}
                     onBlur={handleBlur}
                     value={values.responses_to_generate}
-                    // bind:value={responses_to_generate}
                   />
                   <button
                     type="submit"

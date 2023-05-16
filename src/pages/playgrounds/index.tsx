@@ -1,17 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { LoadingPage } from "@/components/Loading";
 import Navbar from "@/components/Navbar";
-import PlaygroundContent from "@/components/Playground/Content";
-import PlaygroundNavbar from "@/components/Playground/Navbar";
 import { getPlaygrounds } from "@/services/playground/getPlaygrounds";
-import { useConversationStore } from "@/stores/conversation";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiClock, FiMessageSquare, FiPlusCircle } from "react-icons/fi";
 
 export default function Playgrounds() {
@@ -19,12 +13,11 @@ export default function Playgrounds() {
 
   const [playgrounds, setPlaygrounds] = useState<any[]>([]);
 
-  const { data, isLoading } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ["get-playgrounds"],
     queryFn: async () => {
       return await getPlaygrounds({ token: session?.user?.token || "" });
     },
-    staleTime: 1000 * 60 * 5,
 
     onSuccess: (data: any) => {
       setPlaygrounds(data);
@@ -115,7 +108,6 @@ export async function getServerSideProps({ req }: { req: any }) {
       },
     };
   }
-  // console.log(session.user.token)
 
   return {
     props: { session },

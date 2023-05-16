@@ -32,13 +32,6 @@ export default function UserProfileCard({
       {modelUser.user && modelUser.isModelOpen && (
         <div
           className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-50 z-50"
-          // onClick={() => {
-          //   setModelUser({
-          //     user: null,
-          //     isModelOpen: false,
-          //   });
-          //   handleRedirect();
-          // }}
         >
           <div className="absolute shadow-md top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/4 h-3/4 flex-wrap bg-white rounded-2xl">
             <div className="bg-violet-400 h-1/2 w-full rounded-br-[30%] rounded-t-2xl">

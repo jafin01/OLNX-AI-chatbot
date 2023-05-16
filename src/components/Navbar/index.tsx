@@ -1,8 +1,8 @@
 import { getUser } from "@/services/playground/getUsers";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   FiCreditCard,
@@ -21,10 +21,10 @@ export default function Navbar() {
 
   const { data: session } = useSession();
 
-  const { data, isLoading, error } = useQuery(
+  const { isLoading } = useQuery(
     ["user"],
     async () => {
-      return await getUser({token: session?.user.token || ""});
+      return await getUser({ token: session?.user.token || "" });
     },
     {
       enabled: !!session?.user.token,
@@ -34,10 +34,6 @@ export default function Navbar() {
       retry: false,
     }
   );
-
-    if(error) {
-      alert(error);
-    }
 
   function closeNavbar() {
     setIsOpen(false);
@@ -59,7 +55,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="py-4 h-16 bg-white border-b border-gray-300 w-full flex justify-between items-center">
+      <nav className=" h-16 z-50 bg-white border-b border-gray-300 w-full flex justify-between items-center">
         <div className="w-full flex justify-between">
           <div className="w-full flex justify-between font-mono text-lg">
             <Link
@@ -176,7 +172,7 @@ export default function Navbar() {
 
               {session?.user.is_admin ? (
                 <Link
-                  href="/admin"
+                  href="/admin/dashboard"
                   className="justify-center py-5 flex gap-2 items-center"
                   onClick={() => setIsOpen(false)}
                 >
@@ -196,7 +192,7 @@ export default function Navbar() {
               </Link>
               <Link
                 onClick={() => {
-                  setIsOpen(false)
+                  setIsOpen(false);
                   signOut();
                 }}
                 href={`/logout`}
