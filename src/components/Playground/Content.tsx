@@ -20,69 +20,6 @@ export type Message = {
   message: string;
 };
 
-// let dummy_configs = [
-//   {
-//     id: 1,
-//     name: "Assistant #1",
-//     model: "gpt-4",
-//     system: "",
-//     temperature: "0.7",
-//     maxLength: "256",
-//     top_p: "1",
-//     frequency_penalty: "0",
-//     presence_penalty: "0",
-//   },
-//   {
-//     id: 2,
-//     name: "Assistant #2",
-//     model: "gpt-4",
-//     system: "",
-//     temperature: "0.7",
-//     maxLength: "256",
-//     top_p: "1",
-//     frequency_penalty: "0",
-//     presence_penalty: "0",
-//   },
-//   {
-//     id: 3,
-//     name: "Assistant #3",
-//     model: "gpt-4",
-//     system: "",
-//     temperature: "0.7",
-//     maxLength: "256",
-//     top_p: "1",
-//     frequency_penalty: "0",
-//     presence_penalty: "0",
-//   },
-// ];
-
-// type Config = {
-//   id: number;
-//   name: string;
-//   model: string;
-//   temperature: string;
-//   maxLength: string;
-//   top_p: string;
-//   frequency_penalty: string;
-//   presence_penalty: string;
-//   [key: number]: string;
-// };
-
-// const msgs: any = [
-//   {
-//     role: "Assistant #1",
-//     message: "Hello.",
-//   },
-//   {
-//     role: "Assistant #2",
-//     message: "Hello, I am an assistant.",
-//   },
-//   {
-//     role: "Assistant #3",
-//     message: "Hello, I am an assistant.",
-//   },
-// ];
-
 export default function PlaygroundContent({
   name,
   setIsBusy,
@@ -113,11 +50,11 @@ export default function PlaygroundContent({
     index: -1,
     model: "gpt-4",
     system: '',
-    temperature: "0.7",
-    maxLength: "256",
-    top_p: "1",
-    frequency_penalty: "0",
-    presence_penalty: "0",
+    temperature: 0.7,
+    maxLength: 256,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
   });
   const [loading, setLoading] = useState(false);
   const [itteration, setItteration] = useState(5);
@@ -127,22 +64,22 @@ export default function PlaygroundContent({
       name: "Assistant #1",
       model: "gpt-4",
       system: "",
-      temperature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
+      temperature: 0.7,
+      maxLength: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
     },
     {
       id: 2,
       name: "Assistant #2",
       model: "gpt-4",
       system: "",
-      temparature: "0.7",
-      maxLength: "256",
-      top_p: "1",
-      frequency_penalty: "0",
-      presence_penalty: "0",
+      temperature: 0.7,
+      maxLength: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
     },
   ]);
 
@@ -244,11 +181,11 @@ export default function PlaygroundContent({
         id: prev.length + 1,
         model: "gpt-4",
         system: '',
-        temperature: "0.7",
-        maxLength: "256",
-        top_p: "1",
-        frequency_penalty: "0",
-        presence_penalty: "0",
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       },
     ]);
   }
@@ -272,7 +209,7 @@ export default function PlaygroundContent({
 
     const nextConfig = configs[nextAssistantIndex];
     const systemMessage =
-      configs[nextAssistantIndex][`system_${nextConfig.id}`];
+      configs[nextAssistantIndex].system;
 
     const model = configs[lastAssistantIndex].model;
 
@@ -326,11 +263,11 @@ export default function PlaygroundContent({
         id: config.id,
         system: "",
         model: "gpt-3.5-turbo",
-        temperature: "0.7",
-        maxLength: "256",
-        top_p: "1",
-        frequency_penalty: "0",
-        presence_penalty: "0",
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
       });
     });
   } else {

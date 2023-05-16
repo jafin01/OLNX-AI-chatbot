@@ -65,6 +65,7 @@ export default function PlaygroundNavbar({
   async function handleSave({ template }: { template: boolean }) {
     setSaving(true);
     setIsBusy(true);
+    console.log('save cheyyan pokunna configs array', configs);
     try {
       mutate({
         messages, configs, template, token: session?.user.token || "", id, name
