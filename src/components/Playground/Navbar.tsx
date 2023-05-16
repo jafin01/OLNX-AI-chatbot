@@ -1,9 +1,6 @@
-import { savePlayground } from "@/services/admin/admin.services";
+import { savePlayground } from "@/services/playground/savePlayground";
 import { useConversationStore } from "@/stores/conversation";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { rejects } from "assert";
-import axios from "axios";
-import { log } from "console";
+import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -37,7 +34,6 @@ export default function PlaygroundNavbar({
 
   const [name, setName] = useState(nme ? nme : "");
   const [saving, setSaving] = useState(false);
-  const [isTemplate, setIsTemplate] = useState(isTempl);
   const { data: session} = useSession();
   const { push } = useRouter();
 
@@ -97,7 +93,6 @@ export default function PlaygroundNavbar({
         {!isTempl ? (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: false })}
             onClick={() => {
               handleSave({ template: false })
                 push('/playgrounds');
@@ -124,7 +119,6 @@ export default function PlaygroundNavbar({
         {isTempl ? (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: true })}
             onClick={() => {
               handleSave({ template: true });
               push('/templates');
@@ -138,7 +132,6 @@ export default function PlaygroundNavbar({
         ) : (
           <button
             type="button"
-            // onClick={() => saveConversation({ template: true })}
             onClick={() => {
               handleSave({ template: true });
               push('/templates');
@@ -169,39 +162,3 @@ export default function PlaygroundNavbar({
     </nav>
   );
 }
-
-
-// async function saveConversation({ template }: { template?: boolean }) {
-  //   setSaving(true);
-  //   setIsBusy(true);
-  //   await axios
-  //     .post(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/api/conversation${
-  //         id ? "/update" : ""
-  //       }`,
-  //       {
-  //         messages,
-  //         configs,
-  //         // config1: config1,
-  //         // config2: config2,
-  //         template: template ? true : false,
-  //         id: id ? id : null,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${window.localStorage.getItem(
-  //             "accessToken"
-  //           )}`,
-  //           Accept: "application/json",
-  //         },
-  //       }
-  //     )
-  //     .then((res) => {
-  //       console.log("Saving: ", res.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   setSaving(false);
-  //   setIsBusy(false);
-  // }

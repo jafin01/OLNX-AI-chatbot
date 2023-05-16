@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function Playground() {
   const [isBusy, setIsBusy] = useState(false);
-  
+
   const name = useConversationStore((state: any) => state.name);
   return (
     <>

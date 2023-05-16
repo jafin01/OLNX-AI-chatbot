@@ -20,9 +20,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data: session } = useSession();
-  const { push } = useRouter();
 
-  const { isLoading, error } = useQuery(
+  const { isLoading } = useQuery(
     ["user"],
     async () => {
       return await getUser({ token: session?.user.token || "" });
@@ -35,10 +34,6 @@ export default function Navbar() {
       retry: false,
     }
   );
-
-  // if (error) {
-  //   push("/verification");
-  // }
 
   function closeNavbar() {
     setIsOpen(false);

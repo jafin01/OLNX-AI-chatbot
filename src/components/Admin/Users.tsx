@@ -133,7 +133,6 @@ export default function AdminUsers({
                         color="blue"
                       />
                     )}
-                    {/* <Icon icon={FiEye} variant="simple" tooltip="View" /> */}
                     
                     <Icon
                       icon={FiTrash}

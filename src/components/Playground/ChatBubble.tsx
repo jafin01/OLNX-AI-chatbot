@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from "react";
 import { FiMinusCircle } from "react-icons/fi";
 
@@ -27,9 +28,7 @@ export default function PlaygroundChatBubble({
       <ContentEditable
         setContent={onChange}
         content={message}
-        //   bind:textContent={message}
         className="rounded-sm outline-purple-500 p-2 flex-1 bg-transparent resize-none h-auto"
-        // placeholder="Enter an assistant message here."
       />
       <button type="button" className="w-4" onClick={removeMessage}>
         <span className="group-hover:block hidden">
@@ -92,7 +91,6 @@ function ContentEditable({
       contentEditable
       className={className}
       onInput={handleChange}
-      // dangerouslySetInnerHTML={{ __html: content }}
     />
   );
 }

@@ -16,7 +16,6 @@ import {
   FiSettings,
   FiUsers,
 } from "react-icons/fi";
-// import { useStore } from "zustand";
 
 export default function AdminLayout({ route }: any) {
   const { push } = useRouter();
@@ -26,16 +25,11 @@ export default function AdminLayout({ route }: any) {
 
   const { data: session } = useSession();
 
-  // const { playgrounds, playgroundsCount }: any = useAdminStore();
-
-  // console.log(playgrounds, playgroundsCount)
-
   const { isLoading } = useQuery({
     queryKey: ["fetch-admin"],
     queryFn: () => {
       return loadAdmin({ token: session?.user?.token || "" });
     },
-    // staleTime: 1000 * 60 * 5,
     onSuccess: (data: any) => {
       useAdminStore.setState({
         playgrounds: data.playgrounds.data,
@@ -87,13 +81,6 @@ export default function AdminLayout({ route }: any) {
             onValueChange={(value) => {
               setTab(value);
               push(`/admin/${value}`)
-              // if (modelUser.isModelOpen) {
-              //   setModelUser({
-              //     user: null,
-              //     isModelOpen: false,
-              //   });
-              //   push('/admin')
-              // }
             }}
             className="my-6"
           >
@@ -103,20 +90,6 @@ export default function AdminLayout({ route }: any) {
             <Tab value="users" text={isSmallerScreen ? "Users" : ""} icon={FiUsers} />
             <Tab value="settings" text={isSmallerScreen ? "Settings" : ""} icon={FiSettings} />
           </TabList>
-            {/* { tab === "dashboard" && <AdminHome playgrounds={10} templates={10} users={15} /> } */}
-          {/* {tab === "dashboard" && (
-            <AdminHome
-              playgrounds={playgroundsCount}
-              templates={templatesCount}
-              users={usersCount}
-            />
-          )} */}
-          {/* {tab === "playgrounds" && (
-            <AdminPlaygrounds playgrounds={playgrounds} />
-          )}
-          {tab === "templates" && <AdminTemplates templates={templates} />}
-          {tab === "users" && <AdminUsers users={users} modelUser={modelUser} setModelUser={setModelUser} />}
-          {tab === "settings" && <AdminSettings />} */}
         </section>
       )}
     </div>

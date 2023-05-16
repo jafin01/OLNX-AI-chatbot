@@ -87,7 +87,6 @@ export default function PlaygroundContent({
     setIsBusy(loading);
   }, [loading]);
 
-  // NO CHANGE //////////////////////////// ------------------------------
   const formikRef = useRef<any>();
 
   useEffect(() => {
@@ -248,8 +247,6 @@ export default function PlaygroundContent({
     setLoading(false);
   }
 
-  // NO CHANGE //////////////////////////// -------------------------------
-
   let intValues: any;
   if (!initialValues) {
     intValues = {
@@ -274,8 +271,6 @@ export default function PlaygroundContent({
     intValues = initialValues;
   }
 
-
-
   function saveAssistantConfig(click = false) {
     setConfigs((prev: any) => {
       const configIndex = prev.findIndex(
@@ -286,7 +281,6 @@ export default function PlaygroundContent({
       newConfigs[configIndex] = {
         name: configModel.name,
         id: configModel.id,
-        // [`system_${configModel.id}`]: configModel[`system_${configModel.id}`],
         system: configModel.system,
         model: configModel.model,
         temperature: configModel.temperature,
@@ -362,24 +356,8 @@ export default function PlaygroundContent({
                               system: e.target.value,
                             };
                             setConfigs(updatedConfigs);
-                            // saveAssistantConfig()
                           }}
-                            // onChange={(e) => {
-                            //   handleChange(e);
-                            //   setConfigModel({
-                            //     ...configModel,
-                            //     id: config.id,
-                            //     index,
-                            //     name: config.name,
-                            //     // [`system_${config.id}`]: e.target.value,
-                            //     system: e.target.value || config.system,
-                            //   });
-
-                            //   saveAssistantConfig();
-                            //   // saveConversation();
-                            // }}
                             disabled={isBusy}
-                            // id={`system_${config.id}`}
                             onBlur={handleBlur}
                             name="system"
                             className="h-full w-full resize-none outline-none"
@@ -444,8 +422,6 @@ export default function PlaygroundContent({
                       onClickName={() => {
                         changeRole(index);
                       }}
-                      // bind:name={message.role}
-                      // bind:message={message.message}
                       removeMessage={() => deleteMessage(index)}
                     />
                   );
@@ -474,11 +450,9 @@ export default function PlaygroundContent({
                     max="100"
                     onChange={async (e) => {
                       await handleChange(e);
-                      // saveConversation();
                     }}
                     onBlur={handleBlur}
                     value={values.responses_to_generate}
-                    // bind:value={responses_to_generate}
                   />
                   <button
                     type="submit"
