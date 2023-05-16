@@ -16,6 +16,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
+import { getSession, signIn } from "next-auth/react";
+import { LoginData } from "@/types/login";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -24,56 +26,45 @@ const LoginSchema = Yup.object().shape({
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const { push } = useRouter();
-  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      push("/playgrounds");
+  // Google handler function
+  async function handleGoogleSignIn() {
+    await signIn("google", { callbackUrl: "http://localhost:3000/playgrounds" });
+  }
+
+  // Github handler function
+  async function handleGithubSignIn() {
+    await signIn("github", { callbackUrl: "http://localhost:3000/playgrounds" });
+  }
+
+  async function submitHandler(values: LoginData) {
+    setIsLoading(true);
+
+    const email = values.email;
+    const password = values.password;
+
+    const status = await signIn("credentials", { 
+      redirect: false,
+      email,
+      password,
+      callbackUrl: "http://localhost:3000/playgrounds",
+    })
+
+    if (status?.ok === true) {
+      push("/playgrounds")
+    } else {
+      setIsLoading(false);
+      alert(status?.error)
     }
-  }, [push]);
 
-  async function submitHandler(values: any) {
-    console.log(values);
-    setLoading(true);
-    const toastLoadingId = notify.loading("Logging in...");
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login`,
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        // console.log(res);
-        window.localStorage.setItem("accessToken", res.data.token);
-        notify.dismiss(toastLoadingId);
-        notify.success("Logged in successfully");
-        push("/");
-      })
-      .catch((err) => {
-        // console.log(err);
-        notify.dismiss(toastLoadingId);
-        notify.error("Invalid Credentials");
-      });
-
-    setLoading(false);
   }
 
   const defaultOptions = {
     loop: true,
     autoplay: true,
     animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
   };
 
   return (
@@ -84,9 +75,14 @@ function Login() {
       <section className="w-full flex justify-between flex-col h-full z-50">
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
           <div className="w-full max-w-md">
-          <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
-            <span className="inline md:block"><span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">Log</span>in</span>
-          </h1>
+            <h1 className="text-center text-5xl font-extrabold leading-10 tracking-tight text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
+              <span className="inline md:block">
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-indigo-500">
+                  Log
+                </span>
+                in
+              </span>
+            </h1>
             <Formik
               initialValues={{ email: "", password: "" }}
               validationSchema={LoginSchema}
@@ -173,12 +169,12 @@ function Login() {
                   <div className="flex text-center justify-between mb-4">
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={isLoading}
                       className={`outline-gray-50 bg-gray-200 text-gray-700 text-center w-full font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
-                        !loading && "hover:bg-blue-200"
+                        !isLoading && "hover:bg-blue-200"
                       }`}
                     >
-                      {loading ? (
+                      {isLoading ? (
                         <FiLoader className="animate-spin my-1 mx-auto" />
                       ) : (
                         "Login"
@@ -198,7 +194,7 @@ function Login() {
               )}
             </Formik>
 
-            <div className="flex items-center justify-center mb-8">
+            {/* <div className="flex items-center justify-center mb-8">
               <hr className="w-[20%] border-gray-400" />
               <span className="px-4 font-bold text-gray-500 text-center">
                 Or Login with
@@ -207,18 +203,26 @@ function Login() {
             </div>
             <div className="lg:items-center lg:justify-around xl:items-center xl:justify-around 2xl:items-center 2xl:justify-around lg:flex xl:flex 2xl:flex">
               <div className="py-2">
-                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center">
+                <button 
+                  type='button'
+                  className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow flex justify-center items-center"
+                  onClick={handleGoogleSignIn}
+                >
                   <FaGoogle className="text-red-500 mr-2" />
                   <span>Sign in with Google</span>
                 </button>
               </div>
               <div className="py-2">
-                <button className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center">
+                <button 
+                  type='button'
+                  className="w-3/4 md:w-full lg:w-full xl:w-full 2xl:w-full m-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 border border-gray-800 rounded shadow flex justify-center items-center"
+                  onClick={handleGithubSignIn}
+                >
                   <FaGithub className="text-white mr-2" />
                   <span>Sign in with GitHub</span>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -227,3 +231,24 @@ function Login() {
 }
 
 export default Login;
+
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
+
+

@@ -2,6 +2,7 @@
 import Footer from "@/components/Footer";
 import NewNavbar from "@/components/HomeNavbar";
 import { Button } from "@tremor/react";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FiArrowRight, FiLogIn, FiPlay } from "react-icons/fi";
@@ -149,4 +150,20 @@ export default function Home() {
       </section>
     </>
   );
+}
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

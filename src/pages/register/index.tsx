@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiLoader } from "react-icons/fi";
+import { getSession } from "next-auth/react";
 
 const RegisterSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -33,11 +34,11 @@ function Register() {
     useState<boolean>(false);
   const { push } = useRouter();
 
-  useEffect(() => {
-    if (window.localStorage.getItem("accessToken")) {
-      push("/playgrounds");
-    }
-  }, [push]);
+  // useEffect(() => {
+  //   if (window.localStorage.getItem("accessToken")) {
+  //     push("/playgrounds");
+  //   }
+  // }, [push]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -281,7 +282,7 @@ function Register() {
               )}
             </Formik>
 
-            <div className="flex items-center justify-center mb-8">
+            {/* <div className="flex items-center justify-center mb-8">
               <hr className="w-[20%] border-gray-400" />
               <span className="px-4 font-bold text-gray-500 text-center">
                 Or Sign up with
@@ -301,7 +302,7 @@ function Register() {
                   <span>Sign up with GitHub</span>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -310,3 +311,20 @@ function Register() {
 }
 
 export default Register;
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

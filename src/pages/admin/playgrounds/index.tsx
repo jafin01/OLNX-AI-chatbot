@@ -1,45 +1,49 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AdminPlaygrounds from '@/components/Admin/Playgrounds';
 import { LoadingPage } from '@/components/Loading';
-import axios from 'axios';
+import { loadAdmin } from '@/services/admin/admin.services';
+import { useQuery } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 
 function Playgrounds() {
   const [playgrounds, setPlaygrounds] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [token, setToken] = useState<string>('');
+  // const [loading, setLoading] = useState(false);
   
   const { push } = useRouter();
+  const { data: session } = useSession();
 
-  async function loadAdmin() {
-    setLoading(true);
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/admin`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-          Accept: "application/json",
-        },
-      })
-      .then((res: any) => {
-        setPlaygrounds(res.data.playgrounds.data);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-    setLoading(false);
-  }
+  const { isLoading, error, data }: { isLoading: boolean, error: any, data: any} = useQuery({
+    queryKey: ["fetch-admin"],
+    queryFn: () => {
+      return loadAdmin({ token: session?.user?.token || "" });
+    },
+    // staleTime: 1000 * 60 * 5, // 5 minutes
+    onSuccess: (data) => {
+      console.log('hi')
+      setPlaygrounds(data.playgrounds.data);
+    },
+  });
 
-  useEffect(() => {
-    if (!window.localStorage.getItem("accessToken")) {
-      push("/login");
-    }
-    // push(route)
-    loadAdmin();
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     setPlaygrounds(data.playgrounds.data);
+  //   } else if (error) {
+  //     console.log(error);
+  //   }
+  // }, [data, error]);
+
+  // useEffect(() => {
+  //   const token = Cookies.get('token') || '';
+  //   setToken(token);
+  // })
   
   return (
     <div className='bg-gray-100 h-screen px-5'>
-      {loading ? (
+      {isLoading ? (
         <LoadingPage />
       ) : 
       <AdminPlaygrounds playgrounds={playgrounds} />
@@ -49,3 +53,19 @@ function Playgrounds() {
 }
 
 export default Playgrounds;
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
