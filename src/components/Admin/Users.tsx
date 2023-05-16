@@ -32,7 +32,7 @@ export default function AdminUsers({
   users: any,
   showUserInfo: (id: number) => void,
 }) {
-  const router = useRouter();
+  const { push } = useRouter();
   return (
     <Card>
       <Title className="flex items-center gap-2">
@@ -85,18 +85,20 @@ export default function AdminUsers({
                   <Text>{new Date(user.updated_at).toLocaleDateString()}</Text>
                 </TableCell>
                 <TableCell>
-                <Icon
-                      icon={FiMessageSquare}
-                      variant="simple"
-                      color="amber"
-                      tooltip="Playgrounds"
-                    />
-                    <Icon
-                      icon={FiBox}
-                      variant="simple"
-                      color="emerald"
-                      tooltip="Templates"
-                    />
+                  <Icon
+                    icon={FiMessageSquare}
+                    variant="simple"
+                    color="amber"
+                    tooltip="Playgrounds"
+                    onClick={() => push(`/admin/playgrounds?userId=${user.id}`)}
+                  />
+                  <Icon
+                    icon={FiBox}
+                    variant="simple"
+                    color="emerald"
+                    tooltip="Templates"
+                    onClick={() => push(`/admin/templates?userId=${user.id}`)}
+                  />
                 </TableCell>
                 
                 <TableCell>
