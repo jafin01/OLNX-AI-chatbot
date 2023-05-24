@@ -34,8 +34,8 @@ export default function AdminUsers({
 }) {
   const { push } = useRouter();
   return (
-    <Card>
-      <Title className="flex items-center gap-2">
+    <Card className="z-20">
+      <Title className="flex items-center gap-2 z-20">
         <FiUsers />
         <span>Users</span>  
       </Title>
