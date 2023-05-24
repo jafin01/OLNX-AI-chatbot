@@ -152,7 +152,7 @@ export default function Navbar() {
           </div>
 
           {isOpen && (
-            <div className="absolute bg-white h-screen w-full mt-12 items-center gap-2">
+            <div className="absolute bg-white h-screen w-full mt-12 items-center gap-2 z-50">
               <Link
                 href="/playgrounds"
                 className="justify-center flex pt-10 pb-5 items-center gap-2"

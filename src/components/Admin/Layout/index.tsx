@@ -88,7 +88,7 @@ export default function AdminLayout({ route }: any) {
             <Tab value="playgrounds" text={isSmallerScreen ? "Playgrounds" : ""} icon={FiActivity} />
             <Tab value="templates" text={isSmallerScreen ? "Templates" : ""} icon={FiBox} />
             <Tab value="users" text={isSmallerScreen ? "Users" : ""} icon={FiUsers} />
-            <Tab value="settings" text={isSmallerScreen ? "Settings" : ""} icon={FiSettings} />
+            {/* <Tab value="settings" text={isSmallerScreen ? "Settings" : ""} icon={FiSettings} /> */}
           </TabList>
         </section>
       )}
