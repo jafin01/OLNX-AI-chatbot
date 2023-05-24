@@ -7,7 +7,7 @@ export default function Dashboard() {
   const { playgroundsCount, templatesCount, usersCount }: any = useAdminStore();
 
   return (
-    <div className="bg-gray-100 px-5">
+    <div className="bg-gray-100 px-5 min-h-screen">
         <AdminHome
           playgrounds={playgroundsCount}
           templates={templatesCount}
