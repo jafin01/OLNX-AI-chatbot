@@ -14,6 +14,8 @@ import {
 import { GoPlus, GoSettings } from "react-icons/go";
 import AssistantConfig from "./AssistantConfig";
 import { useConversationStore } from "@/stores/conversation";
+import PlayPauseChatBubble from "./PlayChatBubble";
+import { convertTextToSpeech } from "@/services/text-to-speech/textToSpeech";
 
 export type Message = {
   role: "Assistant #1" | "Assistant #2";
@@ -26,30 +28,31 @@ export default function PlaygroundContent({
   isBusy,
   initialValues,
   msgs,
-}:
-{
+}: {
   name: string;
   setIsBusy: (b: boolean) => void;
   isBusy: boolean;
   initialValues?: any;
   msgs?: Message[];
 }) {
-  const [messages, setMessages] = useState<Message[]>(msgs || [
-    {
-      role: "Assistant #1",
-      message: "Hello.",
-    },
-    {
-      role: "Assistant #2",
-      message: "Hello, I am an assistant.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(
+    msgs || [
+      {
+        role: "Assistant #1",
+        message: "Hello.",
+      },
+      {
+        role: "Assistant #2",
+        message: "Hello, I am an assistant.",
+      },
+    ]
+  );
   const [configModel, setConfigModel] = useState<any>({
     isOpen: false,
     name: "",
     index: -1,
     model: "gpt-4",
-    system: '',
+    system: "",
     temperature: 0.7,
     maxLength: 256,
     top_p: 1,
@@ -58,30 +61,48 @@ export default function PlaygroundContent({
   });
   const [loading, setLoading] = useState(false);
   const [itteration, setItteration] = useState(5);
-  const [configs, setConfigs] = useState<any[]>(initialValues || [
-    {
-      id: 1,
-      name: "Assistant #1",
-      model: "gpt-4",
-      system: "",
-      temperature: 0.7,
-      maxLength: 256,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    },
-    {
-      id: 2,
-      name: "Assistant #2",
-      model: "gpt-4",
-      system: "",
-      temperature: 0.7,
-      maxLength: 256,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    },
-  ]);
+  const [configs, setConfigs] = useState<any[]>(
+    initialValues || [
+      {
+        id: 1,
+        name: "Assistant #1",
+        model: "gpt-4",
+        system: "",
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      },
+      {
+        id: 2,
+        name: "Assistant #2",
+        model: "gpt-4",
+        system: "",
+        temperature: 0.7,
+        maxLength: 256,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      },
+    ]
+  );
+
+  const [isPlaying, setIsPlaying] = useState<number | null>(null);
+
+  function togglePlay(messageId: number) {
+    if (messageId === isPlaying) {
+      setIsPlaying(null);
+    } else {
+      setIsPlaying(messageId);
+      const messageContent = messages[messageId].message; // Get the message content
+      convertTextToSpeech(messageContent, () => {
+        setIsPlaying(null);
+      });
+    }
+  }
+
+  
 
   useEffect(() => {
     setIsBusy(loading);
@@ -165,9 +186,7 @@ export default function PlaygroundContent({
 
   async function generateResponses(values: any) {
     setLoading(true);
-
     await generateResponse(values);
-
     setLoading(false);
     setItteration(0);
   }
@@ -179,7 +198,7 @@ export default function PlaygroundContent({
         name: `Assistant #${prev.length + 1}`,
         id: prev.length + 1,
         model: "gpt-4",
-        system: '',
+        system: "",
         temperature: 0.7,
         maxLength: 256,
         top_p: 1,
@@ -207,11 +226,9 @@ export default function PlaygroundContent({
     const nextAssistantRole = configs[nextAssistantIndex].name;
 
     const nextConfig = configs[nextAssistantIndex];
-    const systemMessage =
-      configs[nextAssistantIndex].system;
+    const systemMessage = configs[nextAssistantIndex].system;
 
     const model = configs[lastAssistantIndex].model;
-
     await axios
       .post("https://dribs.dev/ai/chat", {
         messages: [
@@ -244,6 +261,7 @@ export default function PlaygroundContent({
       .catch((err) => {
         console.log({ err });
       });
+
     setLoading(false);
   }
 
@@ -300,7 +318,9 @@ export default function PlaygroundContent({
     }
   }
 
-  const setConversation = useConversationStore((state: any) => state.setConversation);
+  const setConversation = useConversationStore(
+    (state: any) => state.setConversation
+  );
 
   useEffect(() => {
     setConversation({
@@ -348,15 +368,15 @@ export default function PlaygroundContent({
                       <AccordionBody className="h-64">
                         <div className="p-4 h-full border border-gray-300 rounded-sm flex flex-col">
                           <textarea
-                          value={config.system}
-                          onChange={(e) => {
-                            const updatedConfigs = [...configs];
-                            updatedConfigs[index] = {
-                              ...config,
-                              system: e.target.value,
-                            };
-                            setConfigs(updatedConfigs);
-                          }}
+                            value={config.system}
+                            onChange={(e) => {
+                              const updatedConfigs = [...configs];
+                              updatedConfigs[index] = {
+                                ...config,
+                                system: e.target.value,
+                              };
+                              setConfigs(updatedConfigs);
+                            }}
                             disabled={isBusy}
                             onBlur={handleBlur}
                             name="system"
@@ -409,24 +429,38 @@ export default function PlaygroundContent({
             </aside>
             <section className="w-full flex flex-col gap-2 py-6">
               <div className="w-full h-full flex-1 overflow-y-auto">
-
                 {messages.map((message, index) => {
+                  const messageId = index;
                   return (
-                    <PlaygroundChatBubble
-                      key={index}
-                      onChange={(msg: string) => {
-                        updateMessage(index, msg);
-                      }}
-                      name={message.role}
-                      message={message.message}
-                      onClickName={() => {
-                        changeRole(index);
-                      }}
-                      removeMessage={() => deleteMessage(index)}
-                    />
+                    <>
+                      <div className="px-5 py-2 flex" key={index}>
+                        <div className="flex items-center">
+                          <PlayPauseChatBubble
+                            isPlaying={isPlaying === messageId}
+                            togglePlay={() => {
+                              togglePlay(messageId);
+                            }}
+                          />
+                        </div>
+                        <PlaygroundChatBubble
+                          key={index}
+                          onChange={(msg: string) => {
+                            updateMessage(index, msg);
+                          }}
+                          name={message.role}
+                          message={message.message}
+                          onClickName={() => {
+                            changeRole(index);
+                          }}
+                          removeMessage={() => deleteMessage(index)}
+                        />
+                      </div>
+                    </>
                   );
                 })}
-                <PlaygroundAddChatBubble onClick={addMessage} />
+                <div className="">
+                  <PlaygroundAddChatBubble onClick={addMessage} />
+                </div>
               </div>
               <footer className="w-full p-4 flex h-16 items-center">
                 <span className="flex-1">&nbsp;</span>
