@@ -27,6 +27,7 @@
     "eslint-config-next": "13.2.4",
     "formik": "^2.2.9",
     "howler": "^2.2.3",
+    "html2canvas": "^1.4.1",
     "js-cookie": "^3.0.5",
     "lottie-web": "^5.10.2",
     "next": "13.2.4",

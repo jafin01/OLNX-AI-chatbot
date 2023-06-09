@@ -102,7 +102,7 @@ export default function PlaygroundContent({
     }
   }
 
-  
+
 
   useEffect(() => {
     setIsBusy(loading);
@@ -428,11 +428,12 @@ export default function PlaygroundContent({
               </button>
             </aside>
             <section className="w-full flex flex-col gap-2 py-6">
-              <div className="w-full h-full flex-1 overflow-y-auto">
+              <div id="playground" className="w-full h-full overflow-y-auto">
                 {messages.map((message, index) => {
                   const messageId = index;
                   return (
                     <>
+                    <div>
                       <div className="px-5 py-2 flex" key={index}>
                         <div className="flex items-center">
                           <PlayPauseChatBubble
@@ -455,13 +456,14 @@ export default function PlaygroundContent({
                           removeMessage={() => deleteMessage(index)}
                         />
                       </div>
+                      </div>
                     </>
                   );
                 })}
+              </div>
                 <div className="">
                   <PlaygroundAddChatBubble onClick={addMessage} />
                 </div>
-              </div>
               <footer className="w-full p-4 flex h-16 items-center">
                 <span className="flex-1">&nbsp;</span>
                 <div className="flex items-center gap-2">
