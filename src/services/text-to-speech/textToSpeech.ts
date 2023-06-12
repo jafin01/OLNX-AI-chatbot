@@ -4,19 +4,20 @@ import { Howl, Howler } from "howler";
 export const convertTextToSpeech = async (
   text: any,
   callBack: () => void,
-  soundUrl: any,
-  setSoundUrl: any
 ) => {
-  const apiKey = process.env.NEXT_PUBLIC_SPEECH_API; // Replace with your Elevenlabs API key
-  const voiceID = process.env.NEXT_PUBLIC_VOICE_ID; // Replace with the ID of the voice you want to use
-  const fileName = "audio.mp3"; // The name of the audio file to be saved
+  const apiKey = process.env.NEXT_PUBLIC_SPEECH_API; 
+  const voiceId = process.env.NEXT_PUBLIC_VOICE_ID; 
 
   try {
     const response = await axios.post(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceID}`,
+      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
       {
         text: text,
         model_id: "eleven_monolingual_v1",
+        voice_settings: {
+          stability: 1,
+          similarity_boost: 1
+        }
       },
       {
         headers: {
@@ -28,13 +29,10 @@ export const convertTextToSpeech = async (
     );
       // Create a Blob from the response data
       const blob = new Blob([response.data], { type: "audio/mpeg" });
-
+      
       // Create a URL for the Blob
       const audioURL = URL.createObjectURL(blob);
-
-      // if(soundUrl == null) {
-      //   setSoundUrl(audioURL);
-      // }
+      console.log(audioURL)
 
     Howler.stop();
 

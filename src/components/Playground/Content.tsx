@@ -89,7 +89,6 @@ export default function PlaygroundContent({
   );
 
   const [isPlaying, setIsPlaying] = useState<number | null>(null);
-  const [soundUrl, setSoundURL] = useState<string | null>(null);
 
   function togglePlay(messageId: number) {
     if (messageId === isPlaying) {
@@ -99,7 +98,7 @@ export default function PlaygroundContent({
       const messageContent = messages[messageId].message;
       convertTextToSpeech(messageContent, () => {
         setIsPlaying(null);
-      }, soundUrl, setSoundURL);
+      });
     }
   }
 
@@ -462,7 +461,7 @@ export default function PlaygroundContent({
                       <div className="px-5 py-2 flex" key={index}>
                         <div className="flex items-center">
                           <PlayPauseChatBubble
-                            ref={playPauseRef}
+                            // ref={playPauseRef}
                             isPlaying={isPlaying === messageId}
                             togglePlay={() => {
                               togglePlay(messageId);
