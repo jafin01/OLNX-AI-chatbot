@@ -89,16 +89,17 @@ export default function PlaygroundContent({
   );
 
   const [isPlaying, setIsPlaying] = useState<number | null>(null);
+  const [soundUrl, setSoundURL] = useState<string | null>(null);
 
   function togglePlay(messageId: number) {
     if (messageId === isPlaying) {
       setIsPlaying(null);
     } else {
       setIsPlaying(messageId);
-      const messageContent = messages[messageId].message; // Get the message content
+      const messageContent = messages[messageId].message;
       convertTextToSpeech(messageContent, () => {
         setIsPlaying(null);
-      });
+      }, soundUrl, setSoundURL);
     }
   }
 

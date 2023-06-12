@@ -1,7 +1,12 @@
 import axios from "axios";
-import {Howl, Howler} from "howler";
+import { Howl, Howler } from "howler";
 
-export const convertTextToSpeech = async (text: any, callBack: () => void) => {
+export const convertTextToSpeech = async (
+  text: any,
+  callBack: () => void,
+  soundUrl: any,
+  setSoundUrl: any
+) => {
   const apiKey = process.env.NEXT_PUBLIC_SPEECH_API; // Replace with your Elevenlabs API key
   const voiceID = process.env.NEXT_PUBLIC_VOICE_ID; // Replace with the ID of the voice you want to use
   const fileName = "audio.mp3"; // The name of the audio file to be saved
@@ -21,22 +26,23 @@ export const convertTextToSpeech = async (text: any, callBack: () => void) => {
         responseType: "arraybuffer",
       }
     );
+      // Create a Blob from the response data
+      const blob = new Blob([response.data], { type: "audio/mpeg" });
 
-    // Create a Blob from the response data
-    const blob = new Blob([response.data], { type: "audio/mpeg" });
+      // Create a URL for the Blob
+      const audioURL = URL.createObjectURL(blob);
 
-    // Create a URL for the Blob
-    const audioURL = URL.createObjectURL(blob);
+      // if(soundUrl == null) {
+      //   setSoundUrl(audioURL);
+      // }
 
     Howler.stop();
 
-    const sound = new Howl(
-      {src: [audioURL], format: ['mp3']}
-    );
+    const sound = new Howl({ src: [audioURL], format: ["mp3"] });
 
     sound.play();
 
-    sound.on('stop', () => {
+    sound.on("stop", () => {
       console.log("Audio Stopped");
       callBack();
     });

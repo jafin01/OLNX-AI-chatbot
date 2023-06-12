@@ -12,7 +12,7 @@ import {
   FiMessageSquare,
   FiShare,
 } from "react-icons/fi";
-import html2canvas from "html2canvas";
+import domtoimage from "dom-to-image";
 
 export default function PlaygroundNavbar({
   isBusy,
@@ -81,24 +81,37 @@ export default function PlaygroundNavbar({
     }
   }
 
+  async function captureFullContent(element: any) {
+    const options = {
+      width: element.offsetWidth,
+      height: element.scrollHeight,
+      style: {
+        transform: "scale(1)",
+        transformOrigin: "top left",
+        width: `${element.offsetWidth}px`,
+        height: `${element.scrollHeight}px`,
+      },
+    };
+
+    const dataUrl = await domtoimage.toPng(element, options);
+    return dataUrl;
+  }
+
   async function handleExport() {
     setExporting(true);
 
     const playgroundRef = document.getElementById("playground");
     if (!playgroundRef) return;
 
-    try {
-      const canvas = await html2canvas(playgroundRef);
-      const imageURL = canvas.toDataURL("image/png");
 
-      console.log(imageURL);
+    try {
+      const imageURL = await captureFullContent(playgroundRef);
 
       const downloadLink = document.createElement("a");
       downloadLink.href = imageURL;
       downloadLink.download = "playground_snapshot.png";
 
       downloadLink.click();
-      
     } catch (error) {
       console.error("Error exporting playground:", error);
       toast.error("Error exporting playground");
