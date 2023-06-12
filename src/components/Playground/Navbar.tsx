@@ -104,7 +104,7 @@ export default function PlaygroundNavbar({
     if (!playgroundRef) return;
 
     const play_button = document.getElementById("play_pause_button");
-    play_button && (play_button.style.display = 'none');
+    play_button && (play_button.style.display = 'no');
 
     try {
       const imageURL = await captureFullContent(playgroundRef);

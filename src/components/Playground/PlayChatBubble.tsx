@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 type PlayPauseChatBubbleProps = {

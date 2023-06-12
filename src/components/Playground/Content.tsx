@@ -102,8 +102,6 @@ export default function PlaygroundContent({
     }
   }
 
-
-
   useEffect(() => {
     setIsBusy(loading);
   }, [loading]);
@@ -332,30 +330,7 @@ export default function PlaygroundContent({
   useEffect(() => {
     console.log("configs", configs);
     console.log("configModel", configModel);
-  }, [configModel]);
-
-  const playPauseRefs: any = [];
-
-  function hidePlayPauseBubbles() {
-    messages.forEach((message, index) => {
-      const playPauseRef = playPauseRefs[index];
-  
-      if (playPauseRef && playPauseRef.current) {
-        playPauseRef.current.style.display = 'none';
-      }
-    });
-  }
-  
-  function showPlayPauseBubbles() {
-    messages.forEach((message, index) => {
-      const playPauseRef = playPauseRefs[index];
-  
-      if (playPauseRef && playPauseRef.current) {
-        playPauseRef.current.style.display = 'block';
-      }
-    });
-  }
-  
+  }, [configModel]);  
 
   return (
     <>
@@ -451,17 +426,15 @@ export default function PlaygroundContent({
               </button>
             </aside>
             <section className="w-full flex flex-col gap-2 py-6">
-              <div id="playground" className="w-full h-full overflow-y-auto">
+              <div id="playground" className="w-full h-full overflow-y-auto bg-white">
                 {messages.map((message, index) => {
                   const messageId = index;
-                  const playPauseRef = React.createRef();
                   return (
                     <>
                     <div>
                       <div className="px-5 py-2 flex" key={index}>
                         <div className="flex items-center">
                           <PlayPauseChatBubble
-                            // ref={playPauseRef}
                             isPlaying={isPlaying === messageId}
                             togglePlay={() => {
                               togglePlay(messageId);
