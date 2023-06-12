@@ -43,19 +43,22 @@ function Login() {
     const email = values.email;
     const password = values.password;
 
-    const status = await signIn("credentials", { 
-      redirect: false,
-      email,
-      password,
-      callbackUrl: "http://localhost:3000/playgrounds",
-    })
-
-    if (status?.ok === true) {
-      push("/playgrounds")
-    } else {
+    try {
+      await signIn("credentials", { 
+        redirect: false,
+        email,
+        password,
+        callbackUrl: "http://localhost:3000/playgrounds",
+      })
+      push ("/playgrounds");
+    } catch(error: any) {
+      alert(error?.response?.data?.message);
+    } finally {
       setIsLoading(false);
-      alert(status?.error)
     }
+
+
+    
 
   }
 
