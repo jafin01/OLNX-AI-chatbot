@@ -2,7 +2,7 @@
 import { Form, Formik } from "formik";
 import PlaygroundChatBubble from "./ChatBubble";
 import PlaygroundAddChatBubble from "./AddChatBubble";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { FiSend, FiLoader } from "react-icons/fi";
 import {
@@ -335,6 +335,29 @@ export default function PlaygroundContent({
     console.log("configModel", configModel);
   }, [configModel]);
 
+  const playPauseRefs: any = [];
+
+  function hidePlayPauseBubbles() {
+    messages.forEach((message, index) => {
+      const playPauseRef = playPauseRefs[index];
+  
+      if (playPauseRef && playPauseRef.current) {
+        playPauseRef.current.style.display = 'none';
+      }
+    });
+  }
+  
+  function showPlayPauseBubbles() {
+    messages.forEach((message, index) => {
+      const playPauseRef = playPauseRefs[index];
+  
+      if (playPauseRef && playPauseRef.current) {
+        playPauseRef.current.style.display = 'block';
+      }
+    });
+  }
+  
+
   return (
     <>
       {configModel.isOpen && (
@@ -432,12 +455,14 @@ export default function PlaygroundContent({
               <div id="playground" className="w-full h-full overflow-y-auto">
                 {messages.map((message, index) => {
                   const messageId = index;
+                  const playPauseRef = React.createRef();
                   return (
                     <>
                     <div>
                       <div className="px-5 py-2 flex" key={index}>
                         <div className="flex items-center">
                           <PlayPauseChatBubble
+                            ref={playPauseRef}
                             isPlaying={isPlaying === messageId}
                             togglePlay={() => {
                               togglePlay(messageId);
