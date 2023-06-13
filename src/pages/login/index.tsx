@@ -56,10 +56,6 @@ function Login() {
     } finally {
       setIsLoading(false);
     }
-
-
-    
-
   }
 
   const defaultOptions = {
