@@ -4,9 +4,12 @@ import { Howl, Howler } from "howler";
 export const convertTextToSpeech = async (text: any, callBack: () => void) => {
   try {
     const RELAY_SERVER_API: string = process.env.NEXT_PUBLIC_ELVENLABS_RELAY_API || "";
+    const voice_id: string = process.env.NEXT_PUBLIC_VOICE_ID || "";
+
     const { data } = await axios.post(`${RELAY_SERVER_API}/text-to-speech`, {
       text: text,
       model_id: "eleven_monolingual_v1",
+      voice_id,
       voice_settings: {
         stability: 1,
         similarity_boost: 1,
