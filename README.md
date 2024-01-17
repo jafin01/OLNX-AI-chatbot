@@ -9,51 +9,6 @@ Next-OLNX is a project that provides a playground for configuring and observing 
 - Easy-to-use interface
 - Great for testing and refining AI behavior
 
-## Prerequisites
-
-- Node.js >= 14.0.0
-- npm >= 6.0.0
-
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/hammyasf/next-olnx.git
-cd next-olnx
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-## Usage
-
-To start the development server:
-
-```bash
-npm run dev
-```
-
-To build the project for production:
-
-```bash
-npm run build
-```
-
-To start the production server:
-
-```bash
-npm run start
-```
-
-To lint the project:
-
-```bash
-npm run link
-```
 
 ## Built With
 
@@ -67,10 +22,3 @@ npm run link
 - [Zustand](https://github.com/pmndrs/zustand)
 - [Tailwind CSS](https://tailwindcss.com/)
 
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## License
-
-This project is proprietary and its use, reproduction, and distribution are subject to the terms and conditions stipulated by the copyright holder. For more information, please contact the project owner.
